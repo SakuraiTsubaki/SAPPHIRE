@@ -3,7 +3,7 @@
   "project": "SAPPHIRE",
   "baseline_language": "Japanese",
   "goal": "Make every Ruby/Sapphire external-trigger card event locally and permanently accessible without e-Reader/distribution hardware.",
-  "ticket_policy": "Preserve original destination ticket checks; make required tickets obtainable in-game.",
+  "ticket_policy": "Preserve original destination ticket checks; distribute required tickets through a dedicated first-town event NPC.",
   "original_slot_constraints": {
     "battle_e_trainer_slots": 1,
     "ecard_berry_slots": 1,
@@ -14,12 +14,18 @@
       "ids": ["00-C000"],
       "kind": "world_event_ticket",
       "access": "Southern Island",
-      "grant": "Norman after Hall of Fame",
+      "grant": "Dedicated Event Courier in Littleroot Town",
+      "grant_story_requirement": "none",
+      "courier_map": "Littleroot Town",
+      "courier_coordinates": [9, 16],
+      "courier_local_id": 7,
       "duplicate_check": ["Bag", "PC"],
       "sets_system_flag": "FLAG_SYS_HAS_EON_TICKET",
+      "courier_visibility_flag": "FLAG_SYS_HAS_EON_TICKET",
       "harbor_ticket_gate": "preserved",
       "southern_island_ticket_gate": "preserved",
-      "status": "ticket_grant_injected"
+      "norman_story_script": "unchanged",
+      "status": "littleroot_ticket_courier_injected"
     },
     "decoration_present": {
       "ids": ["08-O001"],
