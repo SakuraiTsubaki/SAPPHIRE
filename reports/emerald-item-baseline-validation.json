@@ -1,0 +1,155 @@
+{
+  "date": "2026-09-19",
+  "tool": "tools/sapphire_emerald_items.py",
+  "baseline": {
+    "emerald_items_count": 377,
+    "max_item_id": 376,
+    "legacy_records_copied": "0-348 byte-identical",
+    "extension_records": "349-376",
+    "sanitizer": "348 -> 376"
+  },
+  "static_validation": [
+    {
+      "rom": "JP AXPJ rev0",
+      "input_sha1": "3233342c2f3087e6ffe6c1791cd5867db07df842",
+      "gitems": "0x39A62C",
+      "injection": "0x655160",
+      "sanitize": "0xA5360",
+      "pointer_refs": 14,
+      "changed_bytes": 14312,
+      "output_sha1": "53e33aeefb081223e12c549ad55feb0917132266"
+    },
+    {
+      "rom": "EN AXPE rev0",
+      "input_sha1": "3ccbbd45f8553c36463f13b938e833f652b793e4",
+      "gitems": "0x3C55BC",
+      "injection": "0x6B0A54",
+      "sanitize": "0xA98BC",
+      "pointer_refs": 15,
+      "changed_bytes": 16251,
+      "output_sha1": "53b803e227ab6de5a5f20a3a687c255b5ce6b520"
+    },
+    {
+      "rom": "EN AXPE rev1",
+      "input_sha1": "4722efb8cd45772ca32555b98fd3b9719f8e60a9",
+      "gitems": "0x3C55DC",
+      "injection": "0x6B0A6C",
+      "sanitize": "0xA98DC",
+      "pointer_refs": 15,
+      "changed_bytes": 16249,
+      "output_sha1": "8f6835a951c99d2b2003b68c713ecc67c27a49b8"
+    },
+    {
+      "rom": "EN AXPE rev2",
+      "input_sha1": "89b45fb172e6b55d51fc0e61989775187f6fe63c",
+      "gitems": "0x3C55DC",
+      "injection": "0x6B0A6C",
+      "sanitize": "0xA98DC",
+      "pointer_refs": 15,
+      "changed_bytes": 16249,
+      "output_sha1": "de5a1238e1ca4699478a96317fc41f6ff29f4cc0"
+    },
+    {
+      "rom": "DE AXPD rev0",
+      "input_sha1": "5a087835009d552d4c5c1f96be3be3206e378153",
+      "gitems": "0x3D1348",
+      "injection": "0x6BE900",
+      "sanitize": "0xA9A0C",
+      "pointer_refs": 15,
+      "changed_bytes": 16246,
+      "output_sha1": "3b94ab26cfae8e3590fe1f032bbe18b9fac26879"
+    },
+    {
+      "rom": "DE AXPD rev1",
+      "input_sha1": "7e6e034f9cdca6d2c4a270fdb50a94def5883d17",
+      "gitems": "0x3D1348",
+      "injection": "0x6BE900",
+      "sanitize": "0xA9A0C",
+      "pointer_refs": 15,
+      "changed_bytes": 16246,
+      "output_sha1": "3db6b933440b10100c8fae4a5bcf9d4b51914961"
+    },
+    {
+      "rom": "FR AXPF rev0",
+      "input_sha1": "c269b5692b2d0e5800ba1ddf117fda95ac648634",
+      "gitems": "0x3CCAF4",
+      "injection": "0x6B9600",
+      "sanitize": "0xA9AF8",
+      "pointer_refs": 15,
+      "changed_bytes": 16251,
+      "output_sha1": "4c2dce4833c9be703ee5e7727f21f060e1f1b746"
+    },
+    {
+      "rom": "FR AXPF rev1",
+      "input_sha1": "860e93f5ea44f4278132f6c1ee5650d07b852fd8",
+      "gitems": "0x3CCAF4",
+      "injection": "0x6B9600",
+      "sanitize": "0xA9AF8",
+      "pointer_refs": 15,
+      "changed_bytes": 16251,
+      "output_sha1": "c33030871e71ffd26ad0f41a5c6b95e14afc498f"
+    },
+    {
+      "rom": "IT AXPI rev0",
+      "input_sha1": "f729dd571fb2c09e72c5c1d68fe0a21e72713d34",
+      "gitems": "0x3C5C9C",
+      "injection": "0x6B2A20",
+      "sanitize": "0xA9A04",
+      "pointer_refs": 15,
+      "changed_bytes": 16252,
+      "output_sha1": "f921ae873b515dff64404c8f5dc9e65fe460020f"
+    },
+    {
+      "rom": "IT AXPI rev1",
+      "input_sha1": "73edf67b9b82ff12795622dca412733755d2c0fe",
+      "gitems": "0x3C5C9C",
+      "injection": "0x6B2A20",
+      "sanitize": "0xA9A04",
+      "pointer_refs": 15,
+      "changed_bytes": 16252,
+      "output_sha1": "152bd42388b370aad8623a2e79ef3f695ef1c6cd"
+    },
+    {
+      "rom": "ES AXPS rev0",
+      "input_sha1": "3a6489189e581c4b29914071b79207883b8c16d8",
+      "gitems": "0x3C8D38",
+      "injection": "0x6B5BCC",
+      "sanitize": "0xA9B08",
+      "pointer_refs": 15,
+      "changed_bytes": 16250,
+      "output_sha1": "940a9bdd75194cac7b9e5caa73bdf41633f7c9c0"
+    },
+    {
+      "rom": "ES AXPS rev1",
+      "input_sha1": "0fe9ad1e602e2fafa090aee25e43d6980625173c",
+      "gitems": "0x3C8D38",
+      "injection": "0x6B5BCC",
+      "sanitize": "0xA9B08",
+      "pointer_refs": 15,
+      "changed_bytes": 16250,
+      "output_sha1": "8d843227bd9ce562777502c91d7228a5ab2834a9"
+    }
+  ],
+  "invariants": {
+    "all_12_passed": true,
+    "rom_size_unchanged": true,
+    "legacy_records_0_348_byte_identical_in_new_table": true,
+    "extension_ids_349_376_contiguous": true,
+    "known_gitems_pointer_references_redirected": true,
+    "sanitize_accepts_max_id_376": true
+  },
+  "runtime_validation": {
+    "rom": "JP AXPJ rev0",
+    "emulator": "mGBA 0.11-9138-25ca25612",
+    "booted": true,
+    "existing_save_loaded": true,
+    "field_rendered": true,
+    "start_menu_rendered": true,
+    "bag_selection_automation": "not confirmed; automated A input did not leave the start menu, so bag-screen validation is not claimed"
+  },
+  "not_yet_full_emerald_engine_parity": [
+    "IDs 153-158 EV-reducing Berry signed-EV behavior/UI",
+    "ID 372 Powder Jar Berry Powder subsystem",
+    "IDs 349-376 Emerald descriptions; current appended records use a safe dummy description pointer"
+  ]
+}
