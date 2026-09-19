@@ -9,8 +9,10 @@ The target is **not only Eon Ticket**. Ruby/Sapphire external content is being c
 Current base patch:
 
 - MYSTERY EVENT main-menu entry is always enabled for a valid save.
-- Lilycove Harbor no longer requires the physical EON TICKET item.
-- Harbor and Southern Island no longer depend on `FLAG_SYS_HAS_EON_TICKET`.
+- After the Hall of Fame, Norman grants the EON TICKET in-game if the player does not already own it.
+- The ticket grant sets `FLAG_SYS_HAS_EON_TICKET`, matching the original external distribution behavior.
+- Lilycove Harbor and Southern Island still require the real EON TICKET/system flag; their original checks are preserved.
+- Existing saves with the EON TICKET in the Bag or PC have the system flag normalized without receiving a duplicate ticket.
 - Normal story progression and one-time Latias/Latios encounter completion are preserved.
 - Signature-based detection is validated against 12 Japanese/English/German/French/Italian/Spanish Sapphire ROM revisions.
 - No ROM image is stored in this repository.
@@ -22,7 +24,7 @@ Full card catalog:
 - 1 Decoration Present card, containing three Regi Doll choices
 - 1 Eon Ticket card
 
-The original engine only stores one Battle-e trainer and one e-Reader Berry at a time. Therefore full permanence requires an internal ROM catalog/loader rather than merely forcing flags. See `docs/EXTERNAL_EVENTS.md`.
+Ticket-type world events should use their real ticket/item path whenever possible. Data-bearing Battle-e Trainer and Berry cards need the ROM-local catalog/loader because the original engine only stores one trainer and one e-Reader Berry at a time. See `docs/EXTERNAL_EVENTS.md`.
 
 ## Tools
 
