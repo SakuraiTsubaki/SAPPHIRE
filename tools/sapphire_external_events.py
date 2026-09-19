@@ -1,9 +1,14 @@
 #!/usr/bin/env python3
 """Pokemon Sapphire external-event permanence patcher.
 
-Removes external-distribution dependencies from the in-ROM Mystery Event /
-Eon Ticket path while preserving normal story progression and one-time
-encounter completion flags.
+Makes externally distributed Ruby/Sapphire content locally reachable while
+preserving the original in-game gates wherever a real item can satisfy them.
+
+Eon Ticket policy:
+- Do NOT bypass Lilycove Harbor or Southern Island checks.
+- After the Hall of Fame, Norman grants the Eon Ticket in-game once.
+- Granting/owning the ticket also sets FLAG_SYS_HAS_EON_TICKET, matching the
+  original distribution script.
 
 The patch is signature-based and supports the known Japanese, English,
 German, French, Italian, and Spanish Sapphire revisions in KNOWN_ROMS.
@@ -36,21 +41,46 @@ KNOWN_ROMS = {
     "0fe9ad1e602e2fafa090aee25e43d6980625173c": "ES AXPS rev1",
 }
 
-# Lilycove Harbor:
-# lock; faceplayer; checkitem ITEM_EON_TICKET,1; compare VAR_RESULT,1; goto_if_eq ...
+ITEM_EON_TICKET = 0x0113
+VAR_0x8000 = 0x8000
+VAR_0x8001 = 0x8001
+VAR_RESULT = 0x800D
+FLAG_SYS_HAS_EON_TICKET = 0x0853
+
 FERRY_PREFIX = bytes.fromhex("6A 5A 47 13 01 01 00 21 0D 80 01 00 06 01")
 
-# FLAG_ENCOUNTERED_LATIAS_OR_LATIOS check followed by FLAG_SYS_HAS_EON_TICKET.
-# The 4-byte script pointers are intentionally wildcards.
 LATI_THEN_EON_RE = re.compile(
     rb"\x2B\xCE\x00\x06\x01....\x2B\x53\x08\x06\x00....",
     re.DOTALL,
 )
 
-EXDATA_LITERAL = struct.pack("<I", 0x084C)  # FLAG_SYS_EXDATA_ENABLE
+NORMAN_POST_BATTLE_RE = re.compile(
+    rb"\x04...."
+    rb"\x21\x0D\x80\x01\x00\x06\x01...."
+    rb"\x2B..\x06\x00...."
+    rb"\x2B\x04\x08\x06\x01(?P<no_amount>....)"
+    rb"\x0F\x00....\x09\x04\x6C\x02"
+    rb"\x26\x0D\x80",
+    re.DOTALL,
+)
+
+GIVE_ENIGMA_BERRY_RE = re.compile(
+    rb"\x1A\x00\x80\xAF\x00"
+    rb"\x1A\x01\x80\x01\x00"
+    rb"\x09\x00"
+    rb"\x21\x0D\x80\x00\x00"
+    rb"\x06\x01(?P<bag_full>....)"
+    rb"\x16\x2D\x40\x00\x00\x6C\x02",
+    re.DOTALL,
+)
+
+EXDATA_LITERAL = struct.pack("<I", 0x084C)
 IS_MYSTERY_EVENT_PROLOGUE = bytes.fromhex("00 B5 03 48")
 IS_MYSTERY_EVENT_EPILOGUE = bytes.fromhex("02 BC 08 47")
-RETURN_TRUE_THUMB = bytes.fromhex("01 20 70 47")  # movs r0,#1 ; bx lr
+RETURN_TRUE_THUMB = bytes.fromhex("01 20 70 47")
+
+FREE_SPACE_SEARCH_START = 0x600000
+FREE_SPACE_RESERVE = 0x100
 
 
 @dataclass
@@ -72,6 +102,11 @@ class Analysis:
     ferry_boarding_target: int
     eon_flag_checks: list[int]
     mystery_event_enabled_function: int
+    norman_post_battle: int
+    norman_game_clear_target_pointer: int
+    original_norman_game_clear_target: int
+    common_bag_full_script: int
+    ticket_grant_injection: int
 
 
 def sha1(data: bytes) -> str:
@@ -96,10 +131,21 @@ def require_unique(name: str, values: Iterable[int]) -> int:
     return vals[0]
 
 
+def require_unique_match(name: str, regex: re.Pattern[bytes], data: bytes) -> re.Match[bytes]:
+    matches = list(regex.finditer(data))
+    if len(matches) != 1:
+        raise ValueError(f"{name}: expected exactly 1 match, found {len(matches)}")
+    return matches[0]
+
+
 def ptr_to_offset(ptr: int, rom_size: int) -> int:
     if not (ROM_BASE <= ptr < ROM_BASE + rom_size):
         raise ValueError(f"ROM pointer out of range: 0x{ptr:08X}")
     return ptr - ROM_BASE
+
+
+def offset_to_ptr(offset: int) -> int:
+    return ROM_BASE + offset
 
 
 def identify_mystery_event_enabled(data: bytes) -> int:
@@ -114,6 +160,69 @@ def identify_mystery_event_enabled(data: bytes) -> int:
             continue
         candidates.append(start)
     return require_unique("IsMysteryEventEnabled", candidates)
+
+
+def find_free_ff_block(
+    data: bytes,
+    size: int = FREE_SPACE_RESERVE,
+    start: int = FREE_SPACE_SEARCH_START,
+    alignment: int = 4,
+) -> int:
+    marker = b"\xFF" * size
+    pos = start
+    while True:
+        pos = data.find(marker, pos)
+        if pos < 0:
+            raise ValueError(f"no {size:#x}-byte 0xFF free-space block found")
+        aligned = (pos + alignment - 1) & ~(alignment - 1)
+        if aligned + size <= len(data) and data[aligned:aligned + size] == marker:
+            return aligned
+        pos += 1
+
+
+def build_ticket_grant_script(
+    injection_offset: int,
+    original_no_amount_ptr: int,
+    bag_full_ptr: int,
+) -> bytes:
+    out = bytearray()
+    fixups: list[tuple[int, str]] = []
+
+    def u16(value: int) -> bytes:
+        return struct.pack("<H", value)
+
+    def u32(value: int) -> bytes:
+        return struct.pack("<I", value)
+
+    out += b"\x47" + u16(ITEM_EON_TICKET) + u16(1)
+    out += b"\x21" + u16(VAR_RESULT) + u16(1)
+    out += b"\x06\x01"
+    fixups.append((len(out), "already_owned"))
+    out += b"\x00" * 4
+
+    out += b"\x4A" + u16(ITEM_EON_TICKET) + u16(1)
+    out += b"\x21" + u16(VAR_RESULT) + u16(1)
+    out += b"\x06\x01"
+    fixups.append((len(out), "already_owned"))
+    out += b"\x00" * 4
+
+    out += b"\x1A" + u16(VAR_0x8000) + u16(ITEM_EON_TICKET)
+    out += b"\x1A" + u16(VAR_0x8001) + u16(1)
+    out += b"\x09\x00"
+    out += b"\x21" + u16(VAR_RESULT) + u16(0)
+    out += b"\x06\x01" + u32(bag_full_ptr)
+    out += b"\x29" + u16(FLAG_SYS_HAS_EON_TICKET)
+    out += b"\x6C\x02"
+
+    labels = {"already_owned": len(out)}
+    out += b"\x29" + u16(FLAG_SYS_HAS_EON_TICKET)
+    out += b"\x05" + u32(original_no_amount_ptr)
+
+    for position, label in fixups:
+        target = offset_to_ptr(injection_offset + labels[label])
+        out[position:position + 4] = u32(target)
+
+    return bytes(out)
 
 
 def analyze(data: bytes, allow_unknown_sha1: bool = False) -> Analysis:
@@ -141,7 +250,6 @@ def analyze(data: bytes, allow_unknown_sha1: bool = False) -> Analysis:
     target_ptr = struct.unpack_from("<I", data, ferry + 14)[0]
     target = ptr_to_offset(target_ptr, len(data))
 
-    # Keep the normal Hall-of-Fame/story progression gate.
     if data[target:target + 5] != bytes.fromhex("2B 04 08 06 00"):
         raise ValueError(
             f"unexpected ferry boarding routine at 0x{target:X}; "
@@ -157,6 +265,17 @@ def analyze(data: bytes, allow_unknown_sha1: bool = False) -> Analysis:
 
     mystery = identify_mystery_event_enabled(data)
 
+    norman = require_unique_match("Norman post-game script", NORMAN_POST_BATTLE_RE, data)
+    no_amount_ptr_pos = norman.start("no_amount")
+    no_amount_ptr = struct.unpack("<I", norman.group("no_amount"))[0]
+    ptr_to_offset(no_amount_ptr, len(data))
+
+    enigma = require_unique_match("Enigma Berry gift script", GIVE_ENIGMA_BERRY_RE, data)
+    bag_full_ptr = struct.unpack("<I", enigma.group("bag_full"))[0]
+    ptr_to_offset(bag_full_ptr, len(data))
+
+    injection = find_free_ff_block(data)
+
     return Analysis(
         sha1=digest,
         known_rom=known,
@@ -167,6 +286,11 @@ def analyze(data: bytes, allow_unknown_sha1: bool = False) -> Analysis:
         ferry_boarding_target=target,
         eon_flag_checks=eon_checks,
         mystery_event_enabled_function=mystery,
+        norman_post_battle=norman.start(),
+        norman_game_clear_target_pointer=no_amount_ptr_pos,
+        original_norman_game_clear_target=ptr_to_offset(no_amount_ptr, len(data)),
+        common_bag_full_script=ptr_to_offset(bag_full_ptr, len(data)),
+        ticket_grant_injection=injection,
     )
 
 
@@ -178,7 +302,6 @@ def patch(
     rom = bytearray(data)
     changes: list[PatchPoint] = []
 
-    # 1) Always expose MYSTERY EVENT on the title menu for a valid save.
     off = info.mystery_event_enabled_function
     before = bytes(rom[off:off + 4])
     rom[off:off + 4] = RETURN_TRUE_THUMB
@@ -189,34 +312,35 @@ def patch(
         RETURN_TRUE_THUMB.hex(),
     ))
 
-    # 2) Lilycove Harbor: remove the physical EON TICKET inventory gate.
-    # Keep lock/faceplayer, then jump to the original boarding routine.
-    off = info.ferry_attendant + 2
-    target_ptr = ROM_BASE + info.ferry_boarding_target
-    replacement = b"\x05" + struct.pack("<I", target_ptr) + b"\x00" * 17
-    before = bytes(rom[off:off + len(replacement)])
-    rom[off:off + len(replacement)] = replacement
+    original_no_amount_ptr = offset_to_ptr(info.original_norman_game_clear_target)
+    bag_full_ptr = offset_to_ptr(info.common_bag_full_script)
+    script = build_ticket_grant_script(
+        info.ticket_grant_injection,
+        original_no_amount_ptr,
+        bag_full_ptr,
+    )
+    off = info.ticket_grant_injection
+    before = bytes(rom[off:off + len(script)])
+    if before != b"\xFF" * len(script):
+        raise ValueError(f"ticket injection free space changed at 0x{off:X}")
+    rom[off:off + len(script)] = script
     changes.append(PatchPoint(
-        "Lilycove Harbor external Eon Ticket item gate removed",
+        "Norman Eon Ticket grant script injected",
+        off,
+        before.hex(),
+        script.hex(),
+    ))
+
+    off = info.norman_game_clear_target_pointer
+    before = bytes(rom[off:off + 4])
+    replacement = struct.pack("<I", offset_to_ptr(info.ticket_grant_injection))
+    rom[off:off + 4] = replacement
+    changes.append(PatchPoint(
+        "Norman post-game branch redirected to Eon Ticket grant",
         off,
         before.hex(),
         replacement.hex(),
     ))
-
-    # 3) Harbor + Southern Island: remove only FLAG_SYS_HAS_EON_TICKET.
-    # Preserve FLAG_SYS_GAME_CLEAR and FLAG_ENCOUNTERED_LATIAS_OR_LATIOS.
-    for index, off in enumerate(info.eon_flag_checks, start=1):
-        before = bytes(rom[off:off + 9])
-        if before[:5] != bytes.fromhex("2B 53 08 06 00"):
-            raise ValueError(f"Eon gate #{index} changed unexpectedly at 0x{off:X}")
-        replacement = b"\x00" * 9
-        rom[off:off + 9] = replacement
-        changes.append(PatchPoint(
-            f"Eon Ticket system-flag gate removed #{index}",
-            off,
-            before.hex(),
-            replacement.hex(),
-        ))
 
     return bytes(rom), info, changes
 
@@ -229,6 +353,13 @@ def report(info: Analysis, changes: list[PatchPoint] | None = None) -> dict:
         "eon_flag_checks": [f"0x{x:X}" for x in info.eon_flag_checks],
         "mystery_event_enabled_function":
             f"0x{info.mystery_event_enabled_function:X}",
+        "norman_post_battle": f"0x{info.norman_post_battle:X}",
+        "norman_game_clear_target_pointer":
+            f"0x{info.norman_game_clear_target_pointer:X}",
+        "original_norman_game_clear_target":
+            f"0x{info.original_norman_game_clear_target:X}",
+        "common_bag_full_script": f"0x{info.common_bag_full_script:X}",
+        "ticket_grant_injection": f"0x{info.ticket_grant_injection:X}",
     }
     if changes is not None:
         d["changes"] = [
