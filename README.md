@@ -9,11 +9,13 @@ The target is **not only Eon Ticket**. Ruby/Sapphire external content is being c
 Current base patch:
 
 - MYSTERY EVENT main-menu entry is always enabled for a valid save.
-- After the Hall of Fame, Norman grants the EON TICKET in-game if the player does not already own it.
-- The ticket grant sets `FLAG_SYS_HAS_EON_TICKET`, matching the original external distribution behavior.
-- Lilycove Harbor and Southern Island still require the real EON TICKET/system flag; their original checks are preserved.
-- Existing saves with the EON TICKET in the Bag or PC have the system flag normalized without receiving a duplicate ticket.
-- Normal story progression and one-time Latias/Latios encounter completion are preserved.
+- A dedicated Event Courier NPC is added to Littleroot Town near Professor Birch's Lab.
+- The courier gives the EON TICKET immediately, with no story-progression requirement.
+- The ticket grant sets `FLAG_SYS_HAS_EON_TICKET`, matching the original distribution behavior.
+- If the EON TICKET already exists in the Bag or PC, the courier does not create a duplicate and only normalizes the system flag.
+- The courier uses `FLAG_SYS_HAS_EON_TICKET` as its visibility flag, so it disappears after the ticket is active.
+- Lilycove Harbor and Southern Island keep their original EON TICKET/system-flag checks.
+- Norman and the original story scripts are not modified by the ticket grant.
 - Signature-based detection is validated against 12 Japanese/English/German/French/Italian/Spanish Sapphire ROM revisions.
 - No ROM image is stored in this repository.
 
