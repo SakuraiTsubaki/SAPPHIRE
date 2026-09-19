@@ -1,32 +1,42 @@
 {
-  "schema_version": 2,
-  "test": "ticket-preserving external-event permanence patch smoke test",
+  "schema_version": 3,
+  "test": "Littleroot Event Courier external-event permanence patch smoke test",
   "rom_count": 12,
-  "expected_changed_bytes_per_rom": 75,
+  "expected_changed_bytes_per_rom": 241,
   "result": "pass",
+  "courier": {
+    "map": "Littleroot Town",
+    "coordinates": [9, 16],
+    "local_id": 7,
+    "graphics_id": 25,
+    "movement_type": 8,
+    "visibility_flag": "FLAG_SYS_HAS_EON_TICKET"
+  },
   "invariants": [
     "ROM size unchanged",
     "Mystery Event menu gate patched",
-    "Norman grants Eon Ticket after Hall of Fame",
-    "Bag and PC duplicate checks preserved in injected grant logic",
-    "FLAG_SYS_HAS_EON_TICKET set on grant or normalized for existing ticket",
+    "Littleroot object count extended from 6 to 7",
+    "Original six Littleroot object templates copied unchanged",
+    "New courier gives Eon Ticket with the standard item-give script",
+    "Bag and PC duplicate checks included in courier logic",
+    "FLAG_SYS_HAS_EON_TICKET set on grant or normalized for an existing ticket",
+    "Courier hidden by FLAG_SYS_HAS_EON_TICKET after activation",
+    "Norman story script untouched",
     "Lilycove physical Eon Ticket inventory gate preserved",
-    "FLAG_SYS_HAS_EON_TICKET gates at Harbor and Southern Island preserved byte-for-byte",
-    "Hall of Fame / game-clear progression gate preserved",
-    "Latias/Latios encounter completion flag preserved"
+    "FLAG_SYS_HAS_EON_TICKET gates at Harbor and Southern Island preserved byte-for-byte"
   ],
   "outputs": [
-    {"rom":"JP AXPJ rev0","input_sha1":"3233342c2f3087e6ffe6c1791cd5867db07df842","output_sha1":"829a93f3593a6b5cfba9d2c6fab9c519d23efd87","changed_bytes":75,"ticket_grant_injection":"0x655160","norman_branch_pointer":"0x15AD0D"},
-    {"rom":"EN AXPE rev0","input_sha1":"3ccbbd45f8553c36463f13b938e833f652b793e4","output_sha1":"fa4549684f82f78cbb6e39160a2219c2b5738892","changed_bytes":75,"ticket_grant_injection":"0x6B0A54","norman_branch_pointer":"0x1548EB"},
-    {"rom":"EN AXPE rev1","input_sha1":"4722efb8cd45772ca32555b98fd3b9719f8e60a9","output_sha1":"3927c59d9feff782eb5a78bfd10abb69800cf5b2","changed_bytes":75,"ticket_grant_injection":"0x6B0A6C","norman_branch_pointer":"0x15490B"},
-    {"rom":"EN AXPE rev2","input_sha1":"89b45fb172e6b55d51fc0e61989775187f6fe63c","output_sha1":"02585a7c43b790f6054ada3b4d798817ec6cbe91","changed_bytes":75,"ticket_grant_injection":"0x6B0A6C","norman_branch_pointer":"0x15490B"},
-    {"rom":"DE AXPD rev0","input_sha1":"5a087835009d552d4c5c1f96be3be3206e378153","output_sha1":"2f61b0be60ce8fd32a4686c612f89ea9b856f072","changed_bytes":75,"ticket_grant_injection":"0x6BE900","norman_branch_pointer":"0x154CC7"},
-    {"rom":"DE AXPD rev1","input_sha1":"7e6e034f9cdca6d2c4a270fdb50a94def5883d17","output_sha1":"04cff4e5f1b15708fcce1162718161fb8f415f9b","changed_bytes":75,"ticket_grant_injection":"0x6BE900","norman_branch_pointer":"0x154CC7"},
-    {"rom":"FR AXPF rev0","input_sha1":"c269b5692b2d0e5800ba1ddf117fda95ac648634","output_sha1":"9cc6985243ac22bbef50a5056b38888e46a34ede","changed_bytes":75,"ticket_grant_injection":"0x6B9600","norman_branch_pointer":"0x154DAB"},
-    {"rom":"FR AXPF rev1","input_sha1":"860e93f5ea44f4278132f6c1ee5650d07b852fd8","output_sha1":"40336caac71b24df0b8b48d19ffb18c8fe4502ed","changed_bytes":75,"ticket_grant_injection":"0x6B9600","norman_branch_pointer":"0x154DAB"},
-    {"rom":"IT AXPI rev0","input_sha1":"f729dd571fb2c09e72c5c1d68fe0a21e72713d34","output_sha1":"eb5a12eebd91e0b628e5ff1f60ce4d8cd7acc068","changed_bytes":75,"ticket_grant_injection":"0x6B2A20","norman_branch_pointer":"0x154D0F"},
-    {"rom":"IT AXPI rev1","input_sha1":"73edf67b9b82ff12795622dca412733755d2c0fe","output_sha1":"07c3b936a437c84d7fcc4d113375f3c00a8eea22","changed_bytes":75,"ticket_grant_injection":"0x6B2A20","norman_branch_pointer":"0x154D0F"},
-    {"rom":"ES AXPS rev0","input_sha1":"3a6489189e581c4b29914071b79207883b8c16d8","output_sha1":"b67ff93afb2c18ceec7db81b070bc5eff67df2ff","changed_bytes":75,"ticket_grant_injection":"0x6B5BCC","norman_branch_pointer":"0x154DE7"},
-    {"rom":"ES AXPS rev1","input_sha1":"0fe9ad1e602e2fafa090aee25e43d6980625173c","output_sha1":"ca9226625478ce22ab151c8253fa9ef82979dd37","changed_bytes":75,"ticket_grant_injection":"0x6B5BCC","norman_branch_pointer":"0x154DE7"}
+    {"rom":"JP AXPJ rev0","input_sha1":"3233342c2f3087e6ffe6c1791cd5867db07df842","output_sha1":"a62ace911e95e9f44d69499fcb2a79831e78a624","changed_bytes":241,"littleroot_object_table":"0x35A410","littleroot_map_events":"0x35A578","courier_injection":"0x655160","courier_script":"0x655208"},
+    {"rom":"EN AXPE rev0","input_sha1":"3ccbbd45f8553c36463f13b938e833f652b793e4","output_sha1":"4165dad0b7ba28527850a54d3a0d366459ec5150","changed_bytes":241,"littleroot_object_table":"0x38088C","littleroot_map_events":"0x3809F4","courier_injection":"0x6B0A54","courier_script":"0x6B0AFC"},
+    {"rom":"EN AXPE rev1","input_sha1":"4722efb8cd45772ca32555b98fd3b9719f8e60a9","output_sha1":"89755387b4c296ae237042cc53306f60f4c3470a","changed_bytes":241,"littleroot_object_table":"0x3808A4","littleroot_map_events":"0x380A0C","courier_injection":"0x6B0A6C","courier_script":"0x6B0B14"},
+    {"rom":"EN AXPE rev2","input_sha1":"89b45fb172e6b55d51fc0e61989775187f6fe63c","output_sha1":"b9eb12d6f9f4ba724ef3d16ba1cd041fbe0011e7","changed_bytes":241,"littleroot_object_table":"0x3808A4","littleroot_map_events":"0x380A0C","courier_injection":"0x6B0A6C","courier_script":"0x6B0B14"},
+    {"rom":"DE AXPD rev0","input_sha1":"5a087835009d552d4c5c1f96be3be3206e378153","output_sha1":"63c8c1c1ae0a50c7f74f08c5250dc3c458fe6c4f","changed_bytes":241,"littleroot_object_table":"0x38C078","littleroot_map_events":"0x38C1E0","courier_injection":"0x6BE900","courier_script":"0x6BE9A8"},
+    {"rom":"DE AXPD rev1","input_sha1":"7e6e034f9cdca6d2c4a270fdb50a94def5883d17","output_sha1":"ba803f1834868cc2b9048678da638c0278cfd87b","changed_bytes":241,"littleroot_object_table":"0x38C078","littleroot_map_events":"0x38C1E0","courier_injection":"0x6BE900","courier_script":"0x6BE9A8"},
+    {"rom":"FR AXPF rev0","input_sha1":"c269b5692b2d0e5800ba1ddf117fda95ac648634","output_sha1":"64167a18523df486b7b3f6918c8086324ba045f8","changed_bytes":241,"littleroot_object_table":"0x3874F0","littleroot_map_events":"0x387658","courier_injection":"0x6B9600","courier_script":"0x6B96A8"},
+    {"rom":"FR AXPF rev1","input_sha1":"860e93f5ea44f4278132f6c1ee5650d07b852fd8","output_sha1":"8ceb8165d2656f759e669870fc88fb8daa5eb6fc","changed_bytes":241,"littleroot_object_table":"0x3874F0","littleroot_map_events":"0x387658","courier_injection":"0x6B9600","courier_script":"0x6B96A8"},
+    {"rom":"IT AXPI rev0","input_sha1":"f729dd571fb2c09e72c5c1d68fe0a21e72713d34","output_sha1":"e47e2a0928fa36478f6c9a69b160f672aa6d5c3f","changed_bytes":241,"littleroot_object_table":"0x380D7C","littleroot_map_events":"0x380EE4","courier_injection":"0x6B2A20","courier_script":"0x6B2AC8"},
+    {"rom":"IT AXPI rev1","input_sha1":"73edf67b9b82ff12795622dca412733755d2c0fe","output_sha1":"f9296a5860d85e27f62a0dfe328d86a6a7245585","changed_bytes":241,"littleroot_object_table":"0x380D7C","littleroot_map_events":"0x380EE4","courier_injection":"0x6B2A20","courier_script":"0x6B2AC8"},
+    {"rom":"ES AXPS rev0","input_sha1":"3a6489189e581c4b29914071b79207883b8c16d8","output_sha1":"9ba548a0b146769d15cce2afd6eb984557444ff9","changed_bytes":241,"littleroot_object_table":"0x383E24","littleroot_map_events":"0x383F8C","courier_injection":"0x6B5BCC","courier_script":"0x6B5C74"},
+    {"rom":"ES AXPS rev1","input_sha1":"0fe9ad1e602e2fafa090aee25e43d6980625173c","output_sha1":"ea7591cc90c48587630cdea75dcea5d377bbcc36","changed_bytes":241,"littleroot_object_table":"0x383E24","littleroot_map_events":"0x383F8C","courier_injection":"0x6B5BCC","courier_script":"0x6B5C74"}
   ]
 }
