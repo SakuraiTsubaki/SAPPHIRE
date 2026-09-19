@@ -10,509 +10,635 @@
   "trainers": {
     "08-A001": {
       "source": "battle-e/trainers/devin.asm",
-      "payload": "build/trainers/devin-EN.mev"
+      "payload": "build/trainers/devin-EN.mev",
+      "payload_template": "build/trainers/devin-{region}.mev"
     },
     "08-A002": {
       "source": "battle-e/trainers/goro.asm",
-      "payload": "build/trainers/goro-EN.mev"
+      "payload": "build/trainers/goro-EN.mev",
+      "payload_template": "build/trainers/goro-{region}.mev"
     },
     "08-A003": {
       "source": "battle-e/trainers/sonya.asm",
-      "payload": "build/trainers/sonya-EN.mev"
+      "payload": "build/trainers/sonya-EN.mev",
+      "payload_template": "build/trainers/sonya-{region}.mev"
     },
     "08-A004": {
       "source": "battle-e/trainers/antonio.asm",
-      "payload": "build/trainers/antonio-EN.mev"
+      "payload": "build/trainers/antonio-EN.mev",
+      "payload_template": "build/trainers/antonio-{region}.mev"
     },
     "08-A005": {
       "source": "battle-e/trainers/alana.asm",
-      "payload": "build/trainers/alana-EN.mev"
+      "payload": "build/trainers/alana-EN.mev",
+      "payload_template": "build/trainers/alana-{region}.mev"
     },
     "08-A006": {
       "source": "battle-e/trainers/renee.asm",
-      "payload": "build/trainers/renee-EN.mev"
+      "payload": "build/trainers/renee-EN.mev",
+      "payload_template": "build/trainers/renee-{region}.mev"
     },
     "08-A007": {
       "source": "battle-e/trainers/sophie.asm",
-      "payload": "build/trainers/sophie-EN.mev"
+      "payload": "build/trainers/sophie-EN.mev",
+      "payload_template": "build/trainers/sophie-{region}.mev"
     },
     "08-A008": {
       "source": "battle-e/trainers/fay.asm",
-      "payload": "build/trainers/fay-EN.mev"
+      "payload": "build/trainers/fay-EN.mev",
+      "payload_template": "build/trainers/fay-{region}.mev"
     },
     "08-A009": {
       "source": "battle-e/trainers/natasha.asm",
-      "payload": "build/trainers/natasha-EN.mev"
+      "payload": "build/trainers/natasha-EN.mev",
+      "payload_template": "build/trainers/natasha-{region}.mev"
     },
     "08-A010": {
       "source": "battle-e/trainers/patrick.asm",
-      "payload": "build/trainers/patrick-EN.mev"
+      "payload": "build/trainers/patrick-EN.mev",
+      "payload_template": "build/trainers/patrick-{region}.mev"
     },
     "08-A011": {
       "source": "battle-e/trainers/oscar.asm",
-      "payload": "build/trainers/oscar-EN.mev"
+      "payload": "build/trainers/oscar-EN.mev",
+      "payload_template": "build/trainers/oscar-{region}.mev"
     },
     "08-A012": {
       "source": "battle-e/trainers/tyler.asm",
-      "payload": "build/trainers/tyler-EN.mev"
+      "payload": "build/trainers/tyler-EN.mev",
+      "payload_template": "build/trainers/tyler-{region}.mev"
     },
     "08-A013": {
       "source": "battle-e/trainers/rudy.asm",
-      "payload": "build/trainers/rudy-EN.mev"
+      "payload": "build/trainers/rudy-EN.mev",
+      "payload_template": "build/trainers/rudy-{region}.mev"
     },
     "08-A014": {
       "source": "battle-e/trainers/ellie.asm",
-      "payload": "build/trainers/ellie-EN.mev"
+      "payload": "build/trainers/ellie-EN.mev",
+      "payload_template": "build/trainers/ellie-{region}.mev"
     },
     "08-A015": {
       "source": "battle-e/trainers/candice.asm",
-      "payload": "build/trainers/candice-EN.mev"
+      "payload": "build/trainers/candice-EN.mev",
+      "payload_template": "build/trainers/candice-{region}.mev"
     },
     "08-A016": {
       "source": "battle-e/trainers/belford.asm",
-      "payload": "build/trainers/belford-EN.mev"
+      "payload": "build/trainers/belford-EN.mev",
+      "payload_template": "build/trainers/belford-{region}.mev"
     },
     "08-A017": {
       "source": "battle-e/trainers/clayton.asm",
-      "payload": "build/trainers/clayton-EN.mev"
+      "payload": "build/trainers/clayton-EN.mev",
+      "payload_template": "build/trainers/clayton-{region}.mev"
     },
     "08-A018": {
       "source": "battle-e/trainers/dustin.asm",
-      "payload": "build/trainers/dustin-EN.mev"
+      "payload": "build/trainers/dustin-EN.mev",
+      "payload_template": "build/trainers/dustin-{region}.mev"
     },
     "08-A019": {
       "source": "battle-e/trainers/hugo.asm",
-      "payload": "build/trainers/hugo-EN.mev"
+      "payload": "build/trainers/hugo-EN.mev",
+      "payload_template": "build/trainers/hugo-{region}.mev"
     },
     "08-A020": {
       "source": "battle-e/trainers/jeffrey.asm",
-      "payload": "build/trainers/jeffrey-EN.mev"
+      "payload": "build/trainers/jeffrey-EN.mev",
+      "payload_template": "build/trainers/jeffrey-{region}.mev"
     },
     "08-A021": {
       "source": "battle-e/trainers/logan.asm",
-      "payload": "build/trainers/logan-EN.mev"
+      "payload": "build/trainers/logan-EN.mev",
+      "payload_template": "build/trainers/logan-{region}.mev"
     },
     "08-A022": {
       "source": "battle-e/trainers/maggie.asm",
-      "payload": "build/trainers/maggie-EN.mev"
+      "payload": "build/trainers/maggie-EN.mev",
+      "payload_template": "build/trainers/maggie-{region}.mev"
     },
     "08-A023": {
       "source": "battle-e/trainers/wilson.asm",
-      "payload": "build/trainers/wilson-EN.mev"
+      "payload": "build/trainers/wilson-EN.mev",
+      "payload_template": "build/trainers/wilson-{region}.mev"
     },
     "08-A024": {
       "source": "battle-e/trainers/zuril.asm",
-      "payload": "build/trainers/zuril-EN.mev"
+      "payload": "build/trainers/zuril-EN.mev",
+      "payload_template": "build/trainers/zuril-{region}.mev"
     },
     "08-A025": {
       "source": "battle-e/trainers/mandy.asm",
-      "payload": "build/trainers/mandy-EN.mev"
+      "payload": "build/trainers/mandy-EN.mev",
+      "payload_template": "build/trainers/mandy-{region}.mev"
     },
     "08-A026": {
       "source": "battle-e/trainers/sofia.asm",
-      "payload": "build/trainers/sofia-EN.mev"
+      "payload": "build/trainers/sofia-EN.mev",
+      "payload_template": "build/trainers/sofia-{region}.mev"
     },
     "08-A027": {
       "source": "battle-e/trainers/hillary.asm",
-      "payload": "build/trainers/hillary-EN.mev"
+      "payload": "build/trainers/hillary-EN.mev",
+      "payload_template": "build/trainers/hillary-{region}.mev"
     },
     "08-A028": {
       "source": "battle-e/trainers/dominic.asm",
-      "payload": "build/trainers/dominic-EN.mev"
+      "payload": "build/trainers/dominic-EN.mev",
+      "payload_template": "build/trainers/dominic-{region}.mev"
     },
     "08-A029": {
       "source": "battle-e/trainers/bryce.asm",
-      "payload": "build/trainers/bryce-EN.mev"
+      "payload": "build/trainers/bryce-EN.mev",
+      "payload_template": "build/trainers/bryce-{region}.mev"
     },
     "08-A030": {
       "source": "battle-e/trainers/irvin.asm",
-      "payload": "build/trainers/irvin-EN.mev"
+      "payload": "build/trainers/irvin-EN.mev",
+      "payload_template": "build/trainers/irvin-{region}.mev"
     },
     "08-A031": {
       "source": "battle-e/trainers/natalie.asm",
-      "payload": "build/trainers/natalie-EN.mev"
+      "payload": "build/trainers/natalie-EN.mev",
+      "payload_template": "build/trainers/natalie-{region}.mev"
     },
     "08-A032": {
       "source": "battle-e/trainers/sandia.asm",
-      "payload": "build/trainers/sandia-EN.mev"
+      "payload": "build/trainers/sandia-EN.mev",
+      "payload_template": "build/trainers/sandia-{region}.mev"
     },
     "08-A033": {
       "source": "battle-e/trainers/marcus.asm",
-      "payload": "build/trainers/marcus-EN.mev"
+      "payload": "build/trainers/marcus-EN.mev",
+      "payload_template": "build/trainers/marcus-{region}.mev"
     },
     "08-A034": {
       "source": "battle-e/trainers/raquel.asm",
-      "payload": "build/trainers/raquel-EN.mev"
+      "payload": "build/trainers/raquel-EN.mev",
+      "payload_template": "build/trainers/raquel-{region}.mev"
     },
     "08-A035": {
       "source": "battle-e/trainers/tsutomu.asm",
-      "payload": "build/trainers/tsutomu-EN.mev"
+      "payload": "build/trainers/tsutomu-EN.mev",
+      "payload_template": "build/trainers/tsutomu-{region}.mev"
     },
     "08-A036": {
       "source": "battle-e/trainers/justine.asm",
-      "payload": "build/trainers/justine-EN.mev"
+      "payload": "build/trainers/justine-EN.mev",
+      "payload_template": "build/trainers/justine-{region}.mev"
     },
     "08-A037": {
       "source": "battle-e/trainers/heather.asm",
-      "payload": "build/trainers/heather-EN.mev"
+      "payload": "build/trainers/heather-EN.mev",
+      "payload_template": "build/trainers/heather-{region}.mev"
     },
     "08-A038": {
       "source": "battle-e/trainers/judith.asm",
-      "payload": "build/trainers/judith-EN.mev"
+      "payload": "build/trainers/judith-EN.mev",
+      "payload_template": "build/trainers/judith-{region}.mev"
     },
     "08-A039": {
       "source": "battle-e/trainers/stuart.asm",
-      "payload": "build/trainers/stuart-EN.mev"
+      "payload": "build/trainers/stuart-EN.mev",
+      "payload_template": "build/trainers/stuart-{region}.mev"
     },
     "08-A040": {
       "source": "battle-e/trainers/irazu.asm",
-      "payload": "build/trainers/irazu-EN.mev"
+      "payload": "build/trainers/irazu-EN.mev",
+      "payload_template": "build/trainers/irazu-{region}.mev"
     },
     "08-A041": {
       "source": "battle-e/trainers/sandy.asm",
-      "payload": "build/trainers/sandy-EN.mev"
+      "payload": "build/trainers/sandy-EN.mev",
+      "payload_template": "build/trainers/sandy-{region}.mev"
     },
     "08-A042": {
       "source": "battle-e/trainers/annie.asm",
-      "payload": "build/trainers/annie-EN.mev"
+      "payload": "build/trainers/annie-EN.mev",
+      "payload_template": "build/trainers/annie-{region}.mev"
     },
     "08-A043": {
       "source": "battle-e/trainers/celina.asm",
-      "payload": "build/trainers/celina-EN.mev"
+      "payload": "build/trainers/celina-EN.mev",
+      "payload_template": "build/trainers/celina-{region}.mev"
     },
     "08-A044": {
       "source": "battle-e/trainers/april.asm",
-      "payload": "build/trainers/april-EN.mev"
+      "payload": "build/trainers/april-EN.mev",
+      "payload_template": "build/trainers/april-{region}.mev"
     },
     "08-A045": {
       "source": "battle-e/trainers/hayden.asm",
-      "payload": "build/trainers/hayden-EN.mev"
+      "payload": "build/trainers/hayden-EN.mev",
+      "payload_template": "build/trainers/hayden-{region}.mev"
     },
     "08-A046": {
       "source": "battle-e/trainers/griffin.asm",
-      "payload": "build/trainers/griffin-EN.mev"
+      "payload": "build/trainers/griffin-EN.mev",
+      "payload_template": "build/trainers/griffin-{region}.mev"
     },
     "08-A047": {
       "source": "battle-e/trainers/kendall.asm",
-      "payload": "build/trainers/kendall-EN.mev"
+      "payload": "build/trainers/kendall-EN.mev",
+      "payload_template": "build/trainers/kendall-{region}.mev"
     },
     "08-A048": {
       "source": "battle-e/trainers/fuego.asm",
-      "payload": "build/trainers/fuego-EN.mev"
+      "payload": "build/trainers/fuego-EN.mev",
+      "payload_template": "build/trainers/fuego-{region}.mev"
     },
     "08-B001": {
       "source": "battle-e/trainers/mami.asm",
-      "payload": "build/trainers/mami-EN.mev"
+      "payload": "build/trainers/mami-EN.mev",
+      "payload_template": "build/trainers/mami-{region}.mev"
     },
     "08-B002": {
       "source": "battle-e/trainers/toshitsugu.asm",
-      "payload": "build/trainers/toshitsugu-EN.mev"
+      "payload": "build/trainers/toshitsugu-EN.mev",
+      "payload_template": "build/trainers/toshitsugu-{region}.mev"
     },
     "08-B003": {
       "source": "battle-e/trainers/koto.asm",
-      "payload": "build/trainers/koto-EN.mev"
+      "payload": "build/trainers/koto-EN.mev",
+      "payload_template": "build/trainers/koto-{region}.mev"
     },
     "08-B004": {
       "source": "battle-e/trainers/masaru.asm",
-      "payload": "build/trainers/masaru-EN.mev"
+      "payload": "build/trainers/masaru-EN.mev",
+      "payload_template": "build/trainers/masaru-{region}.mev"
     },
     "08-B005": {
       "source": "battle-e/trainers/harue.asm",
-      "payload": "build/trainers/harue-EN.mev"
+      "payload": "build/trainers/harue-EN.mev",
+      "payload_template": "build/trainers/harue-{region}.mev"
     },
     "08-B006": {
       "source": "battle-e/trainers/yu.asm",
-      "payload": "build/trainers/yu-EN.mev"
+      "payload": "build/trainers/yu-EN.mev",
+      "payload_template": "build/trainers/yu-{region}.mev"
     },
     "08-B007": {
       "source": "battle-e/trainers/matsuo.asm",
-      "payload": "build/trainers/matsuo-EN.mev"
+      "payload": "build/trainers/matsuo-EN.mev",
+      "payload_template": "build/trainers/matsuo-{region}.mev"
     },
     "08-B008": {
       "source": "battle-e/trainers/kuen.asm",
-      "payload": "build/trainers/kuen-EN.mev"
+      "payload": "build/trainers/kuen-EN.mev",
+      "payload_template": "build/trainers/kuen-{region}.mev"
     },
     "08-B009": {
       "source": "battle-e/trainers/shizu.asm",
-      "payload": "build/trainers/shizu-EN.mev"
+      "payload": "build/trainers/shizu-EN.mev",
+      "payload_template": "build/trainers/shizu-{region}.mev"
     },
     "08-B010": {
       "source": "battle-e/trainers/junpei.asm",
-      "payload": "build/trainers/junpei-EN.mev"
+      "payload": "build/trainers/junpei-EN.mev",
+      "payload_template": "build/trainers/junpei-{region}.mev"
     },
     "08-B011": {
       "source": "battle-e/trainers/jo.asm",
-      "payload": "build/trainers/jo-EN.mev"
+      "payload": "build/trainers/jo-EN.mev",
+      "payload_template": "build/trainers/jo-{region}.mev"
     },
     "08-B012": {
       "source": "battle-e/trainers/fiennes.asm",
-      "payload": "build/trainers/fiennes-EN.mev"
+      "payload": "build/trainers/fiennes-EN.mev",
+      "payload_template": "build/trainers/fiennes-{region}.mev"
     },
     "08-B013": {
       "source": "battle-e/trainers/danpei.asm",
-      "payload": "build/trainers/danpei-EN.mev"
+      "payload": "build/trainers/danpei-EN.mev",
+      "payload_template": "build/trainers/danpei-{region}.mev"
     },
     "08-B014": {
       "source": "battle-e/trainers/yuka.asm",
-      "payload": "build/trainers/yuka-EN.mev"
+      "payload": "build/trainers/yuka-EN.mev",
+      "payload_template": "build/trainers/yuka-{region}.mev"
     },
     "08-B015": {
       "source": "battle-e/trainers/yoko.asm",
-      "payload": "build/trainers/yoko-EN.mev"
+      "payload": "build/trainers/yoko-EN.mev",
+      "payload_template": "build/trainers/yoko-{region}.mev"
     },
     "08-B016": {
       "source": "battle-e/trainers/fukune.asm",
-      "payload": "build/trainers/fukune-EN.mev"
+      "payload": "build/trainers/fukune-EN.mev",
+      "payload_template": "build/trainers/fukune-{region}.mev"
     },
     "08-B017": {
       "source": "battle-e/trainers/kiyoshi.asm",
-      "payload": "build/trainers/kiyoshi-EN.mev"
+      "payload": "build/trainers/kiyoshi-EN.mev",
+      "payload_template": "build/trainers/kiyoshi-{region}.mev"
     },
     "08-B018": {
       "source": "battle-e/trainers/toshinao.asm",
-      "payload": "build/trainers/toshinao-EN.mev"
+      "payload": "build/trainers/toshinao-EN.mev",
+      "payload_template": "build/trainers/toshinao-{region}.mev"
     },
     "08-B019": {
       "source": "battle-e/trainers/otoya.asm",
-      "payload": "build/trainers/otoya-EN.mev"
+      "payload": "build/trainers/otoya-EN.mev",
+      "payload_template": "build/trainers/otoya-{region}.mev"
     },
     "08-B020": {
       "source": "battle-e/trainers/natsuko.asm",
-      "payload": "build/trainers/natsuko-EN.mev"
+      "payload": "build/trainers/natsuko-EN.mev",
+      "payload_template": "build/trainers/natsuko-{region}.mev"
     },
     "08-B021": {
       "source": "battle-e/trainers/sadayo.asm",
-      "payload": "build/trainers/sadayo-EN.mev"
+      "payload": "build/trainers/sadayo-EN.mev",
+      "payload_template": "build/trainers/sadayo-{region}.mev"
     },
     "08-B022": {
       "source": "battle-e/trainers/junji.asm",
-      "payload": "build/trainers/junji-EN.mev"
+      "payload": "build/trainers/junji-EN.mev",
+      "payload_template": "build/trainers/junji-{region}.mev"
     },
     "08-B023": {
       "source": "battle-e/trainers/shinji.asm",
-      "payload": "build/trainers/shinji-EN.mev"
+      "payload": "build/trainers/shinji-EN.mev",
+      "payload_template": "build/trainers/shinji-{region}.mev"
     },
     "08-B024": {
       "source": "battle-e/trainers/fugen.asm",
-      "payload": "build/trainers/fugen-EN.mev"
+      "payload": "build/trainers/fugen-EN.mev",
+      "payload_template": "build/trainers/fugen-{region}.mev"
     },
     "08-B025": {
       "source": "battle-e/trainers/rina.asm",
-      "payload": "build/trainers/rina-EN.mev"
+      "payload": "build/trainers/rina-EN.mev",
+      "payload_template": "build/trainers/rina-{region}.mev"
     },
     "08-B026": {
       "source": "battle-e/trainers/ruizo.asm",
-      "payload": "build/trainers/ruizo-EN.mev"
+      "payload": "build/trainers/ruizo-EN.mev",
+      "payload_template": "build/trainers/ruizo-{region}.mev"
     },
     "08-B027": {
       "source": "battle-e/trainers/nozomu.asm",
-      "payload": "build/trainers/nozomu-EN.mev"
+      "payload": "build/trainers/nozomu-EN.mev",
+      "payload_template": "build/trainers/nozomu-{region}.mev"
     },
     "08-B028": {
       "source": "battle-e/trainers/kyohei.asm",
-      "payload": "build/trainers/kyohei-EN.mev"
+      "payload": "build/trainers/kyohei-EN.mev",
+      "payload_template": "build/trainers/kyohei-{region}.mev"
     },
     "08-B029": {
       "source": "battle-e/trainers/yukio.asm",
-      "payload": "build/trainers/yukio-EN.mev"
+      "payload": "build/trainers/yukio-EN.mev",
+      "payload_template": "build/trainers/yukio-{region}.mev"
     },
     "08-B030": {
       "source": "battle-e/trainers/makio.asm",
-      "payload": "build/trainers/makio-EN.mev"
+      "payload": "build/trainers/makio-EN.mev",
+      "payload_template": "build/trainers/makio-{region}.mev"
     },
     "08-B031": {
       "source": "battle-e/trainers/noriko.asm",
-      "payload": "build/trainers/noriko-EN.mev"
+      "payload": "build/trainers/noriko-EN.mev",
+      "payload_template": "build/trainers/noriko-{region}.mev"
     },
     "08-B032": {
       "source": "battle-e/trainers/hoyoshi.asm",
-      "payload": "build/trainers/hoyoshi-EN.mev"
+      "payload": "build/trainers/hoyoshi-EN.mev",
+      "payload_template": "build/trainers/hoyoshi-{region}.mev"
     },
     "08-B033": {
       "source": "battle-e/trainers/tomoyasu.asm",
-      "payload": "build/trainers/tomoyasu-EN.mev"
+      "payload": "build/trainers/tomoyasu-EN.mev",
+      "payload_template": "build/trainers/tomoyasu-{region}.mev"
     },
     "08-B034": {
       "source": "battle-e/trainers/anthony.asm",
-      "payload": "build/trainers/anthony-EN.mev"
+      "payload": "build/trainers/anthony-EN.mev",
+      "payload_template": "build/trainers/anthony-{region}.mev"
     },
     "08-B035": {
       "source": "battle-e/trainers/ryo.asm",
-      "payload": "build/trainers/ryo-EN.mev"
+      "payload": "build/trainers/ryo-EN.mev",
+      "payload_template": "build/trainers/ryo-{region}.mev"
     },
     "08-B036": {
       "source": "battle-e/trainers/daikichi.asm",
-      "payload": "build/trainers/daikichi-EN.mev"
+      "payload": "build/trainers/daikichi-EN.mev",
+      "payload_template": "build/trainers/daikichi-{region}.mev"
     },
     "08-B037": {
       "source": "battle-e/trainers/shigenobu.asm",
-      "payload": "build/trainers/shigenobu-EN.mev"
+      "payload": "build/trainers/shigenobu-EN.mev",
+      "payload_template": "build/trainers/shigenobu-{region}.mev"
     },
     "08-B038": {
       "source": "battle-e/trainers/reina.asm",
-      "payload": "build/trainers/reina-EN.mev"
+      "payload": "build/trainers/reina-EN.mev",
+      "payload_template": "build/trainers/reina-{region}.mev"
     },
     "08-B039": {
       "source": "battle-e/trainers/momoko.asm",
-      "payload": "build/trainers/momoko-EN.mev"
+      "payload": "build/trainers/momoko-EN.mev",
+      "payload_template": "build/trainers/momoko-{region}.mev"
     },
     "08-B040": {
       "source": "battle-e/trainers/ihara.asm",
-      "payload": "build/trainers/ihara-EN.mev"
+      "payload": "build/trainers/ihara-EN.mev",
+      "payload_template": "build/trainers/ihara-{region}.mev"
     },
     "08-B041": {
       "source": "battle-e/trainers/satoe.asm",
-      "payload": "build/trainers/satoe-EN.mev"
+      "payload": "build/trainers/satoe-EN.mev",
+      "payload_template": "build/trainers/satoe-{region}.mev"
     },
     "08-B042": {
       "source": "battle-e/trainers/suekichi.asm",
-      "payload": "build/trainers/suekichi-EN.mev"
+      "payload": "build/trainers/suekichi-EN.mev",
+      "payload_template": "build/trainers/suekichi-{region}.mev"
     },
     "08-B043": {
       "source": "battle-e/trainers/miyoko.asm",
-      "payload": "build/trainers/miyoko-EN.mev"
+      "payload": "build/trainers/miyoko-EN.mev",
+      "payload_template": "build/trainers/miyoko-{region}.mev"
     },
     "08-B044": {
       "source": "battle-e/trainers/moet.asm",
-      "payload": "build/trainers/moet-EN.mev"
+      "payload": "build/trainers/moet-EN.mev",
+      "payload_template": "build/trainers/moet-{region}.mev"
     },
     "08-B045": {
       "source": "battle-e/trainers/chisa.asm",
-      "payload": "build/trainers/chisa-EN.mev"
+      "payload": "build/trainers/chisa-EN.mev",
+      "payload_template": "build/trainers/chisa-{region}.mev"
     },
     "08-B046": {
       "source": "battle-e/trainers/sueno.asm",
-      "payload": "build/trainers/sueno-EN.mev"
+      "payload": "build/trainers/sueno-EN.mev",
+      "payload_template": "build/trainers/sueno-{region}.mev"
     },
     "08-B047": {
       "source": "battle-e/trainers/shigeko.asm",
-      "payload": "build/trainers/shigeko-EN.mev"
+      "payload": "build/trainers/shigeko-EN.mev",
+      "payload_template": "build/trainers/shigeko-{region}.mev"
     },
     "08-B048": {
       "source": "battle-e/trainers/umami.asm",
-      "payload": "build/trainers/umami-EN.mev"
+      "payload": "build/trainers/umami-EN.mev",
+      "payload_template": "build/trainers/umami-{region}.mev"
     },
     "08-N001": {
       "source": "battle-e/trainers/teruko.asm",
-      "payload": "build/trainers/teruko-EN.mev"
+      "payload": "build/trainers/teruko-EN.mev",
+      "payload_template": "build/trainers/teruko-{region}.mev"
     },
     "08-N002": {
       "source": "battle-e/trainers/kimiko.asm",
-      "payload": "build/trainers/kimiko-EN.mev"
+      "payload": "build/trainers/kimiko-EN.mev",
+      "payload_template": "build/trainers/kimiko-{region}.mev"
     },
     "08-N003": {
       "source": "battle-e/trainers/norton.asm",
-      "payload": "build/trainers/norton-EN.mev"
+      "payload": "build/trainers/norton-EN.mev",
+      "payload_template": "build/trainers/norton-{region}.mev"
     },
     "08-N004": {
       "source": "battle-e/trainers/simon.asm",
-      "payload": "build/trainers/simon-EN.mev"
+      "payload": "build/trainers/simon-EN.mev",
+      "payload_template": "build/trainers/simon-{region}.mev"
     },
     "08-N005": {
       "source": "battle-e/trainers/hozumi.asm",
-      "payload": "build/trainers/hozumi-EN.mev"
+      "payload": "build/trainers/hozumi-EN.mev",
+      "payload_template": "build/trainers/hozumi-{region}.mev"
     },
     "08-N006": {
       "source": "battle-e/trainers/ritsue.asm",
-      "payload": "build/trainers/ritsue-EN.mev"
+      "payload": "build/trainers/ritsue-EN.mev",
+      "payload_template": "build/trainers/ritsue-{region}.mev"
     },
     "08-N007": {
       "source": "battle-e/trainers/yuuma.asm",
-      "payload": "build/trainers/yuuma-EN.mev"
+      "payload": "build/trainers/yuuma-EN.mev",
+      "payload_template": "build/trainers/yuuma-{region}.mev"
     },
     "08-N008": {
       "source": "battle-e/trainers/taisen.asm",
-      "payload": "build/trainers/taisen-EN.mev"
+      "payload": "build/trainers/taisen-EN.mev",
+      "payload_template": "build/trainers/taisen-{region}.mev"
     },
     "08-P001": {
       "source": "battle-e/trainers/craig.asm",
-      "payload": "build/trainers/craig-EN.mev"
+      "payload": "build/trainers/craig-EN.mev",
+      "payload_template": "build/trainers/craig-{region}.mev"
     },
     "08-P002": {
       "source": "battle-e/trainers/yasuo.asm",
-      "payload": "build/trainers/yasuo-EN.mev"
+      "payload": "build/trainers/yasuo-EN.mev",
+      "payload_template": "build/trainers/yasuo-{region}.mev"
     },
     "08-P003": {
       "source": "battle-e/trainers/darlene.asm",
-      "payload": "build/trainers/darlene-EN.mev"
+      "payload": "build/trainers/darlene-EN.mev",
+      "payload_template": "build/trainers/darlene-{region}.mev"
     },
     "08-P004": {
       "source": "battle-e/trainers/mattego.asm",
-      "payload": "build/trainers/mattego-EN.mev"
+      "payload": "build/trainers/mattego-EN.mev",
+      "payload_template": "build/trainers/mattego-{region}.mev"
     },
     "08-P005": {
       "source": "battle-e/trainers/hidehiko.asm",
-      "payload": "build/trainers/hidehiko-EN.mev"
+      "payload": "build/trainers/hidehiko-EN.mev",
+      "payload_template": "build/trainers/hidehiko-{region}.mev"
     },
     "08-P006": {
       "source": "battle-e/trainers/yufu.asm",
-      "payload": "build/trainers/yufu-EN.mev"
+      "payload": "build/trainers/yufu-EN.mev",
+      "payload_template": "build/trainers/yufu-{region}.mev"
     },
     "08-P007": {
       "source": "battle-e/trainers/sagami.asm",
-      "payload": "build/trainers/sagami-EN.mev"
+      "payload": "build/trainers/sagami-EN.mev",
+      "payload_template": "build/trainers/sagami-{region}.mev"
     },
     "08-P008": {
       "source": "battle-e/trainers/mattegoDEMO.asm",
-      "payload": "build/trainers/mattegoDEMO-EN.mev"
+      "payload": "build/trainers/mattegoDEMO-EN.mev",
+      "payload_template": "build/trainers/mattegoDEMO-{region}.mev"
     },
     "129-B001": {
       "source": "battle-e/trainers/nils.asm",
-      "payload": "build/trainers/nils-EN.mev"
+      "payload": "build/trainers/nils-EN.mev",
+      "payload_template": "build/trainers/nils-{region}.mev"
     },
     "129-B002": {
       "source": "battle-e/trainers/astrid.asm",
-      "payload": "build/trainers/astrid-EN.mev"
+      "payload": "build/trainers/astrid-EN.mev",
+      "payload_template": "build/trainers/astrid-{region}.mev"
     }
   },
   "berries": {
     "08-K001": {
       "source": "battle-e/berries/pumkin.asm",
-      "payload": "build/berries/pumkin-EN.mev"
+      "payload": "build/berries/pumkin-EN.mev",
+      "payload_template": "build/berries/pumkin-{region}.mev"
     },
     "08-K002": {
       "source": "battle-e/berries/drash.asm",
-      "payload": "build/berries/drash-EN.mev"
+      "payload": "build/berries/drash-EN.mev",
+      "payload_template": "build/berries/drash-{region}.mev"
     },
     "08-K003": {
       "source": "battle-e/berries/chilan.asm",
-      "payload": "build/berries/chilan-EN.mev"
+      "payload": "build/berries/chilan-EN.mev",
+      "payload_template": "build/berries/chilan-{region}.mev"
     },
     "08-K004": {
       "source": "battle-e/berries/strib.asm",
-      "payload": "build/berries/strib-EN.mev"
+      "payload": "build/berries/strib-EN.mev",
+      "payload_template": "build/berries/strib-{region}.mev"
     },
     "08-K005": {
       "source": "battle-e/berries/eggant.asm",
-      "payload": "build/berries/eggant-EN.mev"
+      "payload": "build/berries/eggant-EN.mev",
+      "payload_template": "build/berries/eggant-{region}.mev"
     },
     "08-K006": {
       "source": "battle-e/berries/nutpea.asm",
-      "payload": "build/berries/nutpea-EN.mev"
+      "payload": "build/berries/nutpea-EN.mev",
+      "payload_template": "build/berries/nutpea-{region}.mev"
     },
     "08-K007": {
       "source": "battle-e/berries/ginema.asm",
-      "payload": "build/berries/ginema-EN.mev"
+      "payload": "build/berries/ginema-EN.mev",
+      "payload_template": "build/berries/ginema-{region}.mev"
     },
     "08-K008": {
       "source": "battle-e/berries/kuo.asm",
-      "payload": "build/berries/kuo-EN.mev"
+      "payload": "build/berries/kuo-EN.mev",
+      "payload_template": "build/berries/kuo-{region}.mev"
     },
     "08-K009": {
       "source": "battle-e/berries/yago.asm",
-      "payload": "build/berries/yago-EN.mev"
+      "payload": "build/berries/yago-EN.mev",
+      "payload_template": "build/berries/yago-{region}.mev"
     },
     "08-K010": {
       "source": "battle-e/berries/touga.asm",
-      "payload": "build/berries/touga-EN.mev"
+      "payload": "build/berries/touga-EN.mev",
+      "payload_template": "build/berries/touga-{region}.mev"
     },
     "08-K011": {
       "source": "battle-e/berries/niniku.asm",
-      "payload": "build/berries/niniku-EN.mev"
+      "payload": "build/berries/niniku-EN.mev",
+      "payload_template": "build/berries/niniku-{region}.mev"
     },
     "08-K012": {
       "source": "battle-e/berries/topo.asm",
-      "payload": "build/berries/topo-EN.mev"
+      "payload": "build/berries/topo-EN.mev",
+      "payload_template": "build/berries/topo-{region}.mev"
     }
   },
   "special": {
@@ -529,5 +655,7 @@
         "REGISTEEL_DOLL"
       ]
     }
-  }
+  },
+  "default_region": "JP",
+  "region_policy": "Japanese/origin first; build other official regions from the same source mapping"
 }
