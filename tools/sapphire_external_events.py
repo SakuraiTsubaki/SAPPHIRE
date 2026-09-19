@@ -2,13 +2,14 @@
 """Pokemon Sapphire external-event permanence patcher.
 
 Makes externally distributed Ruby/Sapphire content locally reachable while
-preserving the original in-game gates wherever a real item can satisfy them.
+preserving the original in-game destination gates.
 
 Eon Ticket policy:
 - Do NOT bypass Lilycove Harbor or Southern Island checks.
-- After the Hall of Fame, Norman grants the Eon Ticket in-game once.
-- Granting/owning the ticket also sets FLAG_SYS_HAS_EON_TICKET, matching the
-  original distribution script.
+- Add a dedicated event courier to Littleroot Town.
+- The courier gives the Eon Ticket once, using the game's normal item-give UI.
+- Receiving/owning the ticket sets FLAG_SYS_HAS_EON_TICKET.
+- The courier is hidden by that same system flag after the ticket is active.
 
 The patch is signature-based and supports the known Japanese, English,
 German, French, Italian, and Spanish Sapphire revisions in KNOWN_ROMS.
@@ -47,20 +48,17 @@ VAR_0x8001 = 0x8001
 VAR_RESULT = 0x800D
 FLAG_SYS_HAS_EON_TICKET = 0x0853
 
+COURIER_LOCAL_ID = 7
+COURIER_GFX_ID = 25  # OBJ_EVENT_GFX_MAN_3
+COURIER_X = 9
+COURIER_Y = 16
+COURIER_ELEVATION = 3
+COURIER_MOVEMENT_TYPE = 8  # MOVEMENT_TYPE_FACE_DOWN
+
 FERRY_PREFIX = bytes.fromhex("6A 5A 47 13 01 01 00 21 0D 80 01 00 06 01")
 
 LATI_THEN_EON_RE = re.compile(
     rb"\x2B\xCE\x00\x06\x01....\x2B\x53\x08\x06\x00....",
-    re.DOTALL,
-)
-
-NORMAN_POST_BATTLE_RE = re.compile(
-    rb"\x04...."
-    rb"\x21\x0D\x80\x01\x00\x06\x01...."
-    rb"\x2B..\x06\x00...."
-    rb"\x2B\x04\x08\x06\x01(?P<no_amount>....)"
-    rb"\x0F\x00....\x09\x04\x6C\x02"
-    rb"\x26\x0D\x80",
     re.DOTALL,
 )
 
@@ -79,8 +77,11 @@ IS_MYSTERY_EVENT_PROLOGUE = bytes.fromhex("00 B5 03 48")
 IS_MYSTERY_EVENT_EPILOGUE = bytes.fromhex("02 BC 08 47")
 RETURN_TRUE_THUMB = bytes.fromhex("01 20 70 47")
 
+OBJECT_EVENT_SIZE = 24
+LITTLEROOT_ORIGINAL_OBJECT_COUNT = 6
+LITTLEROOT_NEW_OBJECT_COUNT = 7
 FREE_SPACE_SEARCH_START = 0x600000
-FREE_SPACE_RESERVE = 0x100
+FREE_SPACE_RESERVE = 0x200
 
 
 @dataclass
@@ -99,14 +100,13 @@ class Analysis:
     game_code: str
     revision: int
     ferry_attendant: int
-    ferry_boarding_target: int
     eon_flag_checks: list[int]
     mystery_event_enabled_function: int
-    norman_post_battle: int
-    norman_game_clear_target_pointer: int
-    original_norman_game_clear_target: int
     common_bag_full_script: int
-    ticket_grant_injection: int
+    littleroot_object_table: int
+    littleroot_map_events: int
+    courier_injection: int
+    courier_script: int
 
 
 def sha1(data: bytes) -> str:
@@ -129,13 +129,6 @@ def require_unique(name: str, values: Iterable[int]) -> int:
     if len(vals) != 1:
         raise ValueError(f"{name}: expected exactly 1 match, found {len(vals)}: {vals}")
     return vals[0]
-
-
-def require_unique_match(name: str, regex: re.Pattern[bytes], data: bytes) -> re.Match[bytes]:
-    matches = list(regex.finditer(data))
-    if len(matches) != 1:
-        raise ValueError(f"{name}: expected exactly 1 match, found {len(matches)}")
-    return matches[0]
 
 
 def ptr_to_offset(ptr: int, rom_size: int) -> int:
@@ -162,6 +155,72 @@ def identify_mystery_event_enabled(data: bytes) -> int:
     return require_unique("IsMysteryEventEnabled", candidates)
 
 
+def identify_common_bag_full_script(data: bytes) -> int:
+    matches = list(GIVE_ENIGMA_BERRY_RE.finditer(data))
+    if len(matches) != 1:
+        raise ValueError(
+            "Enigma Berry gift script: expected exactly 1 match, "
+            f"found {len(matches)}"
+        )
+    ptr = struct.unpack("<I", matches[0].group("bag_full"))[0]
+    return ptr_to_offset(ptr, len(data))
+
+
+def littleroot_object_signature() -> re.Pattern[bytes]:
+    specs = [
+        (1, 136, 16, 10, 3, 2, 0x21, 0x0000),
+        (2, 17, 12, 13, 3, 2, 0x12, 0x0364),
+        (3, 9, 14, 17, 3, 2, 0x12, 0x0000),
+        (4, 215, 5, 8, 3, 7, 0x00, 0x02F0),
+        (5, 94, 2, 10, 4, 10, 0x00, 0x02F9),
+        (6, 94, 11, 10, 4, 10, 0x00, 0x02FA),
+    ]
+
+    pattern = bytearray()
+    for local_id, gfx, x, y, elev, move, move_range, flag in specs:
+        pattern += re.escape(struct.pack(
+            "<BBBBhhBBBBHH",
+            local_id,
+            gfx,
+            0,
+            0,
+            x,
+            y,
+            elev,
+            move,
+            move_range,
+            0,
+            0,
+            0,
+        ))
+        pattern += b"...."  # region/language-specific script pointer
+        pattern += re.escape(struct.pack("<H", flag) + b"\x00\x00")
+    return re.compile(bytes(pattern), re.DOTALL)
+
+
+LITTLEROOT_OBJECT_RE = littleroot_object_signature()
+
+
+def identify_littleroot_object_table(data: bytes) -> int:
+    return require_unique(
+        "Littleroot original object table",
+        (m.start() for m in LITTLEROOT_OBJECT_RE.finditer(data)),
+    )
+
+
+def identify_littleroot_map_events(data: bytes, object_table: int) -> int:
+    object_ptr = struct.pack("<I", offset_to_ptr(object_table))
+    candidates: list[int] = []
+    for hit in find_all(data, object_ptr):
+        start = hit - 4
+        if start < 0:
+            continue
+        # 6 objects, 3 warps, 9 coord events, 4 background events.
+        if data[start:start + 4] == bytes((6, 3, 9, 4)):
+            candidates.append(start)
+    return require_unique("Littleroot MapEvents", candidates)
+
+
 def find_free_ff_block(
     data: bytes,
     size: int = FREE_SPACE_RESERVE,
@@ -180,13 +239,9 @@ def find_free_ff_block(
         pos += 1
 
 
-def build_ticket_grant_script(
-    injection_offset: int,
-    original_no_amount_ptr: int,
-    bag_full_ptr: int,
-) -> bytes:
+def build_courier_script(script_offset: int, bag_full_ptr: int) -> bytes:
     out = bytearray()
-    fixups: list[tuple[int, str]] = []
+    owned_fixups: list[int] = []
 
     def u16(value: int) -> bytes:
         return struct.pack("<H", value)
@@ -194,35 +249,67 @@ def build_ticket_grant_script(
     def u32(value: int) -> bytes:
         return struct.pack("<I", value)
 
+    # lock; faceplayer
+    out += b"\x6A\x5A"
+
+    # If the ticket already exists in Bag or PC, normalize the system flag
+    # without creating a duplicate.
     out += b"\x47" + u16(ITEM_EON_TICKET) + u16(1)
     out += b"\x21" + u16(VAR_RESULT) + u16(1)
     out += b"\x06\x01"
-    fixups.append((len(out), "already_owned"))
+    owned_fixups.append(len(out))
     out += b"\x00" * 4
 
     out += b"\x4A" + u16(ITEM_EON_TICKET) + u16(1)
     out += b"\x21" + u16(VAR_RESULT) + u16(1)
     out += b"\x06\x01"
-    fixups.append((len(out), "already_owned"))
+    owned_fixups.append(len(out))
     out += b"\x00" * 4
 
+    # giveitem ITEM_EON_TICKET
     out += b"\x1A" + u16(VAR_0x8000) + u16(ITEM_EON_TICKET)
     out += b"\x1A" + u16(VAR_0x8001) + u16(1)
     out += b"\x09\x00"
+
+    # If the Key Items pocket is full, keep the courier present for retry.
     out += b"\x21" + u16(VAR_RESULT) + u16(0)
     out += b"\x06\x01" + u32(bag_full_ptr)
+
+    owned_label = len(out)
+
+    # Match the original distribution's system state and remove the courier.
     out += b"\x29" + u16(FLAG_SYS_HAS_EON_TICKET)
+    out += b"\x53" + u16(COURIER_LOCAL_ID)
     out += b"\x6C\x02"
 
-    labels = {"already_owned": len(out)}
-    out += b"\x29" + u16(FLAG_SYS_HAS_EON_TICKET)
-    out += b"\x05" + u32(original_no_amount_ptr)
-
-    for position, label in fixups:
-        target = offset_to_ptr(injection_offset + labels[label])
-        out[position:position + 4] = u32(target)
+    owned_ptr = offset_to_ptr(script_offset + owned_label)
+    for pos in owned_fixups:
+        out[pos:pos + 4] = u32(owned_ptr)
 
     return bytes(out)
+
+
+def build_courier_object(script_ptr: int) -> bytes:
+    return (
+        struct.pack(
+            "<BBBBhhBBBBHHIH",
+            COURIER_LOCAL_ID,
+            COURIER_GFX_ID,
+            0,  # OBJ_KIND_NORMAL
+            0,
+            COURIER_X,
+            COURIER_Y,
+            COURIER_ELEVATION,
+            COURIER_MOVEMENT_TYPE,
+            0,
+            0,
+            0,  # TRAINER_TYPE_NONE
+            0,
+            script_ptr,
+            FLAG_SYS_HAS_EON_TICKET,
+        )
+        + b"\x00\x00"
+    )
 
 
 def analyze(data: bytes, allow_unknown_sha1: bool = False) -> Analysis:
@@ -247,14 +334,6 @@ def analyze(data: bytes, allow_unknown_sha1: bool = False) -> Analysis:
         "Lilycove Eon Ticket ferry attendant",
         find_all(data, FERRY_PREFIX),
     )
-    target_ptr = struct.unpack_from("<I", data, ferry + 14)[0]
-    target = ptr_to_offset(target_ptr, len(data))
-
-    if data[target:target + 5] != bytes.fromhex("2B 04 08 06 00"):
-        raise ValueError(
-            f"unexpected ferry boarding routine at 0x{target:X}; "
-            "story-clear guard signature missing"
-        )
 
     eon_checks = [m.start() + 9 for m in LATI_THEN_EON_RE.finditer(data)]
     if len(eon_checks) != 2:
@@ -264,17 +343,11 @@ def analyze(data: bytes, allow_unknown_sha1: bool = False) -> Analysis:
         )
 
     mystery = identify_mystery_event_enabled(data)
-
-    norman = require_unique_match("Norman post-game script", NORMAN_POST_BATTLE_RE, data)
-    no_amount_ptr_pos = norman.start("no_amount")
-    no_amount_ptr = struct.unpack("<I", norman.group("no_amount"))[0]
-    ptr_to_offset(no_amount_ptr, len(data))
-
-    enigma = require_unique_match("Enigma Berry gift script", GIVE_ENIGMA_BERRY_RE, data)
-    bag_full_ptr = struct.unpack("<I", enigma.group("bag_full"))[0]
-    ptr_to_offset(bag_full_ptr, len(data))
-
+    bag_full = identify_common_bag_full_script(data)
+    object_table = identify_littleroot_object_table(data)
+    map_events = identify_littleroot_map_events(data, object_table)
     injection = find_free_ff_block(data)
+    courier_script = injection + (LITTLEROOT_NEW_OBJECT_COUNT * OBJECT_EVENT_SIZE)
 
     return Analysis(
         sha1=digest,
@@ -283,14 +356,13 @@ def analyze(data: bytes, allow_unknown_sha1: bool = False) -> Analysis:
         game_code=game_code,
         revision=revision,
         ferry_attendant=ferry,
-        ferry_boarding_target=target,
         eon_flag_checks=eon_checks,
         mystery_event_enabled_function=mystery,
-        norman_post_battle=norman.start(),
-        norman_game_clear_target_pointer=no_amount_ptr_pos,
-        original_norman_game_clear_target=ptr_to_offset(no_amount_ptr, len(data)),
-        common_bag_full_script=ptr_to_offset(bag_full_ptr, len(data)),
-        ticket_grant_injection=injection,
+        common_bag_full_script=bag_full,
+        littleroot_object_table=object_table,
+        littleroot_map_events=map_events,
+        courier_injection=injection,
+        courier_script=courier_script,
     )
 
 
@@ -302,6 +374,7 @@ def patch(
     rom = bytearray(data)
     changes: list[PatchPoint] = []
 
+    # Keep MYSTERY EVENT available locally for the non-ticket event catalog.
     off = info.mystery_event_enabled_function
     before = bytes(rom[off:off + 4])
     rom[off:off + 4] = RETURN_TRUE_THUMB
@@ -312,54 +385,95 @@ def patch(
         RETURN_TRUE_THUMB.hex(),
     ))
 
-    original_no_amount_ptr = offset_to_ptr(info.original_norman_game_clear_target)
-    bag_full_ptr = offset_to_ptr(info.common_bag_full_script)
-    script = build_ticket_grant_script(
-        info.ticket_grant_injection,
-        original_no_amount_ptr,
-        bag_full_ptr,
+    # Build a complete replacement Littleroot object table with one appended
+    # courier, plus the courier script immediately after the 7th entry.
+    original_objects = data[
+        info.littleroot_object_table:
+        info.littleroot_object_table + LITTLEROOT_ORIGINAL_OBJECT_COUNT * OBJECT_EVENT_SIZE
+    ]
+    courier_script = build_courier_script(
+        info.courier_script,
+        offset_to_ptr(info.common_bag_full_script),
     )
-    off = info.ticket_grant_injection
-    before = bytes(rom[off:off + len(script)])
-    if before != b"\xFF" * len(script):
-        raise ValueError(f"ticket injection free space changed at 0x{off:X}")
-    rom[off:off + len(script)] = script
+    courier = build_courier_object(offset_to_ptr(info.courier_script))
+    injected = original_objects + courier + courier_script
+
+    if len(injected) > FREE_SPACE_RESERVE:
+        raise ValueError(
+            f"courier injection grew to {len(injected)} bytes; "
+            f"reserved block is {FREE_SPACE_RESERVE}"
+        )
+
+    off = info.courier_injection
+    before = bytes(rom[off:off + len(injected)])
+    if before != b"\xFF" * len(injected):
+        raise ValueError(f"courier free space changed at 0x{off:X}")
+    rom[off:off + len(injected)] = injected
     changes.append(PatchPoint(
-        "Norman Eon Ticket grant script injected",
+        "Littleroot Event Courier object table and script injected",
         off,
         before.hex(),
-        script.hex(),
+        injected.hex(),
     ))
 
-    off = info.norman_game_clear_target_pointer
-    before = bytes(rom[off:off + 4])
-    replacement = struct.pack("<I", offset_to_ptr(info.ticket_grant_injection))
-    rom[off:off + 4] = replacement
+    # MapEvents: increase object count 6 -> 7 and redirect only the object
+    # table pointer. Warps, coord events, bg events, map scripts and layout
+    # remain untouched.
+    off = info.littleroot_map_events
+    before = bytes(rom[off:off + 8])
+    if before[0] != LITTLEROOT_ORIGINAL_OBJECT_COUNT:
+        raise ValueError("Littleroot object count changed unexpectedly")
+    replacement = bytearray(before)
+    replacement[0] = LITTLEROOT_NEW_OBJECT_COUNT
+    replacement[4:8] = struct.pack("<I", offset_to_ptr(info.courier_injection))
+    rom[off:off + 8] = replacement
     changes.append(PatchPoint(
-        "Norman post-game branch redirected to Eon Ticket grant",
+        "Littleroot MapEvents extended with Event Courier",
         off,
         before.hex(),
-        replacement.hex(),
+        bytes(replacement).hex(),
     ))
+
+    # Hard invariant: ticket destination gates are not modified.
+    if rom[
+        info.ferry_attendant:
+        info.ferry_attendant + len(FERRY_PREFIX)
+    ] != data[
+        info.ferry_attendant:
+        info.ferry_attendant + len(FERRY_PREFIX)
+    ]:
+        raise ValueError("Lilycove Eon Ticket item gate was modified")
+
+    for index, off in enumerate(info.eon_flag_checks, start=1):
+        if rom[off:off + 9] != data[off:off + 9]:
+            raise ValueError(
+                f"Eon Ticket system-flag gate #{index} was modified at 0x{off:X}"
+            )
 
     return bytes(rom), info, changes
 
 
 def report(info: Analysis, changes: list[PatchPoint] | None = None) -> dict:
     d = asdict(info)
+    d["courier"] = {
+        "local_id": COURIER_LOCAL_ID,
+        "graphics_id": COURIER_GFX_ID,
+        "x": COURIER_X,
+        "y": COURIER_Y,
+        "elevation": COURIER_ELEVATION,
+        "movement_type": COURIER_MOVEMENT_TYPE,
+        "visibility_flag": f"0x{FLAG_SYS_HAS_EON_TICKET:04X}",
+    }
     d["offsets_hex"] = {
         "ferry_attendant": f"0x{info.ferry_attendant:X}",
-        "ferry_boarding_target": f"0x{info.ferry_boarding_target:X}",
         "eon_flag_checks": [f"0x{x:X}" for x in info.eon_flag_checks],
         "mystery_event_enabled_function":
             f"0x{info.mystery_event_enabled_function:X}",
-        "norman_post_battle": f"0x{info.norman_post_battle:X}",
-        "norman_game_clear_target_pointer":
-            f"0x{info.norman_game_clear_target_pointer:X}",
-        "original_norman_game_clear_target":
-            f"0x{info.original_norman_game_clear_target:X}",
         "common_bag_full_script": f"0x{info.common_bag_full_script:X}",
-        "ticket_grant_injection": f"0x{info.ticket_grant_injection:X}",
+        "littleroot_object_table": f"0x{info.littleroot_object_table:X}",
+        "littleroot_map_events": f"0x{info.littleroot_map_events:X}",
+        "courier_injection": f"0x{info.courier_injection:X}",
+        "courier_script": f"0x{info.courier_script:X}",
     }
     if changes is not None:
         d["changes"] = [
