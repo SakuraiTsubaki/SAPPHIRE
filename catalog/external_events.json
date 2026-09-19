@@ -3,6 +3,7 @@
   "project": "SAPPHIRE",
   "baseline_language": "Japanese",
   "goal": "Make every Ruby/Sapphire external-trigger card event locally and permanently accessible without e-Reader/distribution hardware.",
+  "ticket_policy": "Preserve original destination ticket checks; make required tickets obtainable in-game.",
   "original_slot_constraints": {
     "battle_e_trainer_slots": 1,
     "ecard_berry_slots": 1,
@@ -11,9 +12,14 @@
   "events": {
     "eon_ticket": {
       "ids": ["00-C000"],
-      "kind": "world_event",
+      "kind": "world_event_ticket",
       "access": "Southern Island",
-      "status": "rom_gate_removed"
+      "grant": "Norman after Hall of Fame",
+      "duplicate_check": ["Bag", "PC"],
+      "sets_system_flag": "FLAG_SYS_HAS_EON_TICKET",
+      "harbor_ticket_gate": "preserved",
+      "southern_island_ticket_gate": "preserved",
+      "status": "ticket_grant_injected"
     },
     "decoration_present": {
       "ids": ["08-O001"],
