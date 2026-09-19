@@ -10,11 +10,12 @@ This work does not redefine ordinary RTC-driven world events as external events;
 
 1. No e-Reader or historical distribution hardware is required.
 2. Existing story progression is preserved unless the external distribution itself was the only gate.
-3. Ticket events keep their original ticket/item checks; permanence is achieved by making the ticket obtainable in-game.
-4. One-time encounter completion remains one-time unless a separate repeatable-event policy explicitly changes it.
-5. Existing saves must remain usable.
-6. Japanese data is the primary/origin reference.
-7. Every supported regional ROM is located by signatures and verified rather than by a single hard-coded address table.
+3. Ticket events keep their original destination ticket/item checks; permanence is achieved by making the ticket obtainable in-game.
+4. Ticket distribution must not rewrite unrelated story NPCs when a dedicated distributor can be added safely.
+5. One-time encounter completion remains one-time unless a separate repeatable-event policy explicitly changes it.
+6. Existing saves must remain usable.
+7. Japanese data is the primary/origin reference.
+8. Every supported regional ROM is located by signatures and verified rather than by a single hard-coded address table.
 
 ## Content inventory
 
@@ -29,25 +30,35 @@ The exact card-to-source mapping is in `catalog/card_sources.json`.
 
 ## Ticket policy
 
-Ticket-type events do **not** bypass the destination gate when the original game already knows how to consume/check the ticket.
+Ticket-type events do **not** bypass the destination gate when the original game already knows how to check the ticket.
 
 For Sapphire Eon Ticket:
 
 ```
-Hall of Fame complete
-        ↓
-talk to Norman
-        ↓
+start game
+    ↓
+Littleroot Town Event Courier
+    ↓
 EON TICKET granted once
-        ↓
+    ↓
 FLAG_SYS_HAS_EON_TICKET set
-        ↓
+    ↓
+courier disappears
+    ↓
+normal story progression
+    ↓
 original Lilycove Harbor checks
-        ↓
+    ↓
 original Southern Island checks
 ```
 
-If an existing save already has the EON TICKET in the Bag or PC, the patch does not give another one. It only normalizes `FLAG_SYS_HAS_EON_TICKET` and then continues Norman's original post-game dialogue.
+The courier is a new seventh Littleroot object event. The existing six Littleroot objects, warps, coordinate events, background events, map scripts and Norman scripts remain unchanged.
+
+The courier is placed near Professor Birch's Lab at map coordinates (9, 16), uses a fixed facing direction, and is hidden by `FLAG_SYS_HAS_EON_TICKET`.
+
+If an existing save already has the EON TICKET in the Bag or PC while the system flag is clear, talking to the courier does not create another ticket. It only normalizes `FLAG_SYS_HAS_EON_TICKET`.
+
+The actual item acquisition uses the game's existing standard item-give script, so regional item names and item-acquisition UI remain native to each ROM language.
 
 The Harbor and Southern Island ticket checks remain byte-for-byte original.
 
@@ -77,13 +88,15 @@ This preserves engine compatibility while removing the external transport depend
 ### Implemented and ROM-validated
 
 - Mystery Event title-menu gate removal.
-- Local Eon Ticket grant through Norman after Hall of Fame.
+- Dedicated Littleroot Event Courier object injection.
+- Immediate local Eon Ticket distribution with no story prerequisite.
 - Duplicate prevention using Bag + PC checks.
 - `FLAG_SYS_HAS_EON_TICKET` normalization for existing saves.
+- Courier removal/visibility controlled by the original Eon Ticket system flag.
+- Norman and original Littleroot story scripts preserved.
 - Original Lilycove Harbor ticket requirement preserved.
 - Original Southern Island ticket/system-flag requirement preserved.
-- Story-clear gate preserved.
-- Latias/Latios encounter-completion flag preserved.
+- Latias/Latios encounter-completion behavior preserved.
 - 12-ROM cross-region signature validation.
 - Full 128-card content inventory and exact upstream source mapping.
 
