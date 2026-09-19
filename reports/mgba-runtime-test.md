@@ -49,6 +49,11 @@ After the grant completed, the courier disappeared immediately. After entering a
 
 The original Littleroot residents remained present and the map remained playable.
 
+## Screenshot evidence
+
+- [Japanese Eon Ticket acquisition](screenshots/mgba-eon-ticket-acquired-ja.png)
+- [Courier still hidden after Littleroot map reload](screenshots/mgba-courier-hidden-after-map-reload-ja.png)
+
 ## Evidence hashes
 
 - Ticket acquisition screenshot SHA-256: `71a246615223481c4518f8c83a7dd1044e9bc138e03ad89fbee3cfb6ad9b8f3a`
