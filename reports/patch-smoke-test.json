@@ -1,0 +1,89 @@
+{
+  "schema_version": 1,
+  "test": "base external-event permanence patch smoke test",
+  "rom_count": 12,
+  "expected_changed_bytes_per_rom": 41,
+  "result": "pass",
+  "invariants": [
+    "ROM size unchanged",
+    "Mystery Event menu gate patched",
+    "Lilycove physical Eon Ticket inventory gate removed",
+    "FLAG_SYS_HAS_EON_TICKET gate removed at Harbor and Southern Island",
+    "Hall of Fame / game-clear progression gate preserved",
+    "Latias/Latios encounter completion flag preserved"
+  ],
+  "outputs": [
+    {
+      "rom": "JP AXPJ rev0",
+      "input_sha1": "3233342c2f3087e6ffe6c1791cd5867db07df842",
+      "output_sha1": "3bae3bbb89a24c396948a4ab73857934c8f0034d",
+      "changed_bytes": 41
+    },
+    {
+      "rom": "EN AXPE rev0",
+      "input_sha1": "3ccbbd45f8553c36463f13b938e833f652b793e4",
+      "output_sha1": "f2cc85040a5add7ecb7eede97ea66714a8a6c58a",
+      "changed_bytes": 41
+    },
+    {
+      "rom": "EN AXPE rev1",
+      "input_sha1": "4722efb8cd45772ca32555b98fd3b9719f8e60a9",
+      "output_sha1": "21df54812e5e934873ee74ce25d56170ff704271",
+      "changed_bytes": 41
+    },
+    {
+      "rom": "EN AXPE rev2",
+      "input_sha1": "89b45fb172e6b55d51fc0e61989775187f6fe63c",
+      "output_sha1": "ad4482ca58622fa460075be76054b58ea0530ca7",
+      "changed_bytes": 41
+    },
+    {
+      "rom": "DE AXPD rev0",
+      "input_sha1": "5a087835009d552d4c5c1f96be3be3206e378153",
+      "output_sha1": "053eab06b4a51242c6a3a7e0f2398009a6efd019",
+      "changed_bytes": 41
+    },
+    {
+      "rom": "DE AXPD rev1",
+      "input_sha1": "7e6e034f9cdca6d2c4a270fdb50a94def5883d17",
+      "output_sha1": "faae25f950ab2e040d1bde10695a287d5593ec01",
+      "changed_bytes": 41
+    },
+    {
+      "rom": "FR AXPF rev0",
+      "input_sha1": "c269b5692b2d0e5800ba1ddf117fda95ac648634",
+      "output_sha1": "d5313325cb05af49ceb7964d20454f03393e8630",
+      "changed_bytes": 41
+    },
+    {
+      "rom": "FR AXPF rev1",
+      "input_sha1": "860e93f5ea44f4278132f6c1ee5650d07b852fd8",
+      "output_sha1": "4a61a0b9bfbdfe554df925d7e64051aff6ce21b9",
+      "changed_bytes": 41
+    },
+    {
+      "rom": "IT AXPI rev0",
+      "input_sha1": "f729dd571fb2c09e72c5c1d68fe0a21e72713d34",
+      "output_sha1": "a041c66935e5f5e8a759ba3ae7f15cf80079c836",
+      "changed_bytes": 41
+    },
+    {
+      "rom": "IT AXPI rev1",
+      "input_sha1": "73edf67b9b82ff12795622dca412733755d2c0fe",
+      "output_sha1": "71fdd89d1b7f836c1f25c5118b72121c1434da4d",
+      "changed_bytes": 41
+    },
+    {
+      "rom": "ES AXPS rev0",
+      "input_sha1": "3a6489189e581c4b29914071b79207883b8c16d8",
+      "output_sha1": "24bd6aa83c23dd5b6a1eb78bfb418b55686d02a3",
+      "changed_bytes": 41
+    },
+    {
+      "rom": "ES AXPS rev1",
+      "input_sha1": "0fe9ad1e602e2fafa090aee25e43d6980625173c",
+      "output_sha1": "da3f21d7d21949b82419515d14bf136d6c98fa77",
+      "changed_bytes": 41
+    }
+  ]
+}
