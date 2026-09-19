@@ -1,0 +1,85 @@
+{
+  "schema_version": 1,
+  "project": "SAPPHIRE",
+  "baseline_language": "Japanese",
+  "goal": "Make every Ruby/Sapphire external-trigger card event locally and permanently accessible without e-Reader/distribution hardware.",
+  "original_slot_constraints": {
+    "battle_e_trainer_slots": 1,
+    "ecard_berry_slots": 1,
+    "berry_storage": "SaveBlock1 EnigmaBerry dynamic slot"
+  },
+  "events": {
+    "eon_ticket": {
+      "ids": ["00-C000"],
+      "kind": "world_event",
+      "access": "Southern Island",
+      "status": "rom_gate_removed"
+    },
+    "decoration_present": {
+      "ids": ["08-O001"],
+      "kind": "decoration",
+      "status": "catalogued_for_internal_loader"
+    },
+    "series_1_trainers": {
+      "ids": [
+        "08-A001","08-A002","08-A003","08-A004","08-A005","08-A006","08-A007","08-A008",
+        "08-A009","08-A010","08-A011","08-A012","08-A013","08-A014","08-A015","08-A016",
+        "08-A017","08-A018","08-A019","08-A020","08-A021","08-A022","08-A023","08-A024",
+        "08-A025","08-A026","08-A027","08-A028","08-A029","08-A030","08-A031","08-A032",
+        "08-A033","08-A034","08-A035","08-A036","08-A037","08-A038","08-A039","08-A040",
+        "08-A041","08-A042","08-A043","08-A044","08-A045","08-A046","08-A047","08-A048"
+      ],
+      "kind": "battle_e_trainer",
+      "status": "catalogued_for_internal_loader"
+    },
+    "series_1_berries": {
+      "ids": ["08-K001","08-K002","08-K003","08-K004","08-K005","08-K006"],
+      "kind": "ecard_berry",
+      "status": "catalogued_for_internal_loader"
+    },
+    "series_2_trainers": {
+      "ids": [
+        "08-B001","08-B002","08-B003","08-B004","08-B005","08-B006","08-B007","08-B008",
+        "08-B009","08-B010","08-B011","08-B012","08-B013","08-B014","08-B015","08-B016",
+        "08-B017","08-B018","08-B019","08-B020","08-B021","08-B022","08-B023","08-B024",
+        "08-B025","08-B026","08-B027","08-B028","08-B029","08-B030","08-B031","08-B032",
+        "08-B033","08-B034","08-B035","08-B036","08-B037","08-B038","08-B039","08-B040",
+        "08-B041","08-B042","08-B043","08-B044","08-B045","08-B046","08-B047","08-B048"
+      ],
+      "kind": "battle_e_trainer",
+      "status": "catalogued_for_internal_loader"
+    },
+    "series_2_berries": {
+      "ids": ["08-K007","08-K008","08-K009","08-K010","08-K011","08-K012"],
+      "kind": "ecard_berry",
+      "status": "catalogued_for_internal_loader"
+    },
+    "promo_trainers_p": {
+      "ids": ["08-P001","08-P002","08-P003","08-P004","08-P005","08-P006","08-P007","08-P008"],
+      "kind": "battle_e_trainer",
+      "status": "catalogued_for_internal_loader"
+    },
+    "promo_trainers_n": {
+      "ids": ["08-N001","08-N002","08-N003","08-N004","08-N005","08-N006","08-N007","08-N008"],
+      "kind": "battle_e_trainer",
+      "status": "catalogued_for_internal_loader"
+    },
+    "version_promos": {
+      "ids": ["129-B001","129-B002"],
+      "kind": "battle_e_trainer",
+      "status": "catalogued_for_internal_loader"
+    }
+  },
+  "counts": {
+    "trainer_cards": 114,
+    "berry_cards": 12,
+    "decoration_cards": 1,
+    "world_event_cards": 1,
+    "total_content_cards": 128
+  },
+  "reference_sources": ["pret/pokeruby", "Artrios/pokecarde"],
+  "notes": [
+    "Battle Record cards are not counted as content injection events.",
+    "Generic/custom giftpokemon and ribbon templates are not counted as official released Ruby/Sapphire card events."
+  ]
+}
