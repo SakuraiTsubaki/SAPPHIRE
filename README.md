@@ -52,6 +52,17 @@ python tools/verify_expansion_capacity.py
 
 ## Tools
 
+Expansion audit and save-extension tooling:
+
+```sh
+python tools/sapphire_rom_save_audit.py /path/to/paired-rom-save-directory
+python tools/sapphire_save_extension.py inspect sapphire.sav
+python tools/sapphire_save_extension.py init sapphire.gba sapphire.sav sapphire.expanded.sav
+python tools/sapphire_save_extension.py verify sapphire.expanded.sav
+```
+
+`init` verifies the known Sapphire ROM identity, two complete retail save slots, and every retail main-sector checksum before writing the mirrored SAPPXSV1 extension to sectors 30-31. It preserves sectors 0-29 byte-for-byte.
+
 `tools/sapphire_external_events.py`
 
 ```sh
