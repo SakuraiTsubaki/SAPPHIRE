@@ -33,7 +33,7 @@
         30,
         31
       ],
-      "save_extension_layout": "catalog/save_extension_layout.json",
+      "save_extension_layout": "catalog/expanded_save_layout.json",
       "save_extension_runtime_hooks": false
     }
   }
