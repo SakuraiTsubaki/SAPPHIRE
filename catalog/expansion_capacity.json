@@ -1,5 +1,5 @@
 {
-  "schema_version": 3,
+  "schema_version": 4,
   "project": "SAPPHIRE",
   "purpose": "Generation 10 readiness without pre-assigning unknown future content IDs",
   "policy": {
@@ -74,7 +74,18 @@
     "gba_rom_window": "0x08000000-0x09FFFFFF",
     "input_prefix_preserved_byte_for_byte": true,
     "japanese_8_to_16_mib_gap_policy": "padding/reserved; common expanded tables begin at 16 MiB for identical cross-region addresses",
-    "expansion_strategy": "preserve each native ROM prefix and allocate expanded tables/assets only at or above the shared 16 MiB base"
+    "expansion_strategy": "preserve each native ROM prefix and allocate expanded tables/assets only at or above the shared 16 MiB base",
+    "expanded_container_implemented": true,
+    "control_page_size_bytes": 4096,
+    "control_magic": "SAPPX10\\0",
+    "control_header_size_bytes": 256,
+    "relocation_directory_entry_size_bytes": 32,
+    "relocation_directory_capacity_entries": 120,
+    "payload_base_offset": 16781312,
+    "payload_capacity_bytes": 16773120,
+    "layout": "catalog/expanded_rom_layout.json",
+    "builder": "tools/sapphire_rom_expansion.py",
+    "validation_report": "reports/expanded-rom-container-validation.json"
   },
   "save": {
     "preserve_gen3_box_pokemon_core_layout": true,
@@ -133,7 +144,7 @@
   },
   "next_gates": [
     "replace fixed species/move/ability/evolution bounds identified in analysis/expansion_bound_audit.json",
-    "integrate the shared 16 MiB expansion base and relocation allocator into actual ROM patch generation",
+    "populate the SAPPX10 relocation directory and integrate explicit allocation into table-family patch generation",
     "implement sectors 30/31 A/B extension read/write hooks in the expanded ROM",
     "rewrite/recover extension data after original save paths that erase sectors 28-31",
     "migrate expanded Pokédex and modern ability-slot state through the save extension",
