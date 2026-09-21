@@ -28,6 +28,27 @@ Full card catalog:
 
 Ticket-type world events should use their real ticket/item path whenever possible. Data-bearing Battle-e Trainer and Berry cards need the ROM-local catalog/loader because the original engine only stores one trainer and one e-Reader Berry at a time. See `docs/EXTERNAL_EVENTS.md`.
 
+## Generation 10 expansion foundation
+
+Form-change work is currently **deferred**. The active expansion priority is to make Sapphire structurally ready for later-generation data through a separate `expanded` profile before importing additional gameplay content.
+
+- 16-bit logical ID namespace with `0xFFFF` reserved as invalid.
+- Capacity floors: 4096 species, 8192 forms, 4096 moves, 4096 items, 2048 abilities, 256 types.
+- Expanded ROM profile targets the standard 32 MiB GBA ROM window.
+- Variable tables and assets must use explicit relocation metadata instead of incidental free-space assumptions.
+- Existing Gen III BoxPokemon layout remains the compatibility core.
+- Modern-only persistent state requires a versioned save extension after a save-sector audit.
+- Generation 10 IDs and mechanics are not guessed before official data exists.
+- Form metadata is reserved but inactive until form-change work is explicitly resumed.
+
+See `docs/GEN10_EXPANSION.md`, `catalog/expansion_capacity.json`, and `catalog/engine_profiles.json`.
+
+Validate the capacity policy with:
+
+```sh
+python tools/verify_expansion_capacity.py
+```
+
 ## Tools
 
 `tools/sapphire_external_events.py`
