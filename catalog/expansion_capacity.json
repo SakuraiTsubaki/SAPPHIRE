@@ -1,0 +1,98 @@
+{
+  "schema_version": 1,
+  "project": "SAPPHIRE",
+  "purpose": "Generation 10 readiness without pre-assigning unknown future content IDs",
+  "policy": {
+    "form_change_status": "deferred",
+    "generation_10_content_status": "unknown_not_encoded",
+    "no_generation_10_species_or_mechanics_are_invented": true,
+    "preserve_sapphire_identity": true,
+    "preserve_existing_saves_as_a_required_migration_target": true
+  },
+  "source_baseline": {
+    "repository": "pret/pokeruby",
+    "ref": "63a8cbf0016b351a4e68f7036fa0b77e23d2f2c1",
+    "species": {
+      "num_species_macro": 412,
+      "highest_species_constant_observed": 439,
+      "note": "NUM_SPECIES is SPECIES_EGG; extra Unown constants exist above it."
+    },
+    "moves": {
+      "count": 355
+    },
+    "items": {
+      "count": 349
+    },
+    "abilities": {
+      "count": 78
+    },
+    "types": {
+      "count": 18
+    },
+    "pokemon_storage": {
+      "species": "u16",
+      "held_item": "u16",
+      "moves": "u16[4]",
+      "ability_selection": "altAbility:1 bit; ability ID is derived rather than stored"
+    }
+  },
+  "identifier_model": {
+    "logical_id_bits": 16,
+    "valid_range": [
+      0,
+      65534
+    ],
+    "reserved_invalid_id": 65535,
+    "table_count_bits": 32,
+    "rom_pointer_bits": 32,
+    "hardcoded_table_end_constants_forbidden_in_expanded_profile": true,
+    "contiguous_future_generation_ranges_required": false
+  },
+  "capacity_floors": {
+    "species": 4096,
+    "forms": 8192,
+    "moves": 4096,
+    "items": 4096,
+    "abilities": 2048,
+    "types": 256,
+    "evolution_methods": 512,
+    "move_effects": 2048
+  },
+  "rom": {
+    "classic_input_size_bytes": 8388608,
+    "expanded_profile_max_size_bytes": 33554432,
+    "gba_rom_window": "0x08000000-0x09FFFFFF",
+    "expansion_strategy": "relocate variable tables and assets into explicit expanded-profile regions; do not depend on incidental 0xFF gaps"
+  },
+  "save": {
+    "preserve_gen3_box_pokemon_core_layout": true,
+    "versioned_extension_required": true,
+    "extension_allocation_status": "pending_save_sector_audit",
+    "expanded_pokedex": "versioned dynamic bitsets",
+    "ability_slot_extension_required_for_modern_three_slot_semantics": true,
+    "form_metadata_reserved_but_inactive_while_form_change_is_deferred": true,
+    "migration_and_rollback_tests_required": true
+  },
+  "table_policy": {
+    "species_data": "relocatable",
+    "learnsets": "relocatable",
+    "evolution_tables": "relocatable",
+    "move_data": "relocatable",
+    "item_data": "relocatable",
+    "ability_data": "relocatable",
+    "type_chart": "relocatable",
+    "graphics_pointer_tables": "relocatable",
+    "cries_audio_tables": "relocatable",
+    "pokedex_data": "relocatable"
+  },
+  "next_gates": [
+    "audit every Sapphire hard-coded species/move/item/ability/type bound",
+    "define the 32 MiB expanded ROM memory map",
+    "audit save sectors before allocating extension data",
+    "replace fixed table-end checks with count-driven checks",
+    "add relocation manifests for each expanded table",
+    "add cross-region signature validation for every patched bound",
+    "only after the foundation passes, import later-generation content",
+    "keep form-change implementation deferred until the user reopens that axis"
+  ]
+}
