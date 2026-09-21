@@ -16,7 +16,10 @@ MIN_FLOORS = {
     "move_effects": 2048,
 }
 
-MAX_GBA_ROM = 32 * 1024 * 1024
+JP_SIZE = 8 * 1024 * 1024
+WESTERN_SIZE = 16 * 1024 * 1024
+COMMON_EXPANSION_BASE = 16 * 1024 * 1024
+EXPANDED_SIZE = 32 * 1024 * 1024
 INVALID_U16 = 0xFFFF
 
 
@@ -47,10 +50,16 @@ def verify(path: Path) -> dict:
             errors.append(f"{name} capacity floor collides with the reserved u16 sentinel")
 
     rom = data.get("rom", {})
-    if rom.get("classic_input_size_bytes") != 8 * 1024 * 1024:
-        errors.append("classic Sapphire baseline must remain 8 MiB")
-    if rom.get("expanded_profile_max_size_bytes") != MAX_GBA_ROM:
-        errors.append("expanded profile must target the 32 MiB GBA ROM window")
+    if rom.get("classic_input_sizes_bytes") != [JP_SIZE, WESTERN_SIZE]:
+        errors.append("classic input sizes must preserve 8 MiB JP and 16 MiB western Sapphire dumps")
+    if rom.get("common_expansion_base_offset") != COMMON_EXPANSION_BASE:
+        errors.append("common expansion base must be 16 MiB")
+    if rom.get("expanded_profile_size_bytes") != EXPANDED_SIZE:
+        errors.append("expanded profile must target a 32 MiB ROM")
+    if rom.get("common_expansion_capacity_bytes") != EXPANDED_SIZE - COMMON_EXPANSION_BASE:
+        errors.append("common expansion capacity must be 16 MiB")
+    if not rom.get("input_prefix_preserved_byte_for_byte"):
+        errors.append("native ROM input prefix must be preserved byte-for-byte")
 
     save = data.get("save", {})
     if not save.get("preserve_gen3_box_pokemon_core_layout"):
@@ -69,7 +78,8 @@ def verify(path: Path) -> dict:
         "errors": errors,
         "capacity_floors": floors,
         "logical_id_bits": ids.get("logical_id_bits"),
-        "expanded_profile_max_size_bytes": rom.get("expanded_profile_max_size_bytes"),
+        "common_expansion_base_offset": rom.get("common_expansion_base_offset"),
+        "expanded_profile_size_bytes": rom.get("expanded_profile_size_bytes"),
     }
 
 
