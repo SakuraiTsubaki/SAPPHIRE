@@ -66,14 +66,21 @@ def verify(path: Path) -> dict:
         errors.append("Gen III BoxPokemon core layout preservation is required")
     if not save.get("versioned_extension_required"):
         errors.append("a versioned save extension is required")
-    if save.get("extension_allocation_status") != "candidate_sectors_30_31_static_validated_runtime_hooks_pending":
-        errors.append("save extension must use the statically validated sector 30/31 candidate state")
+    if save.get("extension_allocation_status") != "sectors_30_31_source_and_save_validated_runtime_hooks_pending":
+        errors.append("save extension must use the source- and checksum-validated sector 30/31 allocation")
     if save.get("extension_sectors") != [30, 31]:
         errors.append("expanded save extension sectors must be 30 and 31")
     if save.get("hall_of_fame_sectors") != [28, 29]:
         errors.append("Hall of Fame sectors 28 and 29 must remain reserved")
     if save.get("mirrored_payload_bytes") != 4032:
         errors.append("mirrored extension payload must remain 4032 bytes per copy")
+    if save.get("extension_layout") != "catalog/expanded_save_layout.json":
+        errors.append("expanded save extension must use the canonical expanded_save_layout.json manifest")
+    pair_audit = save.get("supplied_pair_audit", {})
+    if pair_audit.get("validated_main_sector_checksums") != 336 or not pair_audit.get("all_legacy_sector_checksums_valid"):
+        errors.append("all 336 supplied main-save sector checksums must remain validated")
+    if save.get("runtime_hooks_implemented") is not False:
+        errors.append("runtime save-extension hooks must remain explicitly pending until integrated")
     if not save.get("form_metadata_reserved_but_inactive_while_form_change_is_deferred"):
         errors.append("form metadata must stay reserved/inactive during this phase")
 
