@@ -1,0 +1,58 @@
+{
+  "schema_version": 1,
+  "project": "SAPPHIRE",
+  "profile": "expanded",
+  "output_size_bytes": 33554432,
+  "common_expansion_base_offset": 16777216,
+  "header": {
+    "offset": 16777216,
+    "size": 256,
+    "magic": "SAPPX10\\0",
+    "version": 1,
+    "fields": [
+      "magic[8]",
+      "version:u16",
+      "header_size:u16",
+      "preserved_input_size:u32",
+      "expanded_size:u32",
+      "game_code[4]",
+      "revision:u8",
+      "padding[3]",
+      "preserved_input_sha1[20]",
+      "preserved_input_sha256[32]"
+    ]
+  },
+  "regions": [
+    {
+      "name": "native_input_prefix",
+      "start": 0,
+      "end_exclusive": "input_size",
+      "policy": "preserve byte-for-byte"
+    },
+    {
+      "name": "japanese_compatibility_padding",
+      "start": 8388608,
+      "end_exclusive": 16777216,
+      "applies_to": "JP AXPJ rev0 only",
+      "policy": "0xFF reserved; no common tables"
+    },
+    {
+      "name": "expanded_header",
+      "start": 16777216,
+      "end_exclusive": 16777472,
+      "policy": "profile identity and preserved-input verification"
+    },
+    {
+      "name": "common_allocator",
+      "start": 16777472,
+      "end_exclusive": 33554432,
+      "policy": "future relocatable tables/assets; no form-change data assigned in foundation phase"
+    }
+  ],
+  "invariants": [
+    "all common expanded addresses are identical across supported regions",
+    "no original input byte is rewritten by container creation",
+    "Generation 10 content IDs are not preassigned",
+    "form-change implementation remains deferred"
+  ]
+}
