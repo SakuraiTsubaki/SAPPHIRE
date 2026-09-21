@@ -1,5 +1,5 @@
 {
-  "schema_version": 3,
+  "schema_version": 4,
   "project": "SAPPHIRE",
   "profiles": {
     "classic": {
@@ -14,7 +14,7 @@
       "form_change": false
     },
     "expanded": {
-      "status": "foundation",
+      "status": "rom_container_implemented_save_runtime_pending",
       "purpose": "Generation 10-ready Sapphire-native expansion profile",
       "accepted_input_rom_sizes_bytes": [
         8388608,
@@ -34,7 +34,15 @@
         31
       ],
       "save_extension_layout": "catalog/expanded_save_layout.json",
-      "save_extension_runtime_hooks": false
+      "save_extension_runtime_hooks": false,
+      "rom_layout": "catalog/expanded_rom_layout.json",
+      "rom_builder": "tools/sapphire_rom_expansion.py",
+      "control_magic": "SAPPX10\\0",
+      "control_page_size_bytes": 4096,
+      "payload_base_offset": 16781312,
+      "payload_capacity_bytes": 16773120,
+      "relocation_directory_capacity_entries": 120,
+      "rom_container_validation": "reports/expanded-rom-container-validation.json"
     }
   }
 }
