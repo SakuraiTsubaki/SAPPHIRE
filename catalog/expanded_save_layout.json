@@ -85,7 +85,9 @@
         "size": 2880
       },
       "form_change_status": "deferred; future metadata is reserved but no active form-change state is assigned"
-    }
+    },
+    "blank_sector_policy": "both all-0x00 and all-0xFF are treated as blank/uninitialized",
+    "counter_ordering": "u32 wrap-aware; 0 follows 0xFFFFFFFF"
   },
   "invariants": [
     "sectors 0-27 remain the original rotating main save",
@@ -105,6 +107,8 @@
     "recover from one invalid extension copy using the other",
     "rewrite extension sectors after SAVE_OVERWRITE_DIFFERENT_FILE because the original path erases sectors 28-31",
     "keep any unused legacy sector-30/31 helper paths disabled or redirected in expanded mode",
-    "runtime test old-save load -> initialize extension -> save -> reload -> rollback/recovery before calling the layout implemented"
+    "runtime test old-save load -> initialize extension -> save -> reload -> rollback/recovery before calling the layout implemented",
+    "accept erased 0xFF sectors 30/31 as blank when migrating a classic save",
+    "use wrap-aware u32 ordering for main-save counters and extension sequence numbers"
   ]
 }
