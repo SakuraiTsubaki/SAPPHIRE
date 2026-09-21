@@ -1,0 +1,97 @@
+{
+  "schema_version": 1,
+  "project": "SAPPHIRE",
+  "profile": "expanded",
+  "status": "static_validated_runtime_integration_pending",
+  "evidence": {
+    "supplied_save_count": 12,
+    "save_size_bytes": 131072,
+    "all_sector_30_31_zero_before_initialization": true,
+    "all_main_save_slots_valid": true,
+    "report": "reports/rom-save-expansion-audit.json",
+    "validation": "reports/expanded-save-extension-validation.json"
+  },
+  "flash": {
+    "total_size_bytes": 131072,
+    "sector_size_bytes": 4096,
+    "total_sectors": 32,
+    "original_main_save_sectors": [
+      0,
+      27
+    ],
+    "hall_of_fame_sectors": [
+      28,
+      29
+    ],
+    "extension_sectors": [
+      30,
+      31
+    ]
+  },
+  "extension": {
+    "magic": "SAPPXSV1",
+    "schema": 1,
+    "mirror_mode": "A/B",
+    "header_size_bytes": 64,
+    "payload_size_bytes_per_copy": 4032,
+    "effective_payload_capacity_bytes": 4032,
+    "header_fields": [
+      "magic[8]",
+      "schema:u16",
+      "header_size:u16",
+      "sequence:u32",
+      "base_save_counter:u32",
+      "payload_len:u16",
+      "flags:u16",
+      "payload_crc32:u32",
+      "header_crc32:u32",
+      "game_code[4]",
+      "revision:u8",
+      "reserved[27]"
+    ],
+    "payload_v1": {
+      "expanded_species_seen": {
+        "offset": 0,
+        "size": 512,
+        "capacity_bits": 4096
+      },
+      "expanded_species_caught": {
+        "offset": 512,
+        "size": 512,
+        "capacity_bits": 4096
+      },
+      "ability_slot_2bit": {
+        "offset": 1024,
+        "size": 107,
+        "mon_slots": 426
+      },
+      "reserved_alignment": {
+        "offset": 1131,
+        "size": 21
+      },
+      "future_metadata": {
+        "offset": 1152,
+        "size": 2880
+      },
+      "form_change_status": "deferred; future metadata is reserved but no active form-change state is assigned"
+    }
+  },
+  "invariants": [
+    "sectors 0-27 remain the original rotating main save",
+    "sectors 28-29 remain reserved for Hall of Fame and are never used by the extension",
+    "sectors 0-29 are preserved byte-for-byte by extension initialization",
+    "save file size remains 128 KiB",
+    "both extension copies carry CRC32-protected headers and payloads",
+    "load selects the newest valid extension sequence",
+    "existing Gen III BoxPokemon layout is not changed"
+  ],
+  "runtime_requirements": [
+    "read extension sectors 30/31 after the original main save is selected",
+    "write the next A/B extension copy after a successful main save",
+    "bind each extension copy to the corresponding main-save counter",
+    "recover from one invalid extension copy using the other",
+    "rewrite extension sectors after SAVE_OVERWRITE_DIFFERENT_FILE because the original path erases sectors 28-31",
+    "keep any unused legacy sector-30/31 helper paths disabled or redirected in expanded mode",
+    "runtime test old-save load -> initialize extension -> save -> reload -> rollback/recovery before calling the layout implemented"
+  ]
+}
