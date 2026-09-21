@@ -1,0 +1,53 @@
+{
+  "schema_version": 1,
+  "project": "SAPPHIRE",
+  "profile": "expanded",
+  "source_baseline": {
+    "repository": "pret/pokeruby",
+    "ref": "63a8cbf0016b351a4e68f7036fa0b77e23d2f2c1",
+    "file": "src/save.c",
+    "evidence": "sUnusedFlashSectors[] = { 30, 31 }"
+  },
+  "retail_save_layout": {
+    "flash_size_bytes": 131072,
+    "sector_size_bytes": 4096,
+    "main_rotating_slots": [[0, 13], [14, 27]],
+    "hall_of_fame_sectors": [28, 29],
+    "unused_sectors": [30, 31]
+  },
+  "extension": {
+    "sectors": [30, 31],
+    "copy_model": "two independent A/B copies; highest valid generation wins",
+    "sector_size_bytes": 4096,
+    "header_size_bytes": 64,
+    "payload_capacity_bytes_per_copy": 4032,
+    "magic_ascii": "SAPXSAV\\0",
+    "version": 1,
+    "header_fields": [
+      {"offset": 0, "name": "magic", "type": "char[8]"},
+      {"offset": 8, "name": "version", "type": "u16"},
+      {"offset": 10, "name": "header_size", "type": "u16"},
+      {"offset": 12, "name": "generation", "type": "u32"},
+      {"offset": 16, "name": "payload_size", "type": "u16"},
+      {"offset": 18, "name": "flags", "type": "u16"},
+      {"offset": 20, "name": "payload_crc32", "type": "u32"},
+      {"offset": 24, "name": "header_crc32", "type": "u32"},
+      {"offset": 28, "name": "source_save_counter", "type": "u32"},
+      {"offset": 32, "name": "reserved", "type": "u8[32]"}
+    ],
+    "payload_policy": {
+      "format": "versioned TLV registry; semantic tags are added only with corresponding engine support",
+      "generation_10_ids_preassigned": false,
+      "form_change_payload": "reserved for future schema; inactive while form-change work is deferred",
+      "minimum_capacity_check": "4096-species seen+caught bitsets need 1024 bytes total, leaving 3008 bytes in each copy"
+    },
+    "legacy_interaction": {
+      "normal_save": "retail SAVE_NORMAL writes sectors 0-27 only and does not touch 30-31",
+      "hall_of_fame": "sectors 28-29 only",
+      "overwrite_different_file": "retail code erases sectors 28-31; this correctly clears extension data when replacing the save",
+      "erase_all": "clears all 32 sectors",
+      "classic_profile": "never writes extension sectors"
+    },
+    "runtime_status": "format and offline tooling defined; expanded ROM load/save hooks still pending"
+  }
+}
