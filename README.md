@@ -42,7 +42,7 @@ Form-change work is currently **deferred**. The active expansion priority is to 
 - Generation 10 IDs and mechanics are not guessed before official data exists.
 - Form metadata is reserved but inactive until form-change work is explicitly resumed.
 
-See `docs/GEN10_EXPANSION.md`, `catalog/expansion_capacity.json`, `catalog/engine_profiles.json`, and `catalog/save_extension_layout.json`.
+See `docs/GEN10_EXPANSION.md`, `catalog/expansion_capacity.json`, `catalog/engine_profiles.json`, and `catalog/expanded_save_layout.json`.
 
 Validate the capacity policy with:
 
