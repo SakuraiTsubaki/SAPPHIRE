@@ -1,58 +1,87 @@
 {
-  "schema_version": 1,
+  "schema_version": 2,
   "project": "SAPPHIRE",
   "profile": "expanded",
-  "output_size_bytes": 33554432,
-  "common_expansion_base_offset": 16777216,
-  "header": {
+  "status": "container_implemented_table_relocations_pending",
+  "rom": {
+    "gba_rom_base": "0x08000000",
+    "gba_rom_window_end_inclusive": "0x09FFFFFF",
+    "maximum_direct_rom_size_bytes": 33554432,
+    "accepted_native_sizes_bytes": [
+      8388608,
+      16777216
+    ],
+    "expanded_size_bytes": 33554432,
+    "common_expansion_base_offset": 16777216,
+    "common_expansion_base_pointer": "0x09000000",
+    "fill_byte": "0xFF",
+    "native_prefix_preserved_byte_for_byte": true,
+    "japanese_8_to_16_mib_gap": "0xFF padding"
+  },
+  "control_page": {
     "offset": 16777216,
-    "size": 256,
+    "pointer": "0x09000000",
+    "size_bytes": 4096,
     "magic": "SAPPX10\\0",
     "version": 1,
-    "fields": [
+    "fixed_header_size_bytes": 256,
+    "header_crc": "CRC32 over the fixed 256-byte header with header_crc32 zeroed",
+    "header_fields": [
       "magic[8]",
       "version:u16",
       "header_size:u16",
+      "control_size:u32",
       "preserved_input_size:u32",
       "expanded_size:u32",
+      "common_base:u32",
+      "payload_base:u32",
+      "directory_entry_size:u16",
+      "directory_capacity:u16",
+      "directory_count:u16",
+      "flags:u16",
       "game_code[4]",
       "revision:u8",
       "padding[3]",
       "preserved_input_sha1[20]",
-      "preserved_input_sha256[32]"
+      "preserved_input_sha256[32]",
+      "header_crc32:u32",
+      "reserved_to_0x100"
     ]
   },
-  "regions": [
-    {
-      "name": "native_input_prefix",
-      "start": 0,
-      "end_exclusive": "input_size",
-      "policy": "preserve byte-for-byte"
-    },
-    {
-      "name": "japanese_compatibility_padding",
-      "start": 8388608,
-      "end_exclusive": 16777216,
-      "applies_to": "JP AXPJ rev0 only",
-      "policy": "0xFF reserved; no common tables"
-    },
-    {
-      "name": "expanded_header",
-      "start": 16777216,
-      "end_exclusive": 16777472,
-      "policy": "profile identity and preserved-input verification"
-    },
-    {
-      "name": "common_allocator",
-      "start": 16777472,
-      "end_exclusive": 33554432,
-      "policy": "future relocatable tables/assets; no form-change data assigned in foundation phase"
-    }
-  ],
+  "relocation_directory": {
+    "offset_within_control_page": 256,
+    "entry_size_bytes": 32,
+    "capacity_entries": 120,
+    "initial_entry_count": 0,
+    "entry_fields": [
+      "name[16]",
+      "rom_offset:u32",
+      "size:u32",
+      "count:u32",
+      "stride:u16",
+      "flags:u16"
+    ],
+    "rule": "Expanded tables and assets are registered here when relocation patchers are added; no later-generation IDs are preassigned by the container."
+  },
+  "payload": {
+    "base_offset": 16781312,
+    "base_pointer": "0x09001000",
+    "end_offset_inclusive": 33554431,
+    "capacity_bytes": 16773120,
+    "allocation_policy": "explicit allocator/manifest only; do not scan incidental 0xFF gaps",
+    "current_contents": "unallocated / 0xFF"
+  },
   "invariants": [
-    "all common expanded addresses are identical across supported regions",
-    "no original input byte is rewritten by container creation",
-    "Generation 10 content IDs are not preassigned",
-    "form-change implementation remains deferred"
-  ]
+    "The original native ROM prefix is byte-for-byte unchanged.",
+    "The expanded image is exactly 32 MiB, the full directly addressable GBA ROM window.",
+    "All supported regions use the same control and payload addresses.",
+    "The Japanese 8 MiB image is padded to the common 16 MiB base; its original 8 MiB prefix is unchanged.",
+    "The control header records exact source SHA-1 and SHA-256 digests, game code and revision.",
+    "Verification recomputes the source-prefix hashes and header CRC32.",
+    "Generation 10 content IDs are not preassigned.",
+    "Form-change implementation remains deferred.",
+    "No ROM image is stored in the repository."
+  ],
+  "tool": "tools/sapphire_rom_expansion.py",
+  "validation_report": "reports/expanded-rom-container-validation.json"
 }
