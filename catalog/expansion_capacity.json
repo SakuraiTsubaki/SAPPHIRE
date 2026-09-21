@@ -1,5 +1,5 @@
 {
-  "schema_version": 2,
+  "schema_version": 3,
   "project": "SAPPHIRE",
   "purpose": "Generation 10 readiness without pre-assigning unknown future content IDs",
   "policy": {
@@ -79,9 +79,26 @@
   "save": {
     "preserve_gen3_box_pokemon_core_layout": true,
     "versioned_extension_required": true,
-    "extension_allocation_status": "pending_save_sector_audit",
-    "expanded_pokedex": "versioned dynamic bitsets",
+    "extension_allocation_status": "candidate_sectors_30_31_static_validated_runtime_hooks_pending",
+    "flash_size_bytes": 131072,
+    "sector_size_bytes": 4096,
+    "main_save_sectors": [
+      0,
+      27
+    ],
+    "hall_of_fame_sectors": [
+      28,
+      29
+    ],
+    "extension_sectors": [
+      30,
+      31
+    ],
+    "mirrored_payload_bytes": 4032,
+    "supplied_saves_validated": 12,
+    "expanded_pokedex": "4096-bit seen + 4096-bit caught bitsets in extension schema v1",
     "ability_slot_extension_required_for_modern_three_slot_semantics": true,
+    "ability_slot_storage": "2 bits across 426 party+box positions in extension schema v1",
     "form_metadata_reserved_but_inactive_while_form_change_is_deferred": true,
     "migration_and_rollback_tests_required": true
   },
@@ -98,13 +115,14 @@
     "pokedex_data": "relocatable"
   },
   "next_gates": [
-    "audit every Sapphire hard-coded species/move/item/ability/type bound",
-    "establish the shared 16 MiB expansion base and 32 MiB expanded container",
-    "audit save sectors before allocating extension data",
-    "replace fixed table-end checks with count-driven checks",
+    "replace fixed species/move/ability/evolution bounds identified in analysis/expansion_bound_audit.json",
+    "integrate the shared 16 MiB expansion base and relocation allocator into actual ROM patch generation",
+    "implement sectors 30/31 A/B extension read/write hooks in the expanded ROM",
+    "rewrite/recover extension data after original save paths that erase sectors 28-31",
+    "migrate expanded Pokédex and modern ability-slot state through the save extension",
     "add relocation manifests for each expanded table",
     "add cross-region signature validation for every patched bound",
-    "only after the foundation passes, import later-generation content",
+    "run old-save load/save/reload/recovery tests before importing later-generation content",
     "keep form-change implementation deferred until the user reopens that axis"
   ]
 }
