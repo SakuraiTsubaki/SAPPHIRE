@@ -66,8 +66,14 @@ def verify(path: Path) -> dict:
         errors.append("Gen III BoxPokemon core layout preservation is required")
     if not save.get("versioned_extension_required"):
         errors.append("a versioned save extension is required")
-    if save.get("extension_allocation_status") != "pending_save_sector_audit":
-        errors.append("save extension allocation must remain pending until the sector audit")
+    if save.get("extension_allocation_status") != "candidate_sectors_30_31_static_validated_runtime_hooks_pending":
+        errors.append("save extension must use the statically validated sector 30/31 candidate state")
+    if save.get("extension_sectors") != [30, 31]:
+        errors.append("expanded save extension sectors must be 30 and 31")
+    if save.get("hall_of_fame_sectors") != [28, 29]:
+        errors.append("Hall of Fame sectors 28 and 29 must remain reserved")
+    if save.get("mirrored_payload_bytes") != 4032:
+        errors.append("mirrored extension payload must remain 4032 bytes per copy")
     if not save.get("form_metadata_reserved_but_inactive_while_form_change_is_deferred"):
         errors.append("form metadata must stay reserved/inactive during this phase")
 
