@@ -51,7 +51,11 @@ The native ROM size is region-dependent: the validated Japanese `AXPJ rev0` imag
 
 The new `expanded` profile targets a 32 MiB ROM and uses **16 MiB (`0x01000000`) as the common expansion base** for every region. The Japanese image is padded/reserved up to that shared base; western images already occupy the lower 16 MiB. This gives every supported revision the same addresses for new common tables and assets.
 
-Expanded tables and assets must be placed into an explicit memory map at or above the shared base. They must not rely on whichever long `0xFF` block happens to exist in a particular regional ROM.
+The container stage is now implemented and validated across all 12 supplied ROM/SAV pairs. `tools/sapphire_rom_expansion.py` preserves the complete native ROM prefix, writes a 4 KiB SAPPX10 control page at `0x01000000` (CPU pointer `0x09000000`), and exposes the common payload from `0x01001000` (CPU pointer `0x09001000`) through the end of the 32 MiB ROM window. The usable common payload is 16,773,120 bytes.
+
+The fixed 256-byte SAPPX10 header records source SHA-1/SHA-256 identity, game code, revision, geometry and CRC32. The remainder of the control page reserves 120 fixed-size relocation-directory entries. Table patchers will populate those entries instead of relying on incidental free space.
+
+Expanded tables and assets must be placed into this explicit memory map. They must not rely on whichever long `0xFF` block happens to exist in a particular regional ROM.
 
 The expanded profile therefore requires relocation metadata for:
 
@@ -97,10 +101,10 @@ The offline extension format is defined in `catalog/expanded_save_layout.json`, 
 ## Required implementation order
 
 1. Audit every hard-coded species, move, item, ability and type bound in Sapphire.
-2. Establish the shared 16 MiB expansion base and 32 MiB expanded ROM container.
-3. Use the audited retail-unused sectors 30-31 for the versioned A/B extension; add expanded-ROM runtime hooks without changing classic saves.
+2. Establish the shared 16 MiB expansion base and 32 MiB expanded ROM container. **Implemented and validated for all 12 supplied revisions.**
+3. Use the audited retail-unused sectors 30-31 for the versioned A/B extension; add expanded-ROM runtime hooks without changing classic saves. **Offline format validated; runtime hooks still pending.**
 4. Replace historical fixed-end comparisons with count-driven checks.
-5. Add relocation manifests and patchers for each table family.
+5. Populate the SAPPX10 relocation directory and add patchers for each table family.
 6. Add tests for IDs above every original Gen III maximum.
 7. Verify the same architecture across Japanese first, then the supported regional revisions.
 8. Import later-generation data only after the capacity foundation passes.
