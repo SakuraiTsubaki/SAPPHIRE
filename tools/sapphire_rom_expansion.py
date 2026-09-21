@@ -19,7 +19,7 @@ PAYLOAD_BASE = COMMON_BASE + CONTROL_SIZE
 DIRECTORY_OFFSET = HEADER_SIZE
 DIRECTORY_ENTRY_SIZE = 32
 DIRECTORY_CAPACITY = (CONTROL_SIZE - DIRECTORY_OFFSET) // DIRECTORY_ENTRY_SIZE
-MAGIC = b"SAPPXRM1"
+MAGIC = b"SAPPX10\\0"
 SCHEMA = 1
 FILL = 0xFF
 
@@ -132,7 +132,7 @@ def parse_control(data: bytes) -> dict:
         flags, game_code, revision, source_sha1, header_crc,
     ) = values
     if magic != MAGIC:
-        raise ValueError("missing SAPPXRM1 expanded-ROM header")
+        raise ValueError("missing SAPPX10 expanded-ROM header")
 
     header_copy = bytearray(control[:HEADER_SIZE])
     struct.pack_into("<I", header_copy, HEADER.size - 4, 0)
