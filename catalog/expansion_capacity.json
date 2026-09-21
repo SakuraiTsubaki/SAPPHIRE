@@ -79,7 +79,7 @@
   "save": {
     "preserve_gen3_box_pokemon_core_layout": true,
     "versioned_extension_required": true,
-    "extension_allocation_status": "sectors_30_31_profile_defined_runtime_hooks_pending",
+    "extension_allocation_status": "sectors_30_31_source_and_save_validated_runtime_hooks_pending",
     "flash_size_bytes": 131072,
     "sector_size_bytes": 4096,
     "main_save_sectors": [
@@ -113,9 +113,11 @@
       "rom_save_pairs": 12,
       "all_main_slots_complete": true,
       "all_legacy_sector_checksums_valid": true,
-      "all_sector_30_31_blank": true
+      "all_sector_30_31_blank": true,
+      "validated_main_sector_checksums": 336
     },
-    "runtime_hooks_implemented": false
+    "runtime_hooks_implemented": false,
+    "extension_layout": "catalog/expanded_save_layout.json"
   },
   "table_policy": {
     "species_data": "relocatable",
