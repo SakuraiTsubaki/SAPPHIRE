@@ -1,0 +1,325 @@
+{
+  "schema_version": 1,
+  "date": "2026-09-21",
+  "project": "SAPPHIRE",
+  "evidence": "12 uploaded ROM/save basename pairs inspected directly; no ROM or save binaries stored in repository",
+  "pair_count": 12,
+  "invariants": {
+    "all_roms_known_sha1": true,
+    "japanese_rom_size_bytes": 8388608,
+    "western_rom_size_bytes": 16777216,
+    "all_saves_size_bytes": 131072,
+    "all_saves_have_28_valid_main_sectors": true,
+    "all_saves_have_two_complete_logical_id_sets_0_13": true,
+    "all_sector_28_29_zero_in_supplied_saves": true,
+    "all_sector_30_31_zero_in_supplied_saves": true
+  },
+  "rom_expansion": {
+    "decision": "use a shared 16 MiB expansion base and a 32 MiB final ROM",
+    "common_expansion_base_offset": 16777216,
+    "final_size_bytes": 33554432,
+    "rationale": [
+      "The Japanese ROM is 8 MiB, but every supplied western ROM is 16 MiB.",
+      "Western ROMs contain large internal 0xFF ranges but resume non-0xFF data near 0xD00000-0xEBxxxx, so those gaps are not a safe common cross-region expansion address plan.",
+      "Starting common new data at 0x01000000 gives every supported region identical expanded addresses."
+    ]
+  },
+  "save_expansion": {
+    "flash_size_bytes": 131072,
+    "sector_size_bytes": 4096,
+    "total_sectors": 32,
+    "main_rotating_save_sectors": [
+      0,
+      27
+    ],
+    "hall_of_fame_sectors": [
+      28,
+      29
+    ],
+    "candidate_extension_sectors": [
+      30,
+      31
+    ],
+    "candidate_mode": "A/B mirrored versioned extension",
+    "candidate_payload_bytes_per_copy": 4032,
+    "supplied_save_observation": "sectors 30 and 31 are all 0x00 in all 12 supplied saves",
+    "source_crosscheck": {
+      "repository": "pret/pokeruby",
+      "ref": "63a8cbf0016b351a4e68f7036fa0b77e23d2f2c1",
+      "facts": [
+        "Ruby/Sapphire save is 128 KiB / 32 sectors.",
+        "Main save rotation uses sectors 0-27 as two 14-sector slots.",
+        "Hall of Fame uses sectors 28-29.",
+        "sUnusedFlashSectors is {30, 31}; helper functions that reference it have no callers in the current source tree.",
+        "SAVE_OVERWRITE_DIFFERENT_FILE erases sectors 28-31, so expanded save integration must rewrite/recover extension sectors after that path."
+      ]
+    },
+    "status": "static layout candidate validated; expanded ROM runtime read/write integration pending"
+  },
+  "pairs": [
+    {
+      "rom": "Pocket Monsters - Sapphire (Japan).gba",
+      "save": "Pocket Monsters - Sapphire (Japan).sav",
+      "game_code": "AXPJ",
+      "revision": 0,
+      "rom_size": 8388608,
+      "rom_sha1": "3233342c2f3087e6ffe6c1791cd5867db07df842",
+      "rom_last_non_ff": 8388199,
+      "rom_longest_ff": [
+        6639968,
+        6803456
+      ],
+      "save_sha1": "5214f31d45192990369e68ababc7afc1697453fc",
+      "save_counters": [
+        12,
+        13
+      ],
+      "save_size": 131072,
+      "main_valid_sectors": 28,
+      "logical_ids_per_counter": "0..13",
+      "sectors_28_31_all_zero": true
+    },
+    {
+      "rom": "Pokemon - Edicion Zafiro (Spain) (Rev 1).gba",
+      "save": "Pokemon - Edicion Zafiro (Spain) (Rev 1).sav",
+      "game_code": "AXPS",
+      "revision": 1,
+      "rom_size": 16777216,
+      "rom_sha1": "0fe9ad1e602e2fafa090aee25e43d6980625173c",
+      "rom_last_non_ff": 15405587,
+      "rom_longest_ff": [
+        7035852,
+        13631488
+      ],
+      "save_sha1": "0c49043e8667ef24f5292394706971ec9773509b",
+      "save_counters": [
+        13,
+        14
+      ],
+      "save_size": 131072,
+      "main_valid_sectors": 28,
+      "logical_ids_per_counter": "0..13",
+      "sectors_28_31_all_zero": true
+    },
+    {
+      "rom": "Pokemon - Edicion Zafiro (Spain).gba",
+      "save": "Pokemon - Edicion Zafiro (Spain).sav",
+      "game_code": "AXPS",
+      "revision": 0,
+      "rom_size": 16777216,
+      "rom_sha1": "3a6489189e581c4b29914071b79207883b8c16d8",
+      "rom_last_non_ff": 15405587,
+      "rom_longest_ff": [
+        7035852,
+        13631488
+      ],
+      "save_sha1": "02e2ac87a939eabd933ad8485ac6260e63b3e0db",
+      "save_counters": [
+        14,
+        15
+      ],
+      "save_size": 131072,
+      "main_valid_sectors": 28,
+      "logical_ids_per_counter": "0..13",
+      "sectors_28_31_all_zero": true
+    },
+    {
+      "rom": "Pokemon - Saphir-Edition (Germany) (Rev 1).gba",
+      "save": "Pokemon - Saphir-Edition (Germany) (Rev 1).sav",
+      "game_code": "AXPD",
+      "revision": 1,
+      "rom_size": 16777216,
+      "rom_sha1": "7e6e034f9cdca6d2c4a270fdb50a94def5883d17",
+      "rom_last_non_ff": 15405047,
+      "rom_longest_ff": [
+        7072000,
+        13631488
+      ],
+      "save_sha1": "578b376603e4af46d26d4da04a54e72bbe3810ec",
+      "save_counters": [
+        15,
+        16
+      ],
+      "save_size": 131072,
+      "main_valid_sectors": 28,
+      "logical_ids_per_counter": "0..13",
+      "sectors_28_31_all_zero": true
+    },
+    {
+      "rom": "Pokemon - Saphir-Edition (Germany).gba",
+      "save": "Pokemon - Saphir-Edition (Germany).sav",
+      "game_code": "AXPD",
+      "revision": 0,
+      "rom_size": 16777216,
+      "rom_sha1": "5a087835009d552d4c5c1f96be3be3206e378153",
+      "rom_last_non_ff": 15405047,
+      "rom_longest_ff": [
+        7072000,
+        13631488
+      ],
+      "save_sha1": "fe917d7d01e9291249137fc09440ce30732aaf40",
+      "save_counters": [
+        16,
+        17
+      ],
+      "save_size": 131072,
+      "main_valid_sectors": 28,
+      "logical_ids_per_counter": "0..13",
+      "sectors_28_31_all_zero": true
+    },
+    {
+      "rom": "Pokemon - Sapphire Version (Europe) (Rev 1).gba",
+      "save": "Pokemon - Sapphire Version (Europe) (Rev 1).sav",
+      "game_code": "AXPE",
+      "revision": 1,
+      "rom_size": 16777216,
+      "rom_sha1": "4722efb8cd45772ca32555b98fd3b9719f8e60a9",
+      "rom_last_non_ff": 15393775,
+      "rom_longest_ff": [
+        7015020,
+        13631488
+      ],
+      "save_sha1": "6d70f29382f9609a8bf1e8145724fa959907a1ad",
+      "save_counters": [
+        17,
+        18
+      ],
+      "save_size": 131072,
+      "main_valid_sectors": 28,
+      "logical_ids_per_counter": "0..13",
+      "sectors_28_31_all_zero": true
+    },
+    {
+      "rom": "Pokemon - Sapphire Version (USA).gba",
+      "save": "Pokemon - Sapphire Version (USA).sav",
+      "game_code": "AXPE",
+      "revision": 0,
+      "rom_size": 16777216,
+      "rom_sha1": "3ccbbd45f8553c36463f13b938e833f652b793e4",
+      "rom_last_non_ff": 15393775,
+      "rom_longest_ff": [
+        7014996,
+        13631488
+      ],
+      "save_sha1": "c17c290fd918480aa29289a770bf2273dbab1873",
+      "save_counters": [
+        18,
+        19
+      ],
+      "save_size": 131072,
+      "main_valid_sectors": 28,
+      "logical_ids_per_counter": "0..13",
+      "sectors_28_31_all_zero": true
+    },
+    {
+      "rom": "Pokemon - Sapphire Version (USA, Europe) (Rev 2).gba",
+      "save": "Pokemon - Sapphire Version (USA, Europe) (Rev 2).sav",
+      "game_code": "AXPE",
+      "revision": 2,
+      "rom_size": 16777216,
+      "rom_sha1": "89b45fb172e6b55d51fc0e61989775187f6fe63c",
+      "rom_last_non_ff": 15393775,
+      "rom_longest_ff": [
+        7015020,
+        13631488
+      ],
+      "save_sha1": "0a1c96306cfe203258a96e8f8026935259637280",
+      "save_counters": [
+        19,
+        20
+      ],
+      "save_size": 131072,
+      "main_valid_sectors": 28,
+      "logical_ids_per_counter": "0..13",
+      "sectors_28_31_all_zero": true
+    },
+    {
+      "rom": "Pokemon - Version Saphir (France) (Rev 1).gba",
+      "save": "Pokemon - Version Saphir (France) (Rev 1).sav",
+      "game_code": "AXPF",
+      "revision": 1,
+      "rom_size": 16777216,
+      "rom_sha1": "860e93f5ea44f4278132f6c1ee5650d07b852fd8",
+      "rom_last_non_ff": 15405663,
+      "rom_longest_ff": [
+        7050752,
+        13631488
+      ],
+      "save_sha1": "f18f11cd2a93070fa2e9c4f8a44bd58d76468d7b",
+      "save_counters": [
+        20,
+        21
+      ],
+      "save_size": 131072,
+      "main_valid_sectors": 28,
+      "logical_ids_per_counter": "0..13",
+      "sectors_28_31_all_zero": true
+    },
+    {
+      "rom": "Pokemon - Version Saphir (France).gba",
+      "save": "Pokemon - Version Saphir (France).sav",
+      "game_code": "AXPF",
+      "revision": 0,
+      "rom_size": 16777216,
+      "rom_sha1": "c269b5692b2d0e5800ba1ddf117fda95ac648634",
+      "rom_last_non_ff": 15405663,
+      "rom_longest_ff": [
+        7050752,
+        13631488
+      ],
+      "save_sha1": "ee5a8da284c2ad8c6e0785becd434b6f623d19d5",
+      "save_counters": [
+        21,
+        22
+      ],
+      "save_size": 131072,
+      "main_valid_sectors": 28,
+      "logical_ids_per_counter": "0..13",
+      "sectors_28_31_all_zero": true
+    },
+    {
+      "rom": "Pokemon - Versione Zaffiro (Italy) (Rev 1).gba",
+      "save": "Pokemon - Versione Zaffiro (Italy) (Rev 1).sav",
+      "game_code": "AXPI",
+      "revision": 1,
+      "rom_size": 16777216,
+      "rom_sha1": "73edf67b9b82ff12795622dca412733755d2c0fe",
+      "rom_last_non_ff": 15405267,
+      "rom_longest_ff": [
+        7023136,
+        13631488
+      ],
+      "save_sha1": "f25bea5e1bbadb7d8352e0865322d1f584750126",
+      "save_counters": [
+        22,
+        23
+      ],
+      "save_size": 131072,
+      "main_valid_sectors": 28,
+      "logical_ids_per_counter": "0..13",
+      "sectors_28_31_all_zero": true
+    },
+    {
+      "rom": "Pokemon - Versione Zaffiro (Italy).gba",
+      "save": "Pokemon - Versione Zaffiro (Italy).sav",
+      "game_code": "AXPI",
+      "revision": 0,
+      "rom_size": 16777216,
+      "rom_sha1": "f729dd571fb2c09e72c5c1d68fe0a21e72713d34",
+      "rom_last_non_ff": 15405267,
+      "rom_longest_ff": [
+        7023136,
+        13631488
+      ],
+      "save_sha1": "b50945b49e5915841ef4175bbc2570f27fce7cc3",
+      "save_counters": [
+        23,
+        24
+      ],
+      "save_size": 131072,
+      "main_valid_sectors": 28,
+      "logical_ids_per_counter": "0..13",
+      "sectors_28_31_all_zero": true
+    }
+  ]
+}
