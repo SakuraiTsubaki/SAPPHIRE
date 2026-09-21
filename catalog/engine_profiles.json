@@ -42,7 +42,9 @@
       "payload_base_offset": 16781312,
       "payload_capacity_bytes": 16773120,
       "relocation_directory_capacity_entries": 120,
-      "rom_container_validation": "reports/expanded-rom-container-validation.json"
+      "rom_container_validation": "reports/expanded-rom-container-validation.json",
+      "pair_builder": "tools/sapphire_expand_pair.py",
+      "save_extension_offline_recovery": true
     }
   }
 }
