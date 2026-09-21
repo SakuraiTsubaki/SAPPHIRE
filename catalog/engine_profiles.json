@@ -1,20 +1,27 @@
 {
-  "schema_version": 1,
+  "schema_version": 2,
   "project": "SAPPHIRE",
   "profiles": {
     "classic": {
       "status": "active",
-      "purpose": "Current 8 MiB Sapphire-compatible ROM patching and external-event work",
-      "input_rom_size_bytes": 8388608,
-      "max_rom_size_bytes": 8388608,
+      "purpose": "Current native-size Sapphire ROM patching and external-event work",
+      "input_rom_sizes_bytes": [
+        8388608,
+        16777216
+      ],
+      "output_same_size_as_input": true,
       "save_extension": false,
       "form_change": false
     },
     "expanded": {
       "status": "foundation",
       "purpose": "Generation 10-ready Sapphire-native expansion profile",
-      "input_rom_size_bytes": 8388608,
-      "max_rom_size_bytes": 33554432,
+      "accepted_input_rom_sizes_bytes": [
+        8388608,
+        16777216
+      ],
+      "common_expansion_base_offset": 16777216,
+      "output_rom_size_bytes": 33554432,
       "logical_id_bits": 16,
       "versioned_save_extension": true,
       "variable_table_relocation": true,
