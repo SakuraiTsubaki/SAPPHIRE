@@ -1,5 +1,5 @@
 {
-  "schema_version": 1,
+  "schema_version": 2,
   "project": "SAPPHIRE",
   "purpose": "Generation 10 readiness without pre-assigning unknown future content IDs",
   "policy": {
@@ -36,6 +36,11 @@
       "ability_selection": "altAbility:1 bit; ability ID is derived rather than stored"
     }
   },
+  "observed_rom_matrix": {
+    "japanese_axpj_rev0_size_bytes": 8388608,
+    "western_axpe_axpd_axpf_axpi_axps_size_bytes": 16777216,
+    "note": "All 12 locally supplied/validated Sapphire ROM revisions retain their native size as the preserved prefix."
+  },
   "identifier_model": {
     "logical_id_bits": 16,
     "valid_range": [
@@ -59,10 +64,17 @@
     "move_effects": 2048
   },
   "rom": {
-    "classic_input_size_bytes": 8388608,
-    "expanded_profile_max_size_bytes": 33554432,
+    "classic_input_sizes_bytes": [
+      8388608,
+      16777216
+    ],
+    "common_expansion_base_offset": 16777216,
+    "expanded_profile_size_bytes": 33554432,
+    "common_expansion_capacity_bytes": 16777216,
     "gba_rom_window": "0x08000000-0x09FFFFFF",
-    "expansion_strategy": "relocate variable tables and assets into explicit expanded-profile regions; do not depend on incidental 0xFF gaps"
+    "input_prefix_preserved_byte_for_byte": true,
+    "japanese_8_to_16_mib_gap_policy": "padding/reserved; common expanded tables begin at 16 MiB for identical cross-region addresses",
+    "expansion_strategy": "preserve each native ROM prefix and allocate expanded tables/assets only at or above the shared 16 MiB base"
   },
   "save": {
     "preserve_gen3_box_pokemon_core_layout": true,
@@ -87,7 +99,7 @@
   },
   "next_gates": [
     "audit every Sapphire hard-coded species/move/item/ability/type bound",
-    "define the 32 MiB expanded ROM memory map",
+    "establish the shared 16 MiB expansion base and 32 MiB expanded container",
     "audit save sectors before allocating extension data",
     "replace fixed table-end checks with count-driven checks",
     "add relocation manifests for each expanded table",
