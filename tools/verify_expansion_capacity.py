@@ -20,6 +20,12 @@ JP_SIZE = 8 * 1024 * 1024
 WESTERN_SIZE = 16 * 1024 * 1024
 COMMON_EXPANSION_BASE = 16 * 1024 * 1024
 EXPANDED_SIZE = 32 * 1024 * 1024
+CONTROL_SIZE = 0x1000
+PAYLOAD_BASE = COMMON_EXPANSION_BASE + CONTROL_SIZE
+PAYLOAD_CAPACITY = EXPANDED_SIZE - PAYLOAD_BASE
+CONTROL_MAGIC = "SAPPX10\\0"
+DIRECTORY_ENTRY_SIZE = 32
+DIRECTORY_CAPACITY = 120
 INVALID_U16 = 0xFFFF
 
 
@@ -60,6 +66,26 @@ def verify(path: Path) -> dict:
         errors.append("common expansion capacity must be 16 MiB")
     if not rom.get("input_prefix_preserved_byte_for_byte"):
         errors.append("native ROM input prefix must be preserved byte-for-byte")
+    if rom.get("expanded_container_implemented") is not True:
+        errors.append("expanded ROM container must be marked implemented")
+    if rom.get("control_page_size_bytes") != CONTROL_SIZE:
+        errors.append("SAPPX10 control page must be 4 KiB")
+    if rom.get("control_magic") != CONTROL_MAGIC:
+        errors.append("expanded ROM control magic must be SAPPX10\\0")
+    if rom.get("control_header_size_bytes") != 0x100:
+        errors.append("SAPPX10 fixed header must be 256 bytes")
+    if rom.get("relocation_directory_entry_size_bytes") != DIRECTORY_ENTRY_SIZE:
+        errors.append("relocation directory entries must be 32 bytes")
+    if rom.get("relocation_directory_capacity_entries") != DIRECTORY_CAPACITY:
+        errors.append("relocation directory must reserve 120 entries")
+    if rom.get("payload_base_offset") != PAYLOAD_BASE:
+        errors.append("expanded ROM payload base must follow the 4 KiB control page")
+    if rom.get("payload_capacity_bytes") != PAYLOAD_CAPACITY:
+        errors.append("expanded ROM payload capacity does not match the 32 MiB window")
+    if rom.get("layout") != "catalog/expanded_rom_layout.json":
+        errors.append("expanded ROM layout manifest path is not canonical")
+    if rom.get("builder") != "tools/sapphire_rom_expansion.py":
+        errors.append("expanded ROM builder path is not canonical")
 
     save = data.get("save", {})
     if not save.get("preserve_gen3_box_pokemon_core_layout"):
@@ -93,6 +119,9 @@ def verify(path: Path) -> dict:
         "logical_id_bits": ids.get("logical_id_bits"),
         "common_expansion_base_offset": rom.get("common_expansion_base_offset"),
         "expanded_profile_size_bytes": rom.get("expanded_profile_size_bytes"),
+        "control_page_size_bytes": rom.get("control_page_size_bytes"),
+        "payload_base_offset": rom.get("payload_base_offset"),
+        "payload_capacity_bytes": rom.get("payload_capacity_bytes"),
     }
 
 
