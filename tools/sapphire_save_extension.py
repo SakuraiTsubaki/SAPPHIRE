@@ -244,23 +244,38 @@ def parse_extension_sector(sector: bytes) -> dict | None:
 
 def extension_status(data: bytes) -> dict:
     copies = []
+    invalid_copies = []
     unknown_nonblank = []
     for sector_id in EXT_SECTORS:
         sector = data[sector_id * SECTOR_SIZE:(sector_id + 1) * SECTOR_SIZE]
-        parsed = parse_extension_sector(sector)
+        if is_blank_sector(sector):
+            continue
+        if sector[:8] != MAGIC:
+            unknown_nonblank.append(sector_id)
+            continue
+        try:
+            parsed = parse_extension_sector(sector)
+        except ValueError as exc:
+            invalid_copies.append({"sector": sector_id, "error": str(exc)})
+            continue
         if parsed is not None:
             copies.append({"sector": sector_id, **parsed})
-        elif not is_blank_sector(sector):
-            unknown_nonblank.append(sector_id)
 
     if unknown_nonblank:
         return {
             "result": "unknown_nonblank",
             "unknown_nonblank_sectors": unknown_nonblank,
             "copies": copies,
+            "invalid_copies": invalid_copies,
         }
     if not copies:
-        return {"result": "empty", "copies": []}
+        if invalid_copies:
+            return {
+                "result": "invalid_no_valid_copy",
+                "copies": [],
+                "invalid_copies": invalid_copies,
+            }
+        return {"result": "empty", "copies": [], "invalid_copies": []}
 
     latest = copies[0]
     for candidate in copies[1:]:
@@ -269,6 +284,8 @@ def extension_status(data: bytes) -> dict:
     return {
         "result": "pass",
         "copies": copies,
+        "invalid_copies": invalid_copies,
+        "degraded": bool(invalid_copies),
         "latest": latest,
     }
 
@@ -280,6 +297,14 @@ def initialize(rom: bytes, save: bytes) -> tuple[bytes, dict]:
     if status["result"] == "unknown_nonblank":
         raise ValueError(
             "sectors 30/31 contain unknown nonblank data; refusing to overwrite"
+        )
+    if status["result"] == "invalid_no_valid_copy":
+        raise ValueError(
+            "sectors 30/31 contain SAPPXSV1 data but neither copy is valid; refusing to reset"
+        )
+    if status["result"] == "pass":
+        raise ValueError(
+            "save extension is already initialized; refusing to reset existing expanded state"
         )
 
     payload = build_payload()
@@ -354,7 +379,7 @@ def main() -> int:
         "extension": ext,
     }
     print(json.dumps(report, indent=2, ensure_ascii=False))
-    return 0 if ext["result"] != "unknown_nonblank" else 1
+    return 0 if ext["result"] in ("empty", "pass") else 1
 
 
 if __name__ == "__main__":
