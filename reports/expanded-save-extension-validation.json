@@ -1,0 +1,165 @@
+{
+  "schema_version": 1,
+  "date": "2026-09-21",
+  "project": "SAPPHIRE",
+  "test": "Initialize mirrored SAPPXSV1 extension sectors on copies of all 12 supplied saves",
+  "result": "pass",
+  "save_count": 12,
+  "save_size_unchanged": true,
+  "sector_size_bytes": 4096,
+  "extension_sectors": [
+    30,
+    31
+  ],
+  "header_size_bytes": 64,
+  "payload_bytes_per_copy": 4032,
+  "payload_schema": {
+    "expanded_species_seen": {
+      "offset": 0,
+      "size": 512,
+      "capacity_bits": 4096
+    },
+    "expanded_species_caught": {
+      "offset": 512,
+      "size": 512,
+      "capacity_bits": 4096
+    },
+    "ability_slot_2bit": {
+      "offset": 1024,
+      "size": 107,
+      "mon_slots": 426
+    },
+    "reserved_from_offset": 1152,
+    "form_change": "deferred; no active form-change data assigned"
+  },
+  "invariants": [
+    "sectors 0-29 preserved byte-for-byte",
+    "save remains exactly 128 KiB",
+    "both extension copies pass header CRC32 and payload CRC32",
+    "extension header binds game code, revision and current main-save counter",
+    "no ROM/save binary is stored in this repository"
+  ],
+  "outputs": [
+    {
+      "file": "Pocket Monsters - Sapphire (Japan).sav",
+      "input_sha1": "5214f31d45192990369e68ababc7afc1697453fc",
+      "output_sha1": "e8eeb9b67129d8acb6c4e77f2133451e390ce676",
+      "base_save_counter": 13,
+      "prefix_sectors_0_29_preserved": true,
+      "sector_30_magic": "SAPPXSV1",
+      "sector_31_magic": "SAPPXSV1",
+      "verify_result": "pass"
+    },
+    {
+      "file": "Pokemon - Edicion Zafiro (Spain) (Rev 1).sav",
+      "input_sha1": "0c49043e8667ef24f5292394706971ec9773509b",
+      "output_sha1": "d571124048804701f6b52dcd07ea17512cbe256d",
+      "base_save_counter": 14,
+      "prefix_sectors_0_29_preserved": true,
+      "sector_30_magic": "SAPPXSV1",
+      "sector_31_magic": "SAPPXSV1",
+      "verify_result": "pass"
+    },
+    {
+      "file": "Pokemon - Edicion Zafiro (Spain).sav",
+      "input_sha1": "02e2ac87a939eabd933ad8485ac6260e63b3e0db",
+      "output_sha1": "73dd817d0efa08d4bfb1f276e21c2ef6d113b9e7",
+      "base_save_counter": 15,
+      "prefix_sectors_0_29_preserved": true,
+      "sector_30_magic": "SAPPXSV1",
+      "sector_31_magic": "SAPPXSV1",
+      "verify_result": "pass"
+    },
+    {
+      "file": "Pokemon - Saphir-Edition (Germany) (Rev 1).sav",
+      "input_sha1": "578b376603e4af46d26d4da04a54e72bbe3810ec",
+      "output_sha1": "78edf1c97502e4cfdd3f88534c181a9706cfacd2",
+      "base_save_counter": 16,
+      "prefix_sectors_0_29_preserved": true,
+      "sector_30_magic": "SAPPXSV1",
+      "sector_31_magic": "SAPPXSV1",
+      "verify_result": "pass"
+    },
+    {
+      "file": "Pokemon - Saphir-Edition (Germany).sav",
+      "input_sha1": "fe917d7d01e9291249137fc09440ce30732aaf40",
+      "output_sha1": "8438a278c1fd8319f2009cb7975d0f0d0801975d",
+      "base_save_counter": 17,
+      "prefix_sectors_0_29_preserved": true,
+      "sector_30_magic": "SAPPXSV1",
+      "sector_31_magic": "SAPPXSV1",
+      "verify_result": "pass"
+    },
+    {
+      "file": "Pokemon - Sapphire Version (Europe) (Rev 1).sav",
+      "input_sha1": "6d70f29382f9609a8bf1e8145724fa959907a1ad",
+      "output_sha1": "93fee92d73666dbe06093e295aa1590f0076596b",
+      "base_save_counter": 18,
+      "prefix_sectors_0_29_preserved": true,
+      "sector_30_magic": "SAPPXSV1",
+      "sector_31_magic": "SAPPXSV1",
+      "verify_result": "pass"
+    },
+    {
+      "file": "Pokemon - Sapphire Version (USA).sav",
+      "input_sha1": "c17c290fd918480aa29289a770bf2273dbab1873",
+      "output_sha1": "634ab0f5e7f3c71cb3102c402c9fb281c3b9a762",
+      "base_save_counter": 19,
+      "prefix_sectors_0_29_preserved": true,
+      "sector_30_magic": "SAPPXSV1",
+      "sector_31_magic": "SAPPXSV1",
+      "verify_result": "pass"
+    },
+    {
+      "file": "Pokemon - Sapphire Version (USA, Europe) (Rev 2).sav",
+      "input_sha1": "0a1c96306cfe203258a96e8f8026935259637280",
+      "output_sha1": "0101be374254ec59988a091099f73e457229464e",
+      "base_save_counter": 20,
+      "prefix_sectors_0_29_preserved": true,
+      "sector_30_magic": "SAPPXSV1",
+      "sector_31_magic": "SAPPXSV1",
+      "verify_result": "pass"
+    },
+    {
+      "file": "Pokemon - Version Saphir (France) (Rev 1).sav",
+      "input_sha1": "f18f11cd2a93070fa2e9c4f8a44bd58d76468d7b",
+      "output_sha1": "ef644e9fa4ad09d128415ed01265fa2044b38624",
+      "base_save_counter": 21,
+      "prefix_sectors_0_29_preserved": true,
+      "sector_30_magic": "SAPPXSV1",
+      "sector_31_magic": "SAPPXSV1",
+      "verify_result": "pass"
+    },
+    {
+      "file": "Pokemon - Version Saphir (France).sav",
+      "input_sha1": "ee5a8da284c2ad8c6e0785becd434b6f623d19d5",
+      "output_sha1": "a09e64a5c1eb443991e49a8b0d4ddf67456829e5",
+      "base_save_counter": 22,
+      "prefix_sectors_0_29_preserved": true,
+      "sector_30_magic": "SAPPXSV1",
+      "sector_31_magic": "SAPPXSV1",
+      "verify_result": "pass"
+    },
+    {
+      "file": "Pokemon - Versione Zaffiro (Italy) (Rev 1).sav",
+      "input_sha1": "f25bea5e1bbadb7d8352e0865322d1f584750126",
+      "output_sha1": "45e2847242a40964d6c09f2fec574efda010a5e2",
+      "base_save_counter": 23,
+      "prefix_sectors_0_29_preserved": true,
+      "sector_30_magic": "SAPPXSV1",
+      "sector_31_magic": "SAPPXSV1",
+      "verify_result": "pass"
+    },
+    {
+      "file": "Pokemon - Versione Zaffiro (Italy).sav",
+      "input_sha1": "b50945b49e5915841ef4175bbc2570f27fce7cc3",
+      "output_sha1": "4d418de0a9ca24c2fb8b3b1664686ddc58cb8199",
+      "base_save_counter": 24,
+      "prefix_sectors_0_29_preserved": true,
+      "sector_30_magic": "SAPPXSV1",
+      "sector_31_magic": "SAPPXSV1",
+      "verify_result": "pass"
+    }
+  ],
+  "runtime_status": "not integrated into game save/load code yet"
+}
