@@ -2,7 +2,7 @@
   "schema_version": 1,
   "project": "SAPPHIRE",
   "profile": "expanded",
-  "status": "source_and_save_validated_runtime_integration_pending",
+  "status": "offline_init_and_ab_recovery_validated_runtime_integration_pending",
   "evidence": {
     "supplied_save_count": 12,
     "save_size_bytes": 131072,
@@ -87,7 +87,9 @@
       "form_change_status": "deferred; future metadata is reserved but no active form-change state is assigned"
     },
     "blank_sector_policy": "both all-0x00 and all-0xFF are treated as blank/uninitialized",
-    "counter_ordering": "u32 wrap-aware; 0 follows 0xFFFFFFFF"
+    "counter_ordering": "u32 wrap-aware; 0 follows 0xFFFFFFFF",
+    "recovery_policy": "one invalid SAPPXSV1 copy is tolerated when the other copy passes header/payload CRC validation",
+    "reinitialization_policy": "init refuses already-initialized valid SAPPXSV1 data to avoid destroying expanded state"
   },
   "invariants": [
     "sectors 0-27 remain the original rotating main save",
@@ -98,7 +100,9 @@
     "load selects the newest valid extension sequence",
     "existing Gen III BoxPokemon layout is not changed",
     "all 336 supplied retail main-save sectors pass the original Sapphire checksum algorithm",
-    "retail source labels sectors 30-31 unused; classic profile does not repurpose them"
+    "retail source labels sectors 30-31 unused; classic profile does not repurpose them",
+    "offline inspection tolerates one CRC-invalid extension copy and selects the remaining valid copy",
+    "extension initialization refuses to reset an already initialized save"
   ],
   "runtime_requirements": [
     "read extension sectors 30/31 after the original main save is selected",
