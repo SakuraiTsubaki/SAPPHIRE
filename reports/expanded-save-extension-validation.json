@@ -1,5 +1,5 @@
 {
-  "schema_version": 1,
+  "schema_version": 2,
   "date": "2026-09-21",
   "project": "SAPPHIRE",
   "test": "Initialize mirrored SAPPXSV1 extension sectors on copies of all 12 supplied saves",
@@ -37,7 +37,8 @@
     "save remains exactly 128 KiB",
     "both extension copies pass header CRC32 and payload CRC32",
     "extension header binds game code, revision and current main-save counter",
-    "no ROM/save binary is stored in this repository"
+    "no ROM/save binary is stored in this repository",
+    "all input retail main-save sectors pass the original Sapphire checksum algorithm"
   ],
   "outputs": [
     {
@@ -48,7 +49,8 @@
       "prefix_sectors_0_29_preserved": true,
       "sector_30_magic": "SAPPXSV1",
       "sector_31_magic": "SAPPXSV1",
-      "verify_result": "pass"
+      "verify_result": "pass",
+      "input_main_sector_checksums_valid": true
     },
     {
       "file": "Pokemon - Edicion Zafiro (Spain) (Rev 1).sav",
@@ -58,7 +60,8 @@
       "prefix_sectors_0_29_preserved": true,
       "sector_30_magic": "SAPPXSV1",
       "sector_31_magic": "SAPPXSV1",
-      "verify_result": "pass"
+      "verify_result": "pass",
+      "input_main_sector_checksums_valid": true
     },
     {
       "file": "Pokemon - Edicion Zafiro (Spain).sav",
@@ -68,7 +71,8 @@
       "prefix_sectors_0_29_preserved": true,
       "sector_30_magic": "SAPPXSV1",
       "sector_31_magic": "SAPPXSV1",
-      "verify_result": "pass"
+      "verify_result": "pass",
+      "input_main_sector_checksums_valid": true
     },
     {
       "file": "Pokemon - Saphir-Edition (Germany) (Rev 1).sav",
@@ -78,7 +82,8 @@
       "prefix_sectors_0_29_preserved": true,
       "sector_30_magic": "SAPPXSV1",
       "sector_31_magic": "SAPPXSV1",
-      "verify_result": "pass"
+      "verify_result": "pass",
+      "input_main_sector_checksums_valid": true
     },
     {
       "file": "Pokemon - Saphir-Edition (Germany).sav",
@@ -88,7 +93,8 @@
       "prefix_sectors_0_29_preserved": true,
       "sector_30_magic": "SAPPXSV1",
       "sector_31_magic": "SAPPXSV1",
-      "verify_result": "pass"
+      "verify_result": "pass",
+      "input_main_sector_checksums_valid": true
     },
     {
       "file": "Pokemon - Sapphire Version (Europe) (Rev 1).sav",
@@ -98,7 +104,8 @@
       "prefix_sectors_0_29_preserved": true,
       "sector_30_magic": "SAPPXSV1",
       "sector_31_magic": "SAPPXSV1",
-      "verify_result": "pass"
+      "verify_result": "pass",
+      "input_main_sector_checksums_valid": true
     },
     {
       "file": "Pokemon - Sapphire Version (USA).sav",
@@ -108,7 +115,8 @@
       "prefix_sectors_0_29_preserved": true,
       "sector_30_magic": "SAPPXSV1",
       "sector_31_magic": "SAPPXSV1",
-      "verify_result": "pass"
+      "verify_result": "pass",
+      "input_main_sector_checksums_valid": true
     },
     {
       "file": "Pokemon - Sapphire Version (USA, Europe) (Rev 2).sav",
@@ -118,7 +126,8 @@
       "prefix_sectors_0_29_preserved": true,
       "sector_30_magic": "SAPPXSV1",
       "sector_31_magic": "SAPPXSV1",
-      "verify_result": "pass"
+      "verify_result": "pass",
+      "input_main_sector_checksums_valid": true
     },
     {
       "file": "Pokemon - Version Saphir (France) (Rev 1).sav",
@@ -128,7 +137,8 @@
       "prefix_sectors_0_29_preserved": true,
       "sector_30_magic": "SAPPXSV1",
       "sector_31_magic": "SAPPXSV1",
-      "verify_result": "pass"
+      "verify_result": "pass",
+      "input_main_sector_checksums_valid": true
     },
     {
       "file": "Pokemon - Version Saphir (France).sav",
@@ -138,7 +148,8 @@
       "prefix_sectors_0_29_preserved": true,
       "sector_30_magic": "SAPPXSV1",
       "sector_31_magic": "SAPPXSV1",
-      "verify_result": "pass"
+      "verify_result": "pass",
+      "input_main_sector_checksums_valid": true
     },
     {
       "file": "Pokemon - Versione Zaffiro (Italy) (Rev 1).sav",
@@ -148,7 +159,8 @@
       "prefix_sectors_0_29_preserved": true,
       "sector_30_magic": "SAPPXSV1",
       "sector_31_magic": "SAPPXSV1",
-      "verify_result": "pass"
+      "verify_result": "pass",
+      "input_main_sector_checksums_valid": true
     },
     {
       "file": "Pokemon - Versione Zaffiro (Italy).sav",
@@ -158,8 +170,15 @@
       "prefix_sectors_0_29_preserved": true,
       "sector_30_magic": "SAPPXSV1",
       "sector_31_magic": "SAPPXSV1",
-      "verify_result": "pass"
+      "verify_result": "pass",
+      "input_main_sector_checksums_valid": true
     }
   ],
-  "runtime_status": "not integrated into game save/load code yet"
+  "runtime_status": "not integrated into game save/load code yet",
+  "input_legacy_validation": {
+    "save_count": 12,
+    "main_sectors_per_save": 28,
+    "total_main_sector_checksums_validated": 336,
+    "result": "pass"
+  }
 }
