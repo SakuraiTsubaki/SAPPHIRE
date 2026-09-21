@@ -47,9 +47,11 @@ The 16-bit namespace intentionally leaves much more room than these floors.
 
 ## ROM profile
 
-The current `classic` tooling remains an 8 MiB Sapphire patch path.
+The native ROM size is region-dependent: the validated Japanese `AXPJ rev0` image is 8 MiB, while the validated western `AXPE/AXPD/AXPF/AXPI/AXPS` images are 16 MiB. The `classic` profile preserves each input at its native size.
 
-The new `expanded` profile targets the standard 32 MiB GBA ROM window. Expanded tables and assets must be placed into an explicit memory map. They must not rely on whichever long `0xFF` block happens to exist in a particular regional ROM.
+The new `expanded` profile targets a 32 MiB ROM and uses **16 MiB (`0x01000000`) as the common expansion base** for every region. The Japanese image is padded/reserved up to that shared base; western images already occupy the lower 16 MiB. This gives every supported revision the same addresses for new common tables and assets.
+
+Expanded tables and assets must be placed into an explicit memory map at or above the shared base. They must not rely on whichever long `0xFF` block happens to exist in a particular regional ROM.
 
 The expanded profile therefore requires relocation metadata for:
 
@@ -86,7 +88,7 @@ No save-layout change is considered implemented until old-save load, migration, 
 ## Required implementation order
 
 1. Audit every hard-coded species, move, item, ability and type bound in Sapphire.
-2. Produce a 32 MiB expanded ROM memory map.
+2. Establish the shared 16 MiB expansion base and 32 MiB expanded ROM container.
 3. Audit save sectors and identify a safe versioned extension location.
 4. Replace historical fixed-end comparisons with count-driven checks.
 5. Add relocation manifests and patchers for each table family.
