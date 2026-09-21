@@ -2,14 +2,25 @@
   "schema_version": 1,
   "project": "SAPPHIRE",
   "profile": "expanded",
-  "status": "static_validated_runtime_integration_pending",
+  "status": "source_and_save_validated_runtime_integration_pending",
   "evidence": {
     "supplied_save_count": 12,
     "save_size_bytes": 131072,
     "all_sector_30_31_zero_before_initialization": true,
     "all_main_save_slots_valid": true,
     "report": "reports/rom-save-expansion-audit.json",
-    "validation": "reports/expanded-save-extension-validation.json"
+    "validation": "reports/expanded-save-extension-validation.json",
+    "source_baseline": {
+      "repository": "pret/pokeruby",
+      "ref": "63a8cbf0016b351a4e68f7036fa0b77e23d2f2c1",
+      "file": "src/save.c",
+      "unused_sector_symbol": "sUnusedFlashSectors[] = { 30, 31 }",
+      "normal_save_behavior": "SAVE_NORMAL writes sectors 0-27 only",
+      "overwrite_behavior": "SAVE_OVERWRITE_DIFFERENT_FILE erases sectors 28-31"
+    },
+    "all_main_save_sector_checksums_valid": true,
+    "main_sector_checksum_count": 336,
+    "checksum_method": "Retail CalculateChecksum over each logical chunk size; 28 sectors x 12 saves"
   },
   "flash": {
     "total_size_bytes": 131072,
@@ -83,7 +94,9 @@
     "save file size remains 128 KiB",
     "both extension copies carry CRC32-protected headers and payloads",
     "load selects the newest valid extension sequence",
-    "existing Gen III BoxPokemon layout is not changed"
+    "existing Gen III BoxPokemon layout is not changed",
+    "all 336 supplied retail main-save sectors pass the original Sapphire checksum algorithm",
+    "retail source labels sectors 30-31 unused; classic profile does not repurpose them"
   ],
   "runtime_requirements": [
     "read extension sectors 30/31 after the original main save is selected",
