@@ -62,6 +62,26 @@ def calculate_save_checksum(data: bytes, size: int) -> int:
     return ((total >> 16) + total) & 0xFFFF
 
 
+def is_blank_sector(data: bytes) -> bool:
+    return not any(data) or all(b == 0xFF for b in data)
+
+
+def is_newer_u32(candidate: int, current: int) -> bool:
+    delta = (candidate - current) & 0xFFFFFFFF
+    return 0 < delta < 0x80000000
+
+
+def latest_u32(values) -> int:
+    values = list(values)
+    if not values:
+        raise ValueError("no counters available")
+    latest = values[0]
+    for value in values[1:]:
+        if is_newer_u32(value, latest):
+            latest = value
+    return latest
+
+
 def analyze_rom(data: bytes) -> dict:
     digest = sha1(data)
     known = KNOWN_ROMS.get(digest)
@@ -130,7 +150,7 @@ def analyze_main_save(data: bytes) -> dict:
             {"counter": counter, "logical_ids": ids}
             for counter, ids in sorted(normalized.items())
         ],
-        "latest_counter": max(normalized),
+        "latest_counter": latest_u32(normalized),
     }
 
 
@@ -230,7 +250,7 @@ def extension_status(data: bytes) -> dict:
         parsed = parse_extension_sector(sector)
         if parsed is not None:
             copies.append({"sector": sector_id, **parsed})
-        elif any(sector):
+        elif not is_blank_sector(sector):
             unknown_nonblank.append(sector_id)
 
     if unknown_nonblank:
@@ -242,7 +262,10 @@ def extension_status(data: bytes) -> dict:
     if not copies:
         return {"result": "empty", "copies": []}
 
-    latest = max(copies, key=lambda x: x["sequence"])
+    latest = copies[0]
+    for candidate in copies[1:]:
+        if is_newer_u32(candidate["sequence"], latest["sequence"]):
+            latest = candidate
     return {
         "result": "pass",
         "copies": copies,
