@@ -34,7 +34,8 @@ Form-change work is currently **deferred**. The active expansion priority is to 
 
 - 16-bit logical ID namespace with `0xFFFF` reserved as invalid.
 - Capacity floors: 4096 species, 8192 forms, 4096 moves, 4096 items, 2048 abilities, 256 types.
-- Expanded ROM profile targets the standard 32 MiB GBA ROM window.
+- Native ROM size is 8 MiB for Japanese AXPJ rev0 and 16 MiB for the validated western revisions.
+- Expanded ROM profile uses a shared 16 MiB (`0x01000000`) expansion base and a 32 MiB final ROM size.
 - Variable tables and assets must use explicit relocation metadata instead of incidental free-space assumptions.
 - Existing Gen III BoxPokemon layout remains the compatibility core.
 - Modern-only persistent state requires a versioned save extension after a save-sector audit.
