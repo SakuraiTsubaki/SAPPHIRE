@@ -1,5 +1,5 @@
 {
-  "schema_version": 2,
+  "schema_version": 3,
   "date": "2026-09-21",
   "project": "SAPPHIRE",
   "test": "Initialize mirrored SAPPXSV1 extension sectors on copies of all 12 supplied saves",
@@ -174,11 +174,31 @@
       "input_main_sector_checksums_valid": true
     }
   ],
-  "runtime_status": "not integrated into game save/load code yet",
+  "runtime_status": "offline initialization and A/B recovery implemented; in-game save/load hooks not integrated yet",
   "input_legacy_validation": {
     "save_count": 12,
     "main_sectors_per_save": 28,
     "total_main_sector_checksums_validated": 336,
     "result": "pass"
+  },
+  "recovery_validation": {
+    "result": "pass",
+    "test_save": "Pokemon - Sapphire Version (USA).sav",
+    "clean_copies": [
+      30,
+      31
+    ],
+    "newest_clean_copy": 31,
+    "one_copy_corrupted": {
+      "corrupted_sector": 31,
+      "expected_result": "pass",
+      "degraded": true,
+      "selected_valid_sector": 30
+    },
+    "both_copies_corrupted": {
+      "expected_result": "invalid_no_valid_copy",
+      "invalid_copy_count": 2
+    },
+    "reinitialization_guard": "init refuses a save that already contains a valid SAPPXSV1 extension"
   }
 }
