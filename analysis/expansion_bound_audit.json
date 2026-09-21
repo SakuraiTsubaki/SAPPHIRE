@@ -1,0 +1,232 @@
+{
+  "schema_version": 1,
+  "project": "SAPPHIRE",
+  "source": {
+    "repository": "pret/pokeruby",
+    "ref": "63a8cbf0016b351a4e68f7036fa0b77e23d2f2c1"
+  },
+  "status": "initial_core_bound_audit",
+  "purpose": "Find original Gen III hard limits that must be removed before later-generation content import",
+  "findings": [
+    {
+      "id": "SPECIES-001",
+      "priority": "P0",
+      "domain": "species",
+      "locations": [
+        "src/contest_2.c::SanitizeSpecies",
+        "src/pokemon_2.c::species-name bounds",
+        "src/rom_8077ABC.c"
+      ],
+      "current_bound": "NUM_SPECIES / SPECIES_EGG",
+      "problem": "New logical species above the original bound are sanitized or treated as unknown.",
+      "required_action": "Replace original fixed species-end checks with expanded-profile registry/count checks while preserving classic behavior."
+    },
+    {
+      "id": "SPECIES-002",
+      "priority": "P0",
+      "domain": "evolution",
+      "locations": [
+        "src/data/pokemon/evolution.h",
+        "src/daycare.c"
+      ],
+      "current_bound": "gEvolutionTable[NUM_SPECIES][5] and loops hard-coded to 5",
+      "problem": "Evolution fan-out is fixed to five entries per species and cannot represent arbitrary modern evolution graphs.",
+      "required_action": "Replace fixed [species][5] layout with count/index or variable-length evolution lists."
+    },
+    {
+      "id": "SPECIES-003",
+      "priority": "P0",
+      "domain": "pokedex_save",
+      "locations": [
+        "include/global.h::POKEMON_SLOTS_NUMBER",
+        "include/global.h::DEX_FLAGS_NO",
+        "src/pokedex.c",
+        "src/new_game.c"
+      ],
+      "current_bound": "POKEMON_SLOTS_NUMBER = 412; save-owned/seen bitsets sized from it",
+      "problem": "Original save Pokédex bitsets cannot scale to later-generation species.",
+      "required_action": "Keep original bitsets for compatibility and add versioned expanded seen/caught bitsets after the save-sector audit."
+    },
+    {
+      "id": "SPECIES-004",
+      "priority": "P1",
+      "domain": "pokedex_ui",
+      "locations": [
+        "include/pokedex.h::NATIONAL_DEX_COUNT",
+        "src/pokedex.c",
+        "src/credits.c"
+      ],
+      "current_bound": "NATIONAL_DEX_COUNT = 386",
+      "problem": "UI/list/credits buffers are compiled for the Gen III National Dex size.",
+      "required_action": "Make expanded-profile Pokédex lists count-driven and audit temporary arrays before increasing counts."
+    },
+    {
+      "id": "SPECIES-005",
+      "priority": "P1",
+      "domain": "existing_gen3_forms",
+      "locations": [
+        "src/battle_main.c"
+      ],
+      "current_bound": "Unown display species uses NUM_SPECIES + unownForm",
+      "problem": "Appending species directly after NUM_SPECIES can collide with the original Unown form encoding.",
+      "required_action": "Preserve an explicit compatibility mapping for existing Unown forms. Do not treat this as permission to implement modern form-change logic.",
+      "form_change_scope": "existing Gen III compatibility only"
+    },
+    {
+      "id": "SPECIES-006",
+      "priority": "P1",
+      "domain": "species_selection",
+      "locations": [
+        "src/tv.c",
+        "src/daycare.c"
+      ],
+      "current_bound": "Random/scan logic assumes a dense 1..NUM_SPECIES-1 namespace",
+      "problem": "Sparse/reserved logical IDs would be selected or scanned incorrectly.",
+      "required_action": "Use an enabled-species registry or valid-species iterator in the expanded profile."
+    },
+    {
+      "id": "MOVE-001",
+      "priority": "P0",
+      "domain": "moves",
+      "locations": [
+        "src/battle_script_commands.c"
+      ],
+      "current_bound": "Metronome-style selection uses (Random() & 0x1FF) + 1",
+      "problem": "Only a 9-bit candidate range is generated, so move IDs above 512 can never be selected.",
+      "required_action": "Replace mask-based selection with unbiased count/registry-based selection."
+    },
+    {
+      "id": "MOVE-002",
+      "priority": "P0",
+      "domain": "moves",
+      "locations": [
+        "src/contest_2.c::SanitizeMove",
+        "src/contest.c",
+        "src/battle_message.c"
+      ],
+      "current_bound": "NUM_MOVES = 355",
+      "problem": "Expanded move IDs are sanitized or rejected by UI/battle text paths.",
+      "required_action": "Redirect checks to the expanded move registry/count."
+    },
+    {
+      "id": "MOVE-003",
+      "priority": "P1",
+      "domain": "moves",
+      "locations": [
+        "src/pokemon_2.c",
+        "src/pokemon_storage_system_4.c"
+      ],
+      "current_bound": "NUM_MOVES is also used as an in-band sentinel",
+      "problem": "A growing table count is unsafe as a persistent sentinel and complicates relocation.",
+      "required_action": "Use an explicit invalid/sentinel logical ID (0xFFFF) in new expanded-profile lists."
+    },
+    {
+      "id": "ABILITY-001",
+      "priority": "P0",
+      "domain": "abilities",
+      "locations": [
+        "include/pokemon.h::BaseStats"
+      ],
+      "current_bound": "ability1 and ability2 are u8",
+      "problem": "Ability IDs above 255 cannot be represented in base species data; only two slots exist.",
+      "required_action": "Create an expanded ability table with u16 IDs and at least three logical slots; preserve classic BaseStats layout only for classic mode."
+    },
+    {
+      "id": "ABILITY-002",
+      "priority": "P0",
+      "domain": "abilities",
+      "locations": [
+        "include/pokemon.h::BattlePokemon",
+        "src/battle_message.c::gAbilitiesPerBank",
+        "sym_ewram.txt::gLastUsedAbility"
+      ],
+      "current_bound": "battle ability fields/caches are u8",
+      "problem": "Even after widening species data, battle runtime truncates ability IDs above 255.",
+      "required_action": "Widen expanded-profile battle ability state and every controller/message serialization path that carries it."
+    },
+    {
+      "id": "ABILITY-003",
+      "priority": "P0",
+      "domain": "abilities",
+      "locations": [
+        "include/battle_message.h::StringInfoBattle"
+      ],
+      "current_bound": "abilities[4] and lastAbility are 8-bit-era protocol fields",
+      "problem": "Battle controller message structures must agree on widened ability IDs.",
+      "required_action": "Version or widen expanded-profile battle message payloads together; do not patch a single field in isolation."
+    },
+    {
+      "id": "ABILITY-004",
+      "priority": "P0",
+      "domain": "save_pokemon",
+      "locations": [
+        "include/pokemon.h::PokemonSubstruct3",
+        "src/pokemon_2.c::GetAbilityBySpecies"
+      ],
+      "current_bound": "altAbility is one bit and ability ID is derived",
+      "problem": "Modern three-slot/hidden-ability semantics cannot be persisted faithfully with one bit.",
+      "required_action": "Preserve the Gen III BoxPokemon core and persist expanded ability-slot state in the versioned save extension."
+    },
+    {
+      "id": "ITEM-001",
+      "priority": "P1",
+      "domain": "items",
+      "locations": [
+        "src/item.c::SanitizeItemId"
+      ],
+      "current_bound": "Sanitizer uses ARRAY_COUNT(gItems)",
+      "problem": "This path is already table-length-driven, but the relocated table and all pointer users must remain consistent.",
+      "required_action": "Retain count-driven behavior and redirect gItems references through the expanded relocation manifest.",
+      "favorable_existing_pattern": true
+    },
+    {
+      "id": "ITEM-002",
+      "priority": "P2",
+      "domain": "inventory",
+      "locations": [
+        "include/constants/global.h",
+        "include/global.h"
+      ],
+      "current_bound": "Bag/PC slot counts are fixed separately from item ID width",
+      "problem": "More item IDs do not automatically require more bag slots, but UI/storage policy may later need expansion.",
+      "required_action": "Treat inventory slot capacity as a separate axis from item ID/table capacity."
+    },
+    {
+      "id": "TYPE-001",
+      "priority": "P1",
+      "domain": "types",
+      "locations": [
+        "include/pokemon.h::BaseStats",
+        "include/pokemon.h::BattlePokemon",
+        "src/pokemon_summary_screen.c"
+      ],
+      "current_bound": "type fields are u8; summary graphics use NUMBER_OF_MON_TYPES as an atlas offset",
+      "problem": "Logical type growth also changes UI sprite/palette indexing, not just battle type values.",
+      "required_action": "Keep a registry-driven type count and audit every graphics/summary offset before enabling additional types."
+    },
+    {
+      "id": "MOVE_EFFECT-001",
+      "priority": "P0",
+      "domain": "move_effects",
+      "locations": [
+        "include/pokemon.h::BattleMove",
+        "src/battle_script_commands.c",
+        "src/battle_ai_script_commands.c"
+      ],
+      "current_bound": "BattleMove.effect is u8",
+      "problem": "The 2048-effect capacity policy cannot be implemented with the current 8-bit field.",
+      "required_action": "Use a widened expanded-profile move-effect ID and update effect-script dispatch/AI consumers."
+    }
+  ],
+  "immediate_p0_order": [
+    "shared 32 MiB expanded ROM container",
+    "species registry/count boundary",
+    "variable-length evolution storage",
+    "expanded Pokédex persistence",
+    "move random-selection and sanitizer bounds",
+    "u16 ability IDs plus three-slot ability model",
+    "widened battle ability serialization",
+    "widened move-effect IDs"
+  ],
+  "note": "Debug-only bounds were observed but are not release blockers until production paths are clean."
+}
