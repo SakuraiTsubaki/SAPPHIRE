@@ -38,11 +38,11 @@ Form-change work is currently **deferred**. The active expansion priority is to 
 - Expanded ROM profile uses a shared 16 MiB (`0x01000000`) expansion base and a 32 MiB final ROM size.
 - Variable tables and assets must use explicit relocation metadata instead of incidental free-space assumptions.
 - Existing Gen III BoxPokemon layout remains the compatibility core.
-- Modern-only persistent state requires a versioned save extension after a save-sector audit.
+- Modern-only persistent state uses a versioned A/B save extension in retail-unused flash sectors 30-31; the offline format is defined, while expanded-ROM runtime hooks are still pending.
 - Generation 10 IDs and mechanics are not guessed before official data exists.
 - Form metadata is reserved but inactive until form-change work is explicitly resumed.
 
-See `docs/GEN10_EXPANSION.md`, `catalog/expansion_capacity.json`, and `catalog/engine_profiles.json`.
+See `docs/GEN10_EXPANSION.md`, `catalog/expansion_capacity.json`, `catalog/engine_profiles.json`, and `catalog/save_extension_layout.json`.
 
 Validate the capacity policy with:
 
