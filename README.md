@@ -66,7 +66,11 @@ python tools/sapphire_rom_expansion.py verify sapphire.expanded.gba
 python tools/sapphire_save_extension.py inspect sapphire.sav
 python tools/sapphire_save_extension.py init sapphire.gba sapphire.sav sapphire.expanded.sav
 python tools/sapphire_save_extension.py verify sapphire.expanded.sav
+
+python tools/sapphire_expand_pair.py sapphire.gba sapphire.sav sapphire.expanded.gba sapphire.expanded.sav
 ```
+
+The paired expander validates both inputs first, builds both outputs in memory, refuses to overwrite the source pair, and refuses to reset an already initialized SAPPXSV1 save unless a separate migration path is implemented.
 
 The ROM expander accepts the 12 validated Sapphire revisions, preserves the complete native ROM prefix, pads Japanese AXPJ rev0 from 8 MiB to the common 16 MiB base, writes the SAPPX10 control page, and produces an exact 32 MiB image. The validation report is `reports/expanded-rom-container-validation.json`.
 
