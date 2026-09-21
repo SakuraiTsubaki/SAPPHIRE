@@ -79,7 +79,7 @@
   "save": {
     "preserve_gen3_box_pokemon_core_layout": true,
     "versioned_extension_required": true,
-    "extension_allocation_status": "candidate_sectors_30_31_static_validated_runtime_hooks_pending",
+    "extension_allocation_status": "sectors_30_31_profile_defined_runtime_hooks_pending",
     "flash_size_bytes": 131072,
     "sector_size_bytes": 4096,
     "main_save_sectors": [
@@ -100,7 +100,22 @@
     "ability_slot_extension_required_for_modern_three_slot_semantics": true,
     "ability_slot_storage": "2 bits across 426 party+box positions in extension schema v1",
     "form_metadata_reserved_but_inactive_while_form_change_is_deferred": true,
-    "migration_and_rollback_tests_required": true
+    "migration_and_rollback_tests_required": true,
+    "extension_copy_model": "A/B dual copy; highest valid generation wins",
+    "extension_payload_capacity_bytes_per_copy": 4032,
+    "source_evidence": {
+      "repository": "pret/pokeruby",
+      "ref": "63a8cbf0016b351a4e68f7036fa0b77e23d2f2c1",
+      "file": "src/save.c",
+      "symbol": "sUnusedFlashSectors[] = { 30, 31 }"
+    },
+    "supplied_pair_audit": {
+      "rom_save_pairs": 12,
+      "all_main_slots_complete": true,
+      "all_legacy_sector_checksums_valid": true,
+      "all_sector_30_31_blank": true
+    },
+    "runtime_hooks_implemented": false
   },
   "table_policy": {
     "species_data": "relocatable",
