@@ -1,5 +1,5 @@
 {
-  "schema_version": 1,
+  "schema_version": 2,
   "date": "2026-09-21",
   "project": "SAPPHIRE",
   "evidence": "12 uploaded ROM/save basename pairs inspected directly; no ROM or save binaries stored in repository",
@@ -12,7 +12,10 @@
     "all_saves_have_28_valid_main_sectors": true,
     "all_saves_have_two_complete_logical_id_sets_0_13": true,
     "all_sector_28_29_zero_in_supplied_saves": true,
-    "all_sector_30_31_zero_in_supplied_saves": true
+    "all_sector_30_31_zero_in_supplied_saves": true,
+    "all_main_save_sector_checksums_valid": true,
+    "validated_main_save_sector_checksums": 336,
+    "checksum_algorithm": "pret/pokeruby CalculateChecksum over each logical save chunk"
   },
   "rom_expansion": {
     "decision": "use a shared 16 MiB expansion base and a 32 MiB final ROM",
@@ -36,12 +39,6 @@
       28,
       29
     ],
-    "candidate_extension_sectors": [
-      30,
-      31
-    ],
-    "candidate_mode": "A/B mirrored versioned extension",
-    "candidate_payload_bytes_per_copy": 4032,
     "supplied_save_observation": "sectors 30 and 31 are all 0x00 in all 12 supplied saves",
     "source_crosscheck": {
       "repository": "pret/pokeruby",
@@ -54,7 +51,13 @@
         "SAVE_OVERWRITE_DIFFERENT_FILE erases sectors 28-31, so expanded save integration must rewrite/recover extension sectors after that path."
       ]
     },
-    "status": "static layout candidate validated; expanded ROM runtime read/write integration pending"
+    "status": "source and supplied-save layout validated; expanded ROM runtime read/write integration pending",
+    "extension_sectors": [
+      30,
+      31
+    ],
+    "mode": "A/B mirrored versioned extension",
+    "payload_bytes_per_copy": 4032
   },
   "pairs": [
     {
@@ -77,7 +80,9 @@
       "save_size": 131072,
       "main_valid_sectors": 28,
       "logical_ids_per_counter": "0..13",
-      "sectors_28_31_all_zero": true
+      "sectors_28_31_all_zero": true,
+      "main_sector_checksums_valid": true,
+      "validated_main_sector_checksums": 28
     },
     {
       "rom": "Pokemon - Edicion Zafiro (Spain) (Rev 1).gba",
@@ -99,7 +104,9 @@
       "save_size": 131072,
       "main_valid_sectors": 28,
       "logical_ids_per_counter": "0..13",
-      "sectors_28_31_all_zero": true
+      "sectors_28_31_all_zero": true,
+      "main_sector_checksums_valid": true,
+      "validated_main_sector_checksums": 28
     },
     {
       "rom": "Pokemon - Edicion Zafiro (Spain).gba",
@@ -121,7 +128,9 @@
       "save_size": 131072,
       "main_valid_sectors": 28,
       "logical_ids_per_counter": "0..13",
-      "sectors_28_31_all_zero": true
+      "sectors_28_31_all_zero": true,
+      "main_sector_checksums_valid": true,
+      "validated_main_sector_checksums": 28
     },
     {
       "rom": "Pokemon - Saphir-Edition (Germany) (Rev 1).gba",
@@ -143,7 +152,9 @@
       "save_size": 131072,
       "main_valid_sectors": 28,
       "logical_ids_per_counter": "0..13",
-      "sectors_28_31_all_zero": true
+      "sectors_28_31_all_zero": true,
+      "main_sector_checksums_valid": true,
+      "validated_main_sector_checksums": 28
     },
     {
       "rom": "Pokemon - Saphir-Edition (Germany).gba",
@@ -165,7 +176,9 @@
       "save_size": 131072,
       "main_valid_sectors": 28,
       "logical_ids_per_counter": "0..13",
-      "sectors_28_31_all_zero": true
+      "sectors_28_31_all_zero": true,
+      "main_sector_checksums_valid": true,
+      "validated_main_sector_checksums": 28
     },
     {
       "rom": "Pokemon - Sapphire Version (Europe) (Rev 1).gba",
@@ -187,7 +200,9 @@
       "save_size": 131072,
       "main_valid_sectors": 28,
       "logical_ids_per_counter": "0..13",
-      "sectors_28_31_all_zero": true
+      "sectors_28_31_all_zero": true,
+      "main_sector_checksums_valid": true,
+      "validated_main_sector_checksums": 28
     },
     {
       "rom": "Pokemon - Sapphire Version (USA).gba",
@@ -209,7 +224,9 @@
       "save_size": 131072,
       "main_valid_sectors": 28,
       "logical_ids_per_counter": "0..13",
-      "sectors_28_31_all_zero": true
+      "sectors_28_31_all_zero": true,
+      "main_sector_checksums_valid": true,
+      "validated_main_sector_checksums": 28
     },
     {
       "rom": "Pokemon - Sapphire Version (USA, Europe) (Rev 2).gba",
@@ -231,7 +248,9 @@
       "save_size": 131072,
       "main_valid_sectors": 28,
       "logical_ids_per_counter": "0..13",
-      "sectors_28_31_all_zero": true
+      "sectors_28_31_all_zero": true,
+      "main_sector_checksums_valid": true,
+      "validated_main_sector_checksums": 28
     },
     {
       "rom": "Pokemon - Version Saphir (France) (Rev 1).gba",
@@ -253,7 +272,9 @@
       "save_size": 131072,
       "main_valid_sectors": 28,
       "logical_ids_per_counter": "0..13",
-      "sectors_28_31_all_zero": true
+      "sectors_28_31_all_zero": true,
+      "main_sector_checksums_valid": true,
+      "validated_main_sector_checksums": 28
     },
     {
       "rom": "Pokemon - Version Saphir (France).gba",
@@ -275,7 +296,9 @@
       "save_size": 131072,
       "main_valid_sectors": 28,
       "logical_ids_per_counter": "0..13",
-      "sectors_28_31_all_zero": true
+      "sectors_28_31_all_zero": true,
+      "main_sector_checksums_valid": true,
+      "validated_main_sector_checksums": 28
     },
     {
       "rom": "Pokemon - Versione Zaffiro (Italy) (Rev 1).gba",
@@ -297,7 +320,9 @@
       "save_size": 131072,
       "main_valid_sectors": 28,
       "logical_ids_per_counter": "0..13",
-      "sectors_28_31_all_zero": true
+      "sectors_28_31_all_zero": true,
+      "main_sector_checksums_valid": true,
+      "validated_main_sector_checksums": 28
     },
     {
       "rom": "Pokemon - Versione Zaffiro (Italy).gba",
@@ -319,7 +344,9 @@
       "save_size": 131072,
       "main_valid_sectors": 28,
       "logical_ids_per_counter": "0..13",
-      "sectors_28_31_all_zero": true
+      "sectors_28_31_all_zero": true,
+      "main_sector_checksums_valid": true,
+      "validated_main_sector_checksums": 28
     }
   ]
 }
