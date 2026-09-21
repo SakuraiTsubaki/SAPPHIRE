@@ -92,7 +92,7 @@ The extension design must support at least:
 - schema version and migration marker
 - rollback/recovery validation
 
-The offline extension format is defined in `catalog/save_extension_layout.json`, but no save-layout change is considered runtime-implemented until old-save load, migration, save, reload and rollback tests pass.
+The offline extension format is defined in `catalog/expanded_save_layout.json`, but no save-layout change is considered runtime-implemented until old-save load, migration, save, reload and rollback tests pass.
 
 ## Required implementation order
 
