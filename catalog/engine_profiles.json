@@ -1,0 +1,27 @@
+{
+  "schema_version": 1,
+  "project": "SAPPHIRE",
+  "profiles": {
+    "classic": {
+      "status": "active",
+      "purpose": "Current 8 MiB Sapphire-compatible ROM patching and external-event work",
+      "input_rom_size_bytes": 8388608,
+      "max_rom_size_bytes": 8388608,
+      "save_extension": false,
+      "form_change": false
+    },
+    "expanded": {
+      "status": "foundation",
+      "purpose": "Generation 10-ready Sapphire-native expansion profile",
+      "input_rom_size_bytes": 8388608,
+      "max_rom_size_bytes": 33554432,
+      "logical_id_bits": 16,
+      "versioned_save_extension": true,
+      "variable_table_relocation": true,
+      "future_generation_ids_preassigned": false,
+      "form_change": "deferred",
+      "source_identity": "Pokemon Sapphire / Pocket Monsters Sapphire",
+      "note": "This profile expands Sapphire itself; it does not replace Sapphire with Emerald."
+    }
+  }
+}
