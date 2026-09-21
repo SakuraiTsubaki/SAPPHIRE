@@ -72,7 +72,16 @@ Every regional patch must continue to locate original structures by verified sig
 
 The Gen III `BoxPokemon` core is kept intact so original Sapphire Pokémon and existing saves remain a migration target.
 
-Modern-only state must live in a **versioned save extension**. No save bytes are allocated yet: the Sapphire save-sector map must be audited first.
+Modern-only state must live in a **versioned save extension**. The save-sector audit is now complete for the pinned retail baseline and the 12 supplied ROM/SAV pairs:
+
+- retail sectors 0-27 are two rotating 14-sector main-save slots;
+- sectors 28-29 are Hall of Fame;
+- the pinned source explicitly defines `sUnusedFlashSectors[] = { 30, 31 }`;
+- `SAVE_NORMAL` writes only the main-save sectors and does not touch 30-31;
+- all 12 supplied saves have two complete main slots with valid retail checksums;
+- sectors 30 and 31 are blank in all 12 supplied saves.
+
+The expanded profile therefore assigns sectors **30 and 31** to a versioned A/B extension format. This is an allocation decision, not a claim that runtime support already exists: expanded-ROM load/save hooks still need to be added. The classic profile never writes these sectors.
 
 The extension design must support at least:
 
@@ -83,13 +92,13 @@ The extension design must support at least:
 - schema version and migration marker
 - rollback/recovery validation
 
-No save-layout change is considered implemented until old-save load, migration, save, reload and rollback tests pass.
+The offline extension format is defined in `catalog/save_extension_layout.json`, but no save-layout change is considered runtime-implemented until old-save load, migration, save, reload and rollback tests pass.
 
 ## Required implementation order
 
 1. Audit every hard-coded species, move, item, ability and type bound in Sapphire.
 2. Establish the shared 16 MiB expansion base and 32 MiB expanded ROM container.
-3. Audit save sectors and identify a safe versioned extension location.
+3. Use the audited retail-unused sectors 30-31 for the versioned A/B extension; add expanded-ROM runtime hooks without changing classic saves.
 4. Replace historical fixed-end comparisons with count-driven checks.
 5. Add relocation manifests and patchers for each table family.
 6. Add tests for IDs above every original Gen III maximum.
