@@ -13,6 +13,12 @@ SECTOR_SIZE = 0x1000
 SAVE_SIGNATURE = 0x08012025
 EXT_SECTORS = (30, 31)
 
+SAVE_CHUNK_SIZES = [
+    0x890,
+    0xF80, 0xF80, 0xF80, 0xC40,
+    0xF80, 0xF80, 0xF80, 0xF80, 0xF80, 0xF80, 0xF80, 0xF80, 0x7D0,
+]
+
 HEADER_SIZE = 0x40
 PAYLOAD_SIZE = SECTOR_SIZE - HEADER_SIZE
 MAGIC = b"SAPPXSV1"
@@ -49,6 +55,13 @@ def sha1(data: bytes) -> str:
     return hashlib.sha1(data).hexdigest()
 
 
+def calculate_save_checksum(data: bytes, size: int) -> int:
+    total = 0
+    for offset in range(0, size, 4):
+        total = (total + struct.unpack_from("<I", data, offset)[0]) & 0xFFFFFFFF
+    return ((total >> 16) + total) & 0xFFFF
+
+
 def analyze_rom(data: bytes) -> dict:
     digest = sha1(data)
     known = KNOWN_ROMS.get(digest)
@@ -71,32 +84,48 @@ def analyze_main_save(data: bytes) -> dict:
         raise ValueError(f"save must be 128 KiB, got {len(data)} bytes")
 
     groups: dict[int, list[int]] = {}
+    recognized_count = 0
     valid_count = 0
+    bad_checksums: list[int] = []
+
     for physical in range(28):
         sector = data[physical * SECTOR_SIZE:(physical + 1) * SECTOR_SIZE]
-        section_id, _checksum, signature, counter = struct.unpack_from(
+        section_id, stored_checksum, signature, counter = struct.unpack_from(
             "<HHII", sector, 0xFF4
         )
         if signature == SAVE_SIGNATURE and 0 <= section_id < 14:
+            recognized_count += 1
+            calculated = calculate_save_checksum(sector, SAVE_CHUNK_SIZES[section_id])
+            if calculated != stored_checksum:
+                bad_checksums.append(physical)
+                continue
             valid_count += 1
             groups.setdefault(counter, []).append(section_id)
+
+    if bad_checksums:
+        raise ValueError(
+            f"retail main-save checksum failure in physical sectors: {bad_checksums}"
+        )
 
     normalized = {
         counter: sorted(ids)
         for counter, ids in groups.items()
     }
     complete = (
-        valid_count == 28
+        recognized_count == 28
+        and valid_count == 28
         and len(normalized) == 2
         and all(ids == list(range(14)) for ids in normalized.values())
     )
     if not complete:
         raise ValueError(
-            f"main save sectors are not two complete rotating 0..13 sets: {normalized}"
+            f"main save sectors are not two checksum-valid rotating 0..13 sets: {normalized}"
         )
 
     return {
+        "recognized_sector_count": recognized_count,
         "valid_sector_count": valid_count,
+        "all_legacy_checksums_valid": True,
         "counter_groups": [
             {"counter": counter, "logical_ids": ids}
             for counter, ids in sorted(normalized.items())
