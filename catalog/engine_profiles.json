@@ -1,5 +1,5 @@
 {
-  "schema_version": 2,
+  "schema_version": 3,
   "project": "SAPPHIRE",
   "profiles": {
     "classic": {
@@ -28,7 +28,13 @@
       "future_generation_ids_preassigned": false,
       "form_change": "deferred",
       "source_identity": "Pokemon Sapphire / Pocket Monsters Sapphire",
-      "note": "This profile expands Sapphire itself; it does not replace Sapphire with Emerald."
+      "note": "This profile expands Sapphire itself; it does not replace Sapphire with Emerald.",
+      "save_extension_sectors": [
+        30,
+        31
+      ],
+      "save_extension_layout": "catalog/save_extension_layout.json",
+      "save_extension_runtime_hooks": false
     }
   }
 }
