@@ -1,5 +1,5 @@
 {
-  "schema_version": 5,
+  "schema_version": 6,
   "project": "SAPPHIRE",
   "purpose": "Generation 10 readiness without pre-assigning unknown future content IDs",
   "policy": {
@@ -89,7 +89,18 @@
     "relocation_allocator_implemented": true,
     "relocation_allocator": "tools/sapphire_rom_expansion.py install",
     "expanded_table_registry": "catalog/expanded_table_registry.json",
-    "expanded_table_registry_verifier": "tools/verify_expanded_table_registry.py"
+    "expanded_table_registry_verifier": "tools/verify_expanded_table_registry.py",
+    "first_production_table": {
+      "directory_name": "species_data",
+      "format": "ExpandedSpeciesV1",
+      "capacity": 4096,
+      "stride_bytes": 40,
+      "table_size_bytes": 163840,
+      "builder": "tools/sapphire_species_table.py",
+      "format_manifest": "catalog/expanded_species_record_v1.json",
+      "validation_report": "reports/expanded-species-table-validation.json",
+      "runtime_consumers_redirected": false
+    }
   },
   "save": {
     "preserve_gen3_box_pokemon_core_layout": true,
@@ -147,7 +158,7 @@
     "pokedex_data": "relocatable"
   },
   "next_gates": [
-    "define and implement the concrete species registry/personal-data format, then relocate the first production table through SAPPX10",
+    "redirect expanded-profile species consumers from legacy gBaseStats/NUM_SPECIES assumptions to ExpandedSpeciesV1 accessors and count-driven validity checks",
     "replace fixed species/move/ability/evolution bounds identified in analysis/expansion_bound_audit.json",
     "implement sectors 30/31 A/B extension read/write hooks in the expanded ROM",
     "rewrite/recover extension data after original save paths that erase sectors 28-31",
