@@ -16,6 +16,9 @@ from sapphire_rom_expansion import (
 
 CANONICAL_DIRECTORY_NAME = "species_names"
 COMPAT_DIRECTORY_NAME = "species_names_cp"
+RUNTIME_DIRECTORY_NAME = "species_name_rt"
+SPECIES_DATA_DIRECTORY_NAME = "species_data"
+
 SPECIES_CAPACITY = 4096
 LEGACY_SPECIES_COUNT = 412
 CANONICAL_STRIDE = 16
@@ -23,42 +26,70 @@ COMPAT_ALLOCATION_STRIDE = 11
 COMPAT_ALLOCATION_SIZE = SPECIES_CAPACITY * COMPAT_ALLOCATION_STRIDE
 EOS = 0xFF
 
+WEST_GET_SPECIES_NAME_SIGNATURE = bytes.fromhex(
+    "f0b5061c09040d0c0021ce2040008446024f0b206843c319321c04e0"
+)
+JP_GET_SPECIES_NAME_SIGNATURE = bytes.fromhex(
+    "f0b5061c09040c0c0021ce277f00054d600000194000321c4319bc4204d94819007802e0"
+)
+
+# Thumb-1 helper:
+#   r0 = destination
+#   r1 = u16 species
+# It validates ExpandedSpeciesV1.flags.defined, falls back to SPECIES_NONE,
+# then copies a canonical 16-byte record through EOS.
+NAME_RUNTIME_TEMPLATE = bytes.fromhex(
+    "30b5041c0d042d0c0122120395420ad228222b1c53430a4a"
+    "9b1825331b780122134200d000e000252901064a89180878"
+    "207001310134ff28f9d130bc01bc0047"
+    "0000000000000000"
+)
+NAME_RUNTIME_SPECIES_DATA_PTR_OFFSET = 64
+NAME_RUNTIME_NAMES_PTR_OFFSET = 68
+assert len(NAME_RUNTIME_TEMPLATE) == 72
+
 PROFILES = {
     "jp": {
         "stride": 6,
         "signature": "acacacacacff6c5c889168ff6c5c885f53ff6c5c889665ff",
         "legacy_sha256": "ad86ecaa8dc648ca84ba43ba5f760c4529741242dc5f5745f655c307d1660c3c",
         "pointer_refs": 67,
+        "get_name_signature": "jp",
     },
     "en": {
         "stride": 11,
         "signature": "acacacacacacacacacacffbccfc6bcbbcdbbcfccff00c3d0d3cdbbcfccff000000d0bfc8cfcdbbcfccff0000",
         "legacy_sha256": "a1d6a18af896762205e870cbc17f5e046982d17820f305ad5e8dd9f8c24f4c3e",
         "pointer_refs": 66,
+        "get_name_signature": "west",
     },
     "de": {
         "stride": 11,
         "signature": "acacacacacacacacacacffbcc3cdbbcdbbc7ff000000bcc3cdbbc5c8c9cdcaff00bcc3cdbbc0c6c9ccff0000",
         "legacy_sha256": "571910b14b247a37082b3f6da976c8cf3ea1740999adb79bd969216d965b4e22",
         "pointer_refs": 67,
+        "get_name_signature": "west",
     },
     "fr": {
         "stride": 11,
         "signature": "acacacacacacacacacacffbccfc6bcc3d4bbccccbfffc2bfccbcc3d4bbccccbfffc0c6c9ccc3d4bbccccbfff",
         "legacy_sha256": "85fe703a81ed6a63209879044bdbb69fb6dc9de0a6e30f71fdcf5a70672ea67c",
         "pointer_refs": 67,
+        "get_name_signature": "west",
     },
     "it": {
         "stride": 11,
         "signature": "acacacacacacacacacacffbccfc6bcbbcdbbcfccff00c3d0d3cdbbcfccff000000d0bfc8cfcdbbcfccff0000",
         "legacy_sha256": "a1d6a18af896762205e870cbc17f5e046982d17820f305ad5e8dd9f8c24f4c3e",
         "pointer_refs": 67,
+        "get_name_signature": "west",
     },
     "es": {
         "stride": 11,
         "signature": "5cac5dff00000000000000bccfc6bcbbcdbbcfccff00c3d0d3cdbbcfccff000000d0bfc8cfcdbbcfccff0000",
         "legacy_sha256": "f7cea4bfb94292c813fff77840a2701f51661888a5687f973b18baf13958d061",
         "pointer_refs": 67,
+        "get_name_signature": "west",
     },
 }
 
@@ -97,7 +128,9 @@ def find_unique(data: bytes, needle: bytes, label: str) -> int:
 def profile_for_source(source_sha1: str) -> tuple[str, dict]:
     key = SOURCE_PROFILE.get(source_sha1)
     if key is None:
-        raise ValueError(f"no species-name profile for source SHA-1 {source_sha1}")
+        raise ValueError(
+            f"no species-name profile for source SHA-1 {source_sha1}"
+        )
     return key, PROFILES[key]
 
 
@@ -130,11 +163,38 @@ def find_legacy_names(
     return start, table, profile_key, profile
 
 
+def build_name_runtime_helper(
+    species_data_pointer: int,
+    names_pointer: int,
+) -> bytes:
+    helper = bytearray(NAME_RUNTIME_TEMPLATE)
+    struct.pack_into(
+        "<I",
+        helper,
+        NAME_RUNTIME_SPECIES_DATA_PTR_OFFSET,
+        species_data_pointer,
+    )
+    struct.pack_into(
+        "<I",
+        helper,
+        NAME_RUNTIME_NAMES_PTR_OFFSET,
+        names_pointer,
+    )
+    return bytes(helper)
+
+
+def build_thumb_absolute_tailcall(target_pointer: int) -> bytes:
+    # ldr r1, [pc, #0]; bx r1; .word target|1
+    return struct.pack("<HHI", 0x4900, 0x4708, target_pointer | 1)
+
+
 def canonical_record(record: bytes) -> bytes:
     eos = record.index(EOS)
     encoded = record[:eos + 1]
     if len(encoded) > CANONICAL_STRIDE:
-        raise ValueError("legacy species name exceeds canonical 16-byte record")
+        raise ValueError(
+            "legacy species name exceeds canonical 16-byte record"
+        )
     return encoded.ljust(CANONICAL_STRIDE, b"\0")
 
 
@@ -155,34 +215,50 @@ def build_name_tables(
             canonical_record(legacy[off:off + stride])
         )
 
+    # Undefined future slots deliberately render the regional SPECIES_NONE
+    # placeholder until both species_data and the canonical name are imported.
     unknown_canonical = canonical_records[0]
     canonical_records.extend(
-        [unknown_canonical] * (SPECIES_CAPACITY - LEGACY_SPECIES_COUNT)
+        [unknown_canonical] * (
+            SPECIES_CAPACITY - LEGACY_SPECIES_COUNT
+        )
     )
     canonical = b"".join(canonical_records)
 
     legacy_record0 = legacy[:stride]
     compat_active = (
         legacy
-        + legacy_record0 * (SPECIES_CAPACITY - LEGACY_SPECIES_COUNT)
+        + legacy_record0 * (
+            SPECIES_CAPACITY - LEGACY_SPECIES_COUNT
+        )
     )
     if len(compat_active) != SPECIES_CAPACITY * stride:
-        raise AssertionError("species_names_cp active table size mismatch")
+        raise AssertionError(
+            "species_names_cp active table size mismatch"
+        )
     if len(compat_active) > COMPAT_ALLOCATION_SIZE:
-        raise AssertionError("species_names_cp exceeds fixed common allocation")
+        raise AssertionError(
+            "species_names_cp exceeds fixed common allocation"
+        )
     compat = compat_active + bytes([0xFF]) * (
         COMPAT_ALLOCATION_SIZE - len(compat_active)
     )
 
     if len(canonical) != SPECIES_CAPACITY * CANONICAL_STRIDE:
-        raise AssertionError("canonical species_names table size mismatch")
+        raise AssertionError(
+            "canonical species_names table size mismatch"
+        )
     if len(compat) != COMPAT_ALLOCATION_SIZE:
-        raise AssertionError("species_names_cp allocation size mismatch")
+        raise AssertionError(
+            "species_names_cp allocation size mismatch"
+        )
 
     return canonical, compat, {
         "profile": profile_key,
         "legacy_table_offset": legacy_offset,
-        "legacy_table_pointer": f"0x{offset_to_ptr(legacy_offset):08X}",
+        "legacy_table_pointer": (
+            f"0x{offset_to_ptr(legacy_offset):08X}"
+        ),
         "legacy_stride": stride,
         "legacy_count": LEGACY_SPECIES_COUNT,
         "legacy_size": len(legacy),
@@ -197,6 +273,7 @@ def build_name_tables(
         "compat_sha256": sha256(compat),
         "future_default": "copy of regional SPECIES_NONE name",
         "expected_pointer_refs": profile["pointer_refs"],
+        "get_name_signature": profile["get_name_signature"],
     }
 
 
@@ -214,15 +291,57 @@ def find_pointer_refs(prefix: bytes, pointer: int) -> list[int]:
 
 def install_and_redirect(data: bytes) -> tuple[bytes, dict]:
     before = verify_expanded(data)
-    existing = {entry["name"] for entry in before["directory"]}
-    for name in (CANONICAL_DIRECTORY_NAME, COMPAT_DIRECTORY_NAME):
+    existing = {
+        entry["name"] for entry in before["directory"]
+    }
+    for name in (
+        CANONICAL_DIRECTORY_NAME,
+        COMPAT_DIRECTORY_NAME,
+        RUNTIME_DIRECTORY_NAME,
+    ):
         if name in existing:
             raise ValueError(f"{name} is already installed")
+
+    required = {
+        SPECIES_DATA_DIRECTORY_NAME,
+        "species_compat",
+        "species_runtime",
+    }
+    missing = required - existing
+    if missing:
+        raise ValueError(
+            "species-name migration requires prior species runtime stages: "
+            + ", ".join(sorted(missing))
+        )
+
+    species_data_entry = next(
+        entry for entry in before["directory"]
+        if entry["name"] == SPECIES_DATA_DIRECTORY_NAME
+    )
+    if (
+        species_data_entry["count"] != SPECIES_CAPACITY
+        or species_data_entry["stride"] != 40
+        or species_data_entry["size"] != SPECIES_CAPACITY * 40
+    ):
+        raise ValueError(
+            "species_data does not match ExpandedSpeciesV1"
+        )
 
     source_prefix = data[:before["input_size"]]
     canonical, compat, build = build_name_tables(
         source_prefix,
         before["source_sha1"],
+    )
+
+    signature = (
+        JP_GET_SPECIES_NAME_SIGNATURE
+        if build["get_name_signature"] == "jp"
+        else WEST_GET_SPECIES_NAME_SIGNATURE
+    )
+    get_name_offset = find_unique(
+        source_prefix,
+        signature,
+        "GetSpeciesName",
     )
 
     with_canonical, canonical_install = install_blob(
@@ -233,6 +352,13 @@ def install_and_redirect(data: bytes) -> tuple[bytes, dict]:
         stride=CANONICAL_STRIDE,
         alignment=4,
     )
+    canonical_entry = next(
+        entry for entry in verify_expanded(
+            with_canonical
+        )["directory"]
+        if entry["name"] == CANONICAL_DIRECTORY_NAME
+    )
+
     with_compat, compat_install = install_blob(
         with_canonical,
         COMPAT_DIRECTORY_NAME,
@@ -242,14 +368,27 @@ def install_and_redirect(data: bytes) -> tuple[bytes, dict]:
         alignment=4,
     )
 
-    after_install = verify_expanded(with_compat)
-    canonical_entry = next(
-        entry for entry in after_install["directory"]
-        if entry["name"] == CANONICAL_DIRECTORY_NAME
+    runtime_blob = build_name_runtime_helper(
+        int(species_data_entry["rom_pointer"], 16),
+        int(canonical_entry["rom_pointer"], 16),
     )
+    with_runtime, runtime_install = install_blob(
+        with_compat,
+        RUNTIME_DIRECTORY_NAME,
+        runtime_blob,
+        count=1,
+        stride=len(runtime_blob),
+        alignment=4,
+    )
+
+    after_install = verify_expanded(with_runtime)
     compat_entry = next(
         entry for entry in after_install["directory"]
         if entry["name"] == COMPAT_DIRECTORY_NAME
+    )
+    runtime_entry = next(
+        entry for entry in after_install["directory"]
+        if entry["name"] == RUNTIME_DIRECTORY_NAME
     )
 
     old_ptr = offset_to_ptr(build["legacy_table_offset"])
@@ -261,7 +400,7 @@ def install_and_redirect(data: bytes) -> tuple[bytes, dict]:
             f"{len(refs)} != {build['expected_pointer_refs']}"
         )
 
-    output = bytearray(with_compat)
+    output = bytearray(with_runtime)
     old_raw = struct.pack("<I", old_ptr)
     new_raw = struct.pack("<I", new_ptr)
     for offset in refs:
@@ -271,16 +410,46 @@ def install_and_redirect(data: bytes) -> tuple[bytes, dict]:
             )
         output[offset:offset + 4] = new_raw
 
+    runtime_pointer = int(runtime_entry["rom_pointer"], 16)
+    trampoline = build_thumb_absolute_tailcall(runtime_pointer)
+    if output[
+        get_name_offset:get_name_offset + len(signature)
+    ] != signature:
+        raise AssertionError(
+            "GetSpeciesName signature changed before patch"
+        )
+    output[
+        get_name_offset:get_name_offset + len(trampoline)
+    ] = trampoline
+
     patched = mark_prefix_patched(bytes(output))
     final = verify_expanded(patched)
-    if find_pointer_refs(patched[:before["input_size"]], old_ptr):
-        raise AssertionError("legacy gSpeciesNames pointer literals remain")
+
+    if find_pointer_refs(
+        patched[:before["input_size"]],
+        old_ptr,
+    ):
+        raise AssertionError(
+            "legacy gSpeciesNames pointer literals remain"
+        )
     new_refs = find_pointer_refs(
         patched[:before["input_size"]],
         new_ptr,
     )
     if len(new_refs) != len(refs):
-        raise AssertionError("species_names_cp pointer count mismatch")
+        raise AssertionError(
+            "species_names_cp pointer count mismatch"
+        )
+    if signature in patched[:before["input_size"]]:
+        raise AssertionError(
+            "legacy GetSpeciesName signature remains"
+        )
+    if patched[
+        get_name_offset:get_name_offset + len(trampoline)
+    ] != trampoline:
+        raise AssertionError(
+            "GetSpeciesName trampoline did not round-trip"
+        )
 
     return patched, {
         "result": "pass",
@@ -289,26 +458,72 @@ def install_and_redirect(data: bytes) -> tuple[bytes, dict]:
         "canonical": {
             **canonical_entry,
             "sha256": sha256(canonical),
-            "directory_count": canonical_install["directory_count"],
+            "directory_count": (
+                canonical_install["directory_count"]
+            ),
         },
         "compatibility": {
             **compat_entry,
             "sha256": sha256(compat),
-            "active_stride": build["compat_active_stride"],
-            "fixed_allocation_size": COMPAT_ALLOCATION_SIZE,
-            "directory_count": compat_install["directory_count"],
+            "active_stride": (
+                build["compat_active_stride"]
+            ),
+            "fixed_allocation_size": (
+                COMPAT_ALLOCATION_SIZE
+            ),
+            "directory_count": (
+                compat_install["directory_count"]
+            ),
         },
         "gSpeciesNames_redirection": {
             "old_pointer": f"0x{old_ptr:08X}",
             "new_pointer": f"0x{new_ptr:08X}",
             "patched_literal_count": len(refs),
-            "literal_offsets": [f"0x{x:X}" for x in refs],
+            "literal_offsets": [
+                f"0x{x:X}" for x in refs
+            ],
         },
-        "working_prefix_sha256": final["working_prefix_sha256"],
+        "species_name_runtime": {
+            **runtime_entry,
+            "sha256": sha256(runtime_blob),
+            "species_data_pointer": (
+                species_data_entry["rom_pointer"]
+            ),
+            "canonical_names_pointer": (
+                canonical_entry["rom_pointer"]
+            ),
+            "get_species_name_offset": (
+                f"0x{get_name_offset:X}"
+            ),
+            "get_species_name_pointer": (
+                f"0x{offset_to_ptr(get_name_offset):08X}"
+            ),
+            "signature_kind": (
+                build["get_name_signature"]
+            ),
+            "signature_size": len(signature),
+            "trampoline_size": len(trampoline),
+            "directory_count": (
+                runtime_install["directory_count"]
+            ),
+        },
+        "working_prefix_sha256": (
+            final["working_prefix_sha256"]
+        ),
         "limitations": [
-            "direct legacy consumers still use the regional 6/11-byte compatibility stride",
-            "new species names are stored canonically in 16-byte records but direct legacy consumers still show the regional SPECIES_NONE placeholder until migrated",
-            "GetSpeciesName canonical 16-byte accessor patch is pending",
+            (
+                "GetSpeciesName now uses canonical 16-byte names and "
+                "ExpandedSpeciesV1 defined flags"
+            ),
+            (
+                "direct legacy gSpeciesNames consumers still use the "
+                "regional 6/11-byte compatibility stride"
+            ),
+            (
+                "new species names therefore require remaining direct "
+                "name consumers to migrate before every UI path can "
+                "display them"
+            ),
         ],
     }
 
@@ -316,8 +531,8 @@ def install_and_redirect(data: bytes) -> tuple[bytes, dict]:
 def main() -> int:
     ap = argparse.ArgumentParser(
         description=(
-            "Install 4096-slot canonical/compat species-name tables and "
-            "redirect direct gSpeciesNames pointer literals"
+            "Install canonical/compat species-name tables, redirect "
+            "direct gSpeciesNames pointers, and patch GetSpeciesName"
         )
     )
     ap.add_argument("rom", type=Path)
@@ -332,7 +547,9 @@ def main() -> int:
             f"refusing to overwrite existing output: {args.output}"
         )
 
-    output, report = install_and_redirect(args.rom.read_bytes())
+    output, report = install_and_redirect(
+        args.rom.read_bytes()
+    )
     args.output.write_bytes(output)
     report["output"] = str(args.output)
     print(json.dumps(report, indent=2, ensure_ascii=False))
