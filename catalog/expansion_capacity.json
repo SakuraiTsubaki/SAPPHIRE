@@ -1,5 +1,5 @@
 {
-  "schema_version": 6,
+  "schema_version": 7,
   "project": "SAPPHIRE",
   "purpose": "Generation 10 readiness without pre-assigning unknown future content IDs",
   "policy": {
@@ -100,6 +100,34 @@
       "format_manifest": "catalog/expanded_species_record_v1.json",
       "validation_report": "reports/expanded-species-table-validation.json",
       "runtime_consumers_redirected": false
+    },
+    "control_schema": 2,
+    "control_header_used_bytes": 136,
+    "source_identity_model": "immutable clean source SHA-1/SHA-256 plus mutable working-prefix SHA-256 for authenticated runtime patches",
+    "species_compat_projection": {
+      "directory_name": "species_compat",
+      "capacity": 4096,
+      "stride_bytes": 28,
+      "table_size_bytes": 114688,
+      "sha256": "63f0b7a2a4575d4f21b8dbb7c76041751225d7a869d7e88114060e629fa60dff",
+      "clean_install_offset_after_species_data": 16945152,
+      "clean_install_pointer": "0x09029000",
+      "purpose": "temporary compatibility projection for original 28-byte gBaseStats consumers",
+      "canonical": false
+    },
+    "species_legacy_pointer_redirection": {
+      "implemented": true,
+      "tool": "tools/sapphire_species_runtime_patch.py",
+      "validation_report": "reports/species-runtime-redirection-validation.json",
+      "direct_pointer_literals_per_rom": 45,
+      "validated_roms": 12,
+      "runtime_scope": "all direct gBaseStats pointer literals only",
+      "remaining": [
+        "NUM_SPECIES/SPECIES_EGG-based bounds and sanitizers",
+        "count-driven species validity/iteration",
+        "wide u16 type and ability consumers",
+        "third ability slot runtime selection"
+      ]
     }
   },
   "save": {
@@ -158,7 +186,7 @@
     "pokedex_data": "relocatable"
   },
   "next_gates": [
-    "redirect expanded-profile species consumers from legacy gBaseStats/NUM_SPECIES assumptions to ExpandedSpeciesV1 accessors and count-driven validity checks",
+    "replace NUM_SPECIES/SPECIES_EGG sanitizers and dense species assumptions with expanded count/defined-flag accessors while preserving Egg/Unown compatibility",
     "replace fixed species/move/ability/evolution bounds identified in analysis/expansion_bound_audit.json",
     "implement sectors 30/31 A/B extension read/write hooks in the expanded ROM",
     "rewrite/recover extension data after original save paths that erase sectors 28-31",
