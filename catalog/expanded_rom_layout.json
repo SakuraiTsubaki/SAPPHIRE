@@ -1,8 +1,8 @@
 {
-  "schema_version": 2,
+  "schema_version": 3,
   "project": "SAPPHIRE",
   "profile": "expanded",
-  "status": "container_implemented_table_relocations_pending",
+  "status": "container_and_relocation_allocator_implemented_table_formats_pending",
   "rom": {
     "gba_rom_base": "0x08000000",
     "gba_rom_window_end_inclusive": "0x09FFFFFF",
@@ -61,7 +61,16 @@
       "stride:u16",
       "flags:u16"
     ],
-    "rule": "Expanded tables and assets are registered here when relocation patchers are added; no later-generation IDs are preassigned by the container."
+    "rule": "Expanded tables and assets are registered here when relocation patchers are added; no later-generation IDs are preassigned by the container.",
+    "allocator": "tools/sapphire_rom_expansion.py install",
+    "allocation_policy": "append from the highest registered end offset with explicit power-of-two alignment; never discover incidental free-space gaps",
+    "validation": [
+      "directory names are unique 1..16 byte ASCII strings",
+      "allocations stay inside the common payload",
+      "allocations may not overlap",
+      "unused directory bytes remain 0xFF",
+      "fixed-stride entries may not declare count*stride larger than their allocation"
+    ]
   },
   "payload": {
     "base_offset": 16781312,
@@ -69,7 +78,7 @@
     "end_offset_inclusive": 33554431,
     "capacity_bytes": 16773120,
     "allocation_policy": "explicit allocator/manifest only; do not scan incidental 0xFF gaps",
-    "current_contents": "unallocated / 0xFF"
+    "current_contents": "allocator-ready; concrete table formats/contents are installed explicitly"
   },
   "invariants": [
     "The original native ROM prefix is byte-for-byte unchanged.",
@@ -80,8 +89,11 @@
     "Verification recomputes the source-prefix hashes and header CRC32.",
     "Generation 10 content IDs are not preassigned.",
     "Form-change implementation remains deferred.",
-    "No ROM image is stored in the repository."
+    "No ROM image is stored in the repository.",
+    "Relocation allocation is explicit and append-only from registered high water; unregistered 0xFF gaps are not reused."
   ],
   "tool": "tools/sapphire_rom_expansion.py",
-  "validation_report": "reports/expanded-rom-container-validation.json"
+  "validation_report": "reports/expanded-rom-container-validation.json",
+  "table_registry": "catalog/expanded_table_registry.json",
+  "verifier": "tools/verify_expanded_table_registry.py"
 }
