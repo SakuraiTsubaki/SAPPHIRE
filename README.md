@@ -40,7 +40,9 @@ Form-change work is currently **deferred**. The active expansion priority is to 
 - The control page reserves 120 relocation-directory entries and records the source ROM SHA-1/SHA-256, game code, revision and a CRC32-protected header.
 - The relocation allocator is implemented. It appends explicitly registered blobs from the payload high-water mark, supports explicit power-of-two alignment, updates the directory/header CRC, and rejects duplicate names, overlaps and out-of-range entries.
 - Variable tables and assets must use explicit relocation metadata instead of incidental free-space assumptions.
-- `catalog/expanded_table_registry.json` defines the Generation 10 capacity domains and the table families that still need concrete binary formats; form-change remains reserved/inactive.
+- `catalog/expanded_table_registry.json` defines the Generation 10 capacity domains and table families; `species_data` is now the first implemented production table.
+- `ExpandedSpeciesV1` is 40 bytes per record with 4096 slots. The original 412 `gBaseStats` records are losslessly converted and round-trip verified, while ability IDs become u16 with a third slot, type IDs become u16, EXP yield becomes u16, and EV yields become explicit bytes. Runtime consumers are the next step.
+- Form-change remains reserved/inactive.
 - Existing Gen III BoxPokemon layout remains the compatibility core.
 - Modern-only persistent state uses a versioned A/B save extension in retail-unused flash sectors 30-31; the offline format is defined, while expanded-ROM runtime hooks are still pending.
 - Generation 10 IDs and mechanics are not guessed before official data exists.
@@ -64,7 +66,9 @@ python tools/sapphire_rom_save_audit.py /path/to/paired-rom-save-directory
 python tools/sapphire_rom_expansion.py inspect sapphire.gba
 python tools/sapphire_rom_expansion.py expand sapphire.gba sapphire.expanded.gba
 python tools/sapphire_rom_expansion.py verify sapphire.expanded.gba
-python tools/sapphire_rom_expansion.py install sapphire.expanded.gba table.bin sapphire.with-table.gba --name species_data --count 4096 --alignment 4
+python tools/sapphire_rom_expansion.py install sapphire.expanded.gba table.bin sapphire.with-table.gba --name custom_table --count 1 --alignment 4
+python tools/sapphire_species_table.py build sapphire.gba species_data.bin
+python tools/sapphire_species_table.py install sapphire.expanded.gba sapphire.species.gba
 
 python tools/sapphire_save_extension.py inspect sapphire.sav
 python tools/sapphire_save_extension.py init sapphire.gba sapphire.sav sapphire.expanded.sav
@@ -76,7 +80,7 @@ python tools/verify_expanded_table_registry.py
 
 The paired expander validates both inputs first, builds both outputs in memory, refuses to overwrite the source pair, and refuses to reset an already initialized SAPPXSV1 save unless a separate migration path is implemented.
 
-The ROM expander accepts the 12 validated Sapphire revisions, preserves the complete native ROM prefix, pads Japanese AXPJ rev0 from 8 MiB to the common 16 MiB base, writes the SAPPX10 control page, and produces an exact 32 MiB image. `install` adds an explicit payload allocation and relocation-directory entry without scanning for arbitrary free space. The validation report is `reports/expanded-rom-container-validation.json`.
+The ROM expander accepts the 12 validated Sapphire revisions, preserves the complete native ROM prefix, pads Japanese AXPJ rev0 from 8 MiB to the common 16 MiB base, writes the SAPPX10 control page, and produces an exact 32 MiB image. `install` adds an explicit payload allocation and relocation-directory entry without scanning for arbitrary free space. `sapphire_species_table.py` finds the verified regional `gBaseStats`, converts it to `ExpandedSpeciesV1`, verifies all 412 source records by reverse conversion, pads the table to 4096 records, and installs it as `species_data`. Validation reports are `reports/expanded-rom-container-validation.json` and `reports/expanded-species-table-validation.json`.
 
 `init` verifies the known Sapphire ROM identity, two complete retail save slots, and every retail main-sector checksum before writing the mirrored SAPPXSV1 extension to sectors 30-31. It preserves sectors 0-29 byte-for-byte.
 
