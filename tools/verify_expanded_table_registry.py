@@ -140,7 +140,29 @@ def verify(registry_path: Path, capacity_path: Path) -> dict:
         if species_family.get("table_size_bytes") != 4096 * 40:
             errors.append("species_data table size must be 163840 bytes")
         if species_family.get("runtime_consumers") != "pending":
-            errors.append("species_data runtime consumers must remain pending until redirected")
+            errors.append("canonical species_data wide consumers must remain pending until redirected")
+
+    compat_family = next(
+        (family for family in families if family.get("directory_name") == "species_compat"),
+        None,
+    )
+    if compat_family is None:
+        errors.append("species_compat table family is required during staged runtime migration")
+    else:
+        if compat_family.get("format_status") != "implemented_v1":
+            errors.append("species_compat must be marked implemented_v1")
+        if compat_family.get("builder") != "tools/sapphire_species_runtime_patch.py":
+            errors.append("species_compat builder path is not canonical")
+        if compat_family.get("capacity") != 4096:
+            errors.append("species_compat capacity must be 4096")
+        if compat_family.get("stride") != 28:
+            errors.append("species_compat stride must be 28 bytes")
+        if compat_family.get("table_size_bytes") != 4096 * 28:
+            errors.append("species_compat table size must be 114688 bytes")
+        if compat_family.get("canonical") is not False:
+            errors.append("species_compat must be explicitly non-canonical")
+        if compat_family.get("runtime_consumers") != "direct_gBaseStats_pointer_literals_redirected":
+            errors.append("species_compat runtime scope must match the verified direct-pointer redirection")
 
     return {
         "schema_version": registry.get("schema_version"),
