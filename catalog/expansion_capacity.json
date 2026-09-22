@@ -1,5 +1,5 @@
 {
-  "schema_version": 4,
+  "schema_version": 5,
   "project": "SAPPHIRE",
   "purpose": "Generation 10 readiness without pre-assigning unknown future content IDs",
   "policy": {
@@ -85,7 +85,11 @@
     "payload_capacity_bytes": 16773120,
     "layout": "catalog/expanded_rom_layout.json",
     "builder": "tools/sapphire_rom_expansion.py",
-    "validation_report": "reports/expanded-rom-container-validation.json"
+    "validation_report": "reports/expanded-rom-container-validation.json",
+    "relocation_allocator_implemented": true,
+    "relocation_allocator": "tools/sapphire_rom_expansion.py install",
+    "expanded_table_registry": "catalog/expanded_table_registry.json",
+    "expanded_table_registry_verifier": "tools/verify_expanded_table_registry.py"
   },
   "save": {
     "preserve_gen3_box_pokemon_core_layout": true,
@@ -143,8 +147,8 @@
     "pokedex_data": "relocatable"
   },
   "next_gates": [
+    "define and implement the concrete species registry/personal-data format, then relocate the first production table through SAPPX10",
     "replace fixed species/move/ability/evolution bounds identified in analysis/expansion_bound_audit.json",
-    "populate the SAPPX10 relocation directory and integrate explicit allocation into table-family patch generation",
     "implement sectors 30/31 A/B extension read/write hooks in the expanded ROM",
     "rewrite/recover extension data after original save paths that erase sectors 28-31",
     "migrate expanded Pokédex and modern ability-slot state through the save extension",
