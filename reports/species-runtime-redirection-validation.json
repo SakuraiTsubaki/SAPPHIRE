@@ -1,0 +1,46 @@
+{
+  "schema_version": 1,
+  "date": "2026-09-23",
+  "project": "SAPPHIRE",
+  "result": "pass",
+  "rom_count": 12,
+  "test": "Install species_compat and redirect all direct gBaseStats pointer literals",
+  "species_compat": {
+    "capacity": 4096,
+    "stride_bytes": 28,
+    "table_size_bytes": 114688,
+    "sha256": "63f0b7a2a4575d4f21b8dbb7c76041751225d7a869d7e88114060e629fa60dff",
+    "install_offset": 16945152,
+    "install_pointer": "0x09029000"
+  },
+  "invariants": [
+    "species_data is installed first",
+    "legacy 412 BaseStats records are copied byte-for-byte including 2-byte padding",
+    "records 412..4095 in species_compat are zero-filled",
+    "exactly 45 old gBaseStats pointer literals exist in every supplied ROM",
+    "all 45 literals are replaced with the common species_compat pointer",
+    "SAPPX10 working-prefix SHA-256 is refreshed after prefix patching",
+    "recorded clean-source SHA-1/SHA-256 identity remains unchanged"
+  ],
+  "limitations": [
+    "NUM_SPECIES and sanitizer bounds are not patched yet",
+    "legacy BaseStats consumers still see u8 type/ability fields through species_compat",
+    "ExpandedSpeciesV1 wide accessors remain pending",
+    "emulator gameplay validation has not yet been run"
+  ],
+  "roms": [
+    {"file":"Pocket Monsters - Sapphire (Japan).gba","source_rom":"JP AXPJ rev0","legacy_pointer":"0x081D095C","compat_pointer":"0x09029000","pointer_literals_patched":45,"working_prefix_sha256":"c420e94996cb480cdfedeaba7e24d02a0b1b70b7d67b978372715fa256620b81"},
+    {"file":"Pokemon - Edicion Zafiro (Spain) (Rev 1).gba","source_rom":"ES AXPS rev1","legacy_pointer":"0x08203924","compat_pointer":"0x09029000","pointer_literals_patched":45,"working_prefix_sha256":"38474cc022769fdcf01342afd47f52ee2e7333f9f4d215aa5d33bdde4f540b3b"},
+    {"file":"Pokemon - Edicion Zafiro (Spain).gba","source_rom":"ES AXPS rev0","legacy_pointer":"0x08203924","compat_pointer":"0x09029000","pointer_literals_patched":45,"working_prefix_sha256":"28781717b043e25845b1e7e8b09db3af355678d0dfbf6116a4f58a6442b7d4d8"},
+    {"file":"Pokemon - Saphir-Edition (Germany) (Rev 1).gba","source_rom":"DE AXPD rev1","legacy_pointer":"0x0820BB7C","compat_pointer":"0x09029000","pointer_literals_patched":45,"working_prefix_sha256":"08c19ff8968f75e8d5a4820fad752ab5ea4cbe79baf5cd9fa58444c69ff0c81d"},
+    {"file":"Pokemon - Saphir-Edition (Germany).gba","source_rom":"DE AXPD rev0","legacy_pointer":"0x0820BB7C","compat_pointer":"0x09029000","pointer_literals_patched":45,"working_prefix_sha256":"a9c95230152eafb7dff0dc1997f1f3e1c290ed8c7394ca20656ac752c94b08d7"},
+    {"file":"Pokemon - Sapphire Version (Europe) (Rev 1).gba","source_rom":"EN AXPE rev1","legacy_pointer":"0x081FEBC0","compat_pointer":"0x09029000","pointer_literals_patched":45,"working_prefix_sha256":"1712e32b380286a04d98a11bb3fabfdccc146d5dc168734cdcf75f06bc20eda9"},
+    {"file":"Pokemon - Sapphire Version (USA).gba","source_rom":"EN AXPE rev0","legacy_pointer":"0x081FEBA8","compat_pointer":"0x09029000","pointer_literals_patched":45,"working_prefix_sha256":"9f4fa03717bdbd121c48930d73bd9463426adc395c74779ecc65f001c2cce926"},
+    {"file":"Pokemon - Sapphire Version (USA, Europe) (Rev 2).gba","source_rom":"EN AXPE rev2","legacy_pointer":"0x081FEBC0","compat_pointer":"0x09029000","pointer_literals_patched":45,"working_prefix_sha256":"3b5be19db2b64df1590718a4fb8d4d069689faaa30b4d90ad080e0543284b0d0"},
+    {"file":"Pokemon - Version Saphir (France) (Rev 1).gba","source_rom":"FR AXPF rev1","legacy_pointer":"0x08206FF4","compat_pointer":"0x09029000","pointer_literals_patched":45,"working_prefix_sha256":"b5860c8de91c5088426c7736fa8efc469e7c4cda914648d0c3d4468d6970ddae"},
+    {"file":"Pokemon - Version Saphir (France).gba","source_rom":"FR AXPF rev0","legacy_pointer":"0x08206FF4","compat_pointer":"0x09029000","pointer_literals_patched":45,"working_prefix_sha256":"f1faa35878ef4b4b2e2f02d5763e9cb1c509c3c4748a657af1b42c564e05e697"},
+    {"file":"Pokemon - Versione Zaffiro (Italy) (Rev 1).gba","source_rom":"IT AXPI rev1","legacy_pointer":"0x08200880","compat_pointer":"0x09029000","pointer_literals_patched":45,"working_prefix_sha256":"63ded0ac7ebaa3bba0e612a719d2111907c4a0004754e84b2615de05b98f0c21"},
+    {"file":"Pokemon - Versione Zaffiro (Italy).gba","source_rom":"IT AXPI rev0","legacy_pointer":"0x08200880","compat_pointer":"0x09029000","pointer_literals_patched":45,"working_prefix_sha256":"d60fe2cfda5814c6aaeb90ab0b4000f014fd91c6aab7bfadac3210f211d1266b"}
+  ],
+  "runtime_status": "direct legacy gBaseStats pointer redirection implemented statically across all supplied ROMs; count/sanitizer and wide-field runtime integration remain pending"
+}
