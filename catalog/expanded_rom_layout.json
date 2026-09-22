@@ -1,8 +1,8 @@
 {
-  "schema_version": 3,
+  "schema_version": 4,
   "project": "SAPPHIRE",
   "profile": "expanded",
-  "status": "container_and_relocation_allocator_implemented_table_formats_pending",
+  "status": "container_allocator_and_prefix_patch_tracking_implemented",
   "rom": {
     "gba_rom_base": "0x08000000",
     "gba_rom_window_end_inclusive": "0x09FFFFFF",
@@ -23,7 +23,7 @@
     "pointer": "0x09000000",
     "size_bytes": 4096,
     "magic": "SAPPX10\\0",
-    "version": 1,
+    "version": 2,
     "fixed_header_size_bytes": 256,
     "header_crc": "CRC32 over the fixed 256-byte header with header_crc32 zeroed",
     "header_fields": [
@@ -42,11 +42,23 @@
       "game_code[4]",
       "revision:u8",
       "padding[3]",
-      "preserved_input_sha1[20]",
-      "preserved_input_sha256[32]",
+      "source_sha1[20]",
+      "source_sha256[32]",
+      "working_prefix_sha256[32]",
       "header_crc32:u32",
       "reserved_to_0x100"
-    ]
+    ],
+    "used_header_struct_size_bytes": 136,
+    "flags": {
+      "bit0": "prefix_patched: current native-size ROM prefix differs from the recorded clean source and is authenticated by working_prefix_sha256",
+      "bits1_15": "reserved"
+    },
+    "identity_policy": {
+      "source_sha1_sha256": "immutable identity of the validated retail ROM used to create the expanded image",
+      "working_prefix_sha256": "hash of the current 8/16 MiB executable prefix after runtime patches",
+      "clean_expand": "working_prefix_sha256 equals source_sha256 and prefix_patched is clear",
+      "runtime_patch": "source identity remains unchanged; prefix_patched is set and working_prefix_sha256 is refreshed"
+    }
   },
   "relocation_directory": {
     "offset_within_control_page": 256,
@@ -81,19 +93,22 @@
     "current_contents": "allocator-ready; concrete table formats/contents are installed explicitly"
   },
   "invariants": [
-    "The original native ROM prefix is byte-for-byte unchanged.",
+    "A clean container build preserves the original native ROM prefix byte-for-byte.",
     "The expanded image is exactly 32 MiB, the full directly addressable GBA ROM window.",
     "All supported regions use the same control and payload addresses.",
     "The Japanese 8 MiB image is padded to the common 16 MiB base; its original 8 MiB prefix is unchanged.",
     "The control header records exact source SHA-1 and SHA-256 digests, game code and revision.",
-    "Verification recomputes the source-prefix hashes and header CRC32.",
     "Generation 10 content IDs are not preassigned.",
     "Form-change implementation remains deferred.",
     "No ROM image is stored in the repository.",
-    "Relocation allocation is explicit and append-only from registered high water; unregistered 0xFF gaps are not reused."
+    "Relocation allocation is explicit and append-only from registered high water; unregistered 0xFF gaps are not reused.",
+    "Runtime patch stages may modify the executable prefix only after setting prefix_patched and refreshing working_prefix_sha256.",
+    "The original retail source SHA-1/SHA-256 identity remains immutable across runtime patch stages.",
+    "Verification checks the current prefix against working_prefix_sha256 and checks the immutable source identity against the known Sapphire ROM matrix."
   ],
   "tool": "tools/sapphire_rom_expansion.py",
   "validation_report": "reports/expanded-rom-container-validation.json",
   "table_registry": "catalog/expanded_table_registry.json",
-  "verifier": "tools/verify_expanded_table_registry.py"
+  "verifier": "tools/verify_expanded_table_registry.py",
+  "runtime_prefix_patcher": "tools/sapphire_species_runtime_patch.py"
 }
