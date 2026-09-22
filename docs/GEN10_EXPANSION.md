@@ -57,6 +57,20 @@ The fixed 256-byte SAPPX10 header records source SHA-1/SHA-256 identity, game co
 
 Expanded tables and assets must be placed into this explicit memory map. They must not rely on whichever long `0xFF` block happens to exist in a particular regional ROM.
 
+The relocation allocator is now implemented. It appends registered payloads from the highest directory-owned end offset, supports explicit power-of-two alignment, updates the SAPPX10 directory/header CRC state, and rejects duplicate names, overlaps, invalid ranges and malformed unused directory space.
+
+The first production relocation is now `species_data`, using `ExpandedSpeciesV1`:
+
+- 4096 records × 40 bytes = 163,840 bytes;
+- the 412 original `gBaseStats` source records are found by a cross-region ROM signature and verified against a canonical SHA-256;
+- every original record round-trips back to its exact 26-byte Gen III data representation;
+- type IDs are widened to u16;
+- EXP yield is widened to u16;
+- two u8 ability slots become three u16 slots;
+- six packed 2-bit EV yields become six explicit u8 values;
+- IDs 412..439 stay compatibility-reserved until the Egg/Unown mapping is explicit;
+- runtime consumers still use legacy `gBaseStats` and are the next integration target.
+
 The expanded profile therefore requires relocation metadata for:
 
 - species/personal data
@@ -102,13 +116,15 @@ The offline extension format is defined in `catalog/expanded_save_layout.json`, 
 
 1. Audit every hard-coded species, move, item, ability and type bound in Sapphire.
 2. Establish the shared 16 MiB expansion base and 32 MiB expanded ROM container. **Implemented and validated for all 12 supplied revisions.**
-3. Use the audited retail-unused sectors 30-31 for the versioned A/B extension; add expanded-ROM runtime hooks without changing classic saves. **Offline format validated; runtime hooks still pending.**
-4. Replace historical fixed-end comparisons with count-driven checks.
-5. Populate the SAPPX10 relocation directory and add patchers for each table family.
-6. Add tests for IDs above every original Gen III maximum.
-7. Verify the same architecture across Japanese first, then the supported regional revisions.
-8. Import later-generation data only after the capacity foundation passes.
-9. Keep form-change logic out of this phase.
+3. Implement explicit SAPPX10 relocation allocation. **Implemented and validated for all 12 supplied revisions.**
+4. Build the first widened production table (`species_data` / `ExpandedSpeciesV1`). **Implemented and cross-region validated; runtime consumers still pending.**
+5. Use the audited retail-unused sectors 30-31 for the versioned A/B extension; add expanded-ROM runtime hooks without changing classic saves. **Offline format validated; runtime hooks still pending.**
+6. Replace historical fixed-end comparisons and direct `gBaseStats` assumptions with count-driven expanded-profile accessors.
+7. Add the remaining relocation manifests and table-family patchers.
+8. Add tests for IDs above every original Gen III maximum.
+9. Verify the same architecture across Japanese first, then the supported regional revisions.
+10. Import later-generation data only after the capacity foundation passes.
+11. Keep form-change logic out of this phase.
 
 ## Generation 10 rule
 
