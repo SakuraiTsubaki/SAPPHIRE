@@ -1,11 +1,14 @@
 {
-  "schema_version": 1,
+  "schema_version": 2,
   "project": "SAPPHIRE",
   "profile": "expanded",
   "purpose": "Generation 10 capacity registry without inventing unreleased content",
   "identifier_model": {
     "logical_id_bits": 16,
-    "valid_range": [0, 65534],
+    "valid_range": [
+      0,
+      65534
+    ],
     "reserved_invalid_id": 65535
   },
   "allocator_contract": {
@@ -16,32 +19,150 @@
     "form_change_status": "deferred"
   },
   "domains": {
-    "species": {"capacity_floor": 4096, "directory_name": "species_data", "status": "format_pending"},
-    "forms": {"capacity_floor": 8192, "directory_name": "forms_reserved", "status": "reserved_inactive"},
-    "moves": {"capacity_floor": 4096, "directory_name": "moves", "status": "format_pending"},
-    "items": {"capacity_floor": 4096, "directory_name": "items", "status": "format_pending"},
-    "abilities": {"capacity_floor": 2048, "directory_name": "abilities", "status": "format_pending"},
-    "types": {"capacity_floor": 256, "directory_name": "types", "status": "format_pending"},
-    "evolution_methods": {"capacity_floor": 512, "directory_name": "evo_methods", "status": "format_pending"},
-    "move_effects": {"capacity_floor": 2048, "directory_name": "move_effects", "status": "format_pending"}
+    "species": {
+      "capacity_floor": 4096,
+      "directory_name": "species_data",
+      "status": "format_v1_implemented"
+    },
+    "forms": {
+      "capacity_floor": 8192,
+      "directory_name": "forms_reserved",
+      "status": "reserved_inactive"
+    },
+    "moves": {
+      "capacity_floor": 4096,
+      "directory_name": "moves",
+      "status": "format_pending"
+    },
+    "items": {
+      "capacity_floor": 4096,
+      "directory_name": "items",
+      "status": "format_pending"
+    },
+    "abilities": {
+      "capacity_floor": 2048,
+      "directory_name": "abilities",
+      "status": "format_pending"
+    },
+    "types": {
+      "capacity_floor": 256,
+      "directory_name": "types",
+      "status": "format_pending"
+    },
+    "evolution_methods": {
+      "capacity_floor": 512,
+      "directory_name": "evo_methods",
+      "status": "format_pending"
+    },
+    "move_effects": {
+      "capacity_floor": 2048,
+      "directory_name": "move_effects",
+      "status": "format_pending"
+    }
   },
   "table_families": [
-    {"directory_name": "species_data", "domain": "species", "role": "expanded species/personal records", "format_status": "pending"},
-    {"directory_name": "species_names", "domain": "species", "role": "species name data", "format_status": "pending"},
-    {"directory_name": "learnsets", "domain": "species", "role": "level-up and other learnset payloads", "format_status": "pending"},
-    {"directory_name": "evo_index", "domain": "species", "role": "per-species evolution list index", "format_status": "pending"},
-    {"directory_name": "evo_edges", "domain": "species", "role": "variable-length evolution edges", "format_status": "pending"},
-    {"directory_name": "moves", "domain": "moves", "role": "expanded move records", "format_status": "pending"},
-    {"directory_name": "items", "domain": "items", "role": "expanded item records", "format_status": "pending"},
-    {"directory_name": "abilities", "domain": "abilities", "role": "u16 logical ability records and slots", "format_status": "pending"},
-    {"directory_name": "types", "domain": "types", "role": "type registry", "format_status": "pending"},
-    {"directory_name": "move_effects", "domain": "move_effects", "role": "expanded move-effect registry", "format_status": "pending"},
-    {"directory_name": "evo_methods", "domain": "evolution_methods", "role": "expanded evolution-method registry", "format_status": "pending"},
-    {"directory_name": "pokedex", "domain": "species", "role": "expanded Pokédex metadata", "format_status": "pending"},
-    {"directory_name": "sprite_ptrs", "domain": "species", "role": "front/back sprite pointer registry", "format_status": "pending"},
-    {"directory_name": "palette_ptrs", "domain": "species", "role": "normal/shiny palette pointer registry", "format_status": "pending"},
-    {"directory_name": "icon_ptrs", "domain": "species", "role": "icon pointer registry", "format_status": "pending"},
-    {"directory_name": "cries", "domain": "species", "role": "cry/audio pointer registry", "format_status": "pending"}
+    {
+      "directory_name": "species_data",
+      "domain": "species",
+      "role": "expanded species/personal records",
+      "format_status": "implemented_v1",
+      "format_manifest": "catalog/expanded_species_record_v1.json",
+      "builder": "tools/sapphire_species_table.py",
+      "capacity": 4096,
+      "stride": 40,
+      "table_size_bytes": 163840,
+      "runtime_consumers": "pending"
+    },
+    {
+      "directory_name": "species_names",
+      "domain": "species",
+      "role": "species name data",
+      "format_status": "pending"
+    },
+    {
+      "directory_name": "learnsets",
+      "domain": "species",
+      "role": "level-up and other learnset payloads",
+      "format_status": "pending"
+    },
+    {
+      "directory_name": "evo_index",
+      "domain": "species",
+      "role": "per-species evolution list index",
+      "format_status": "pending"
+    },
+    {
+      "directory_name": "evo_edges",
+      "domain": "species",
+      "role": "variable-length evolution edges",
+      "format_status": "pending"
+    },
+    {
+      "directory_name": "moves",
+      "domain": "moves",
+      "role": "expanded move records",
+      "format_status": "pending"
+    },
+    {
+      "directory_name": "items",
+      "domain": "items",
+      "role": "expanded item records",
+      "format_status": "pending"
+    },
+    {
+      "directory_name": "abilities",
+      "domain": "abilities",
+      "role": "u16 logical ability records and slots",
+      "format_status": "pending"
+    },
+    {
+      "directory_name": "types",
+      "domain": "types",
+      "role": "type registry",
+      "format_status": "pending"
+    },
+    {
+      "directory_name": "move_effects",
+      "domain": "move_effects",
+      "role": "expanded move-effect registry",
+      "format_status": "pending"
+    },
+    {
+      "directory_name": "evo_methods",
+      "domain": "evolution_methods",
+      "role": "expanded evolution-method registry",
+      "format_status": "pending"
+    },
+    {
+      "directory_name": "pokedex",
+      "domain": "species",
+      "role": "expanded Pokédex metadata",
+      "format_status": "pending"
+    },
+    {
+      "directory_name": "sprite_ptrs",
+      "domain": "species",
+      "role": "front/back sprite pointer registry",
+      "format_status": "pending"
+    },
+    {
+      "directory_name": "palette_ptrs",
+      "domain": "species",
+      "role": "normal/shiny palette pointer registry",
+      "format_status": "pending"
+    },
+    {
+      "directory_name": "icon_ptrs",
+      "domain": "species",
+      "role": "icon pointer registry",
+      "format_status": "pending"
+    },
+    {
+      "directory_name": "cries",
+      "domain": "species",
+      "role": "cry/audio pointer registry",
+      "format_status": "pending"
+    }
   ],
   "rules": [
     "Capacity floors are reservation targets, not claims about Generation 10 content counts.",
