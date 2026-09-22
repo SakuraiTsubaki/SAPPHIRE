@@ -1,5 +1,5 @@
 {
-  "schema_version": 6,
+  "schema_version": 7,
   "project": "SAPPHIRE",
   "profiles": {
     "classic": {
@@ -14,7 +14,7 @@
       "form_change": false
     },
     "expanded": {
-      "status": "species_table_implemented_runtime_redirection_and_save_runtime_pending",
+      "status": "species_legacy_pointer_redirection_implemented_bounds_wide_accessors_and_save_runtime_pending",
       "purpose": "Generation 10-ready Sapphire-native expansion profile",
       "accepted_input_rom_sizes_bytes": [
         8388608,
@@ -56,6 +56,17 @@
         "stride_bytes": 40,
         "builder": "tools/sapphire_species_table.py",
         "runtime_consumers_redirected": false
+      },
+      "control_schema": 2,
+      "source_identity_tracking": "clean source SHA-1/SHA-256 + working-prefix SHA-256",
+      "species_runtime": {
+        "canonical_table": "species_data / ExpandedSpeciesV1",
+        "compatibility_projection": "species_compat",
+        "legacy_gBaseStats_pointer_literals_redirected": true,
+        "pointer_literals_per_rom": 45,
+        "validated_roms": 12,
+        "num_species_bounds_redirected": false,
+        "wide_type_ability_accessors": false
       }
     }
   }
