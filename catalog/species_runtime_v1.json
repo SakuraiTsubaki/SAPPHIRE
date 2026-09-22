@@ -1,0 +1,49 @@
+{
+  "schema_version": 1,
+  "project": "SAPPHIRE",
+  "component": "species_runtime",
+  "format": "SpeciesRuntimeV1",
+  "status": "sanitize_species_defined_flag_patch_implemented",
+  "directory_name": "species_runtime",
+  "install_order": [
+    "species_data",
+    "species_compat",
+    "species_runtime"
+  ],
+  "clean_install": {
+    "rom_offset": 17059840,
+    "rom_pointer": "0x09045000",
+    "size_bytes": 44,
+    "alignment_bytes": 4,
+    "sha256": "6009aaf5b5d652331e7fb48f7730241767df53e68760ac8e136c16f4f58be3b4"
+  },
+  "sanitizer": {
+    "source_symbol": "src/contest_2.c::SanitizeSpecies",
+    "legacy_semantics": "species >= NUM_SPECIES becomes SPECIES_NONE",
+    "expanded_semantics": "return the u16 species only when species < 4096 and ExpandedSpeciesV1.flags.defined is set; otherwise return SPECIES_NONE",
+    "expanded_species_record_size": 40,
+    "defined_flag_offset": 37,
+    "defined_flag_mask": 1,
+    "capacity": 4096,
+    "patch": "8-byte Thumb absolute tail-call trampoline",
+    "signature_size_bytes": 24,
+    "signature_unique_in_each_supplied_rom": true
+  },
+  "compatibility": {
+    "species_none": 0,
+    "legacy_defined_species": [1, 411],
+    "species_egg": 412,
+    "legacy_unown_extra_constants": [413, 439],
+    "policy": "412..439 remain undefined in ExpandedSpeciesV1 until explicit Egg/Unown compatibility mapping is implemented; the sanitizer therefore rejects them exactly as the original SanitizeSpecies did",
+    "future_species": "new logical IDs become valid by installing a defined ExpandedSpeciesV1 record; no global NUM_SPECIES bump is required for this sanitizer"
+  },
+  "remaining_runtime_bounds": [
+    "GetSpeciesName and relocated species-name storage",
+    "TV/daycare dense 1..NUM_SPECIES iteration",
+    "other NUM_SPECIES/SPECIES_EGG graphical and UI bounds",
+    "u16 type runtime consumers",
+    "u16 three-slot ability runtime consumers"
+  ],
+  "tool": "tools/sapphire_species_runtime_patch.py",
+  "validation_report": "reports/species-runtime-redirection-validation.json"
+}
