@@ -1,5 +1,5 @@
 {
-  "schema_version": 7,
+  "schema_version": 8,
   "project": "SAPPHIRE",
   "profiles": {
     "classic": {
@@ -14,7 +14,7 @@
       "form_change": false
     },
     "expanded": {
-      "status": "species_legacy_pointer_redirection_implemented_bounds_wide_accessors_and_save_runtime_pending",
+      "status": "species_sanitizer_and_canonical_names_implemented_dense_iteration_wide_accessors_and_save_runtime_pending",
       "purpose": "Generation 10-ready Sapphire-native expansion profile",
       "accepted_input_rom_sizes_bytes": [
         8388608,
@@ -65,7 +65,14 @@
         "legacy_gBaseStats_pointer_literals_redirected": true,
         "pointer_literals_per_rom": 45,
         "validated_roms": 12,
-        "num_species_bounds_redirected": false,
+        "sanitize_species_defined_flag_runtime": true,
+        "sanitize_species_helper_pointer": "0x09045000",
+        "canonical_names": "species_names / ExpandedSpeciesNamesV1",
+        "names_compatibility_projection": "species_names_cp",
+        "get_species_name_canonical_runtime": true,
+        "species_name_helper_pointer": "0x0906002C",
+        "dense_species_iteration": false,
+        "remaining_direct_name_consumers": true,
         "wide_type_ability_accessors": false
       }
     }
