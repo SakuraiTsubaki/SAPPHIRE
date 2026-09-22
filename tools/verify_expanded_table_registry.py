@@ -120,6 +120,28 @@ def verify(registry_path: Path, capacity_path: Path) -> dict:
             + ", ".join(sorted(missing_domain_names))
         )
 
+    species_family = next(
+        (family for family in families if family.get("directory_name") == "species_data"),
+        None,
+    )
+    if species_family is None:
+        errors.append("species_data table family is required")
+    else:
+        if species_family.get("format_status") != "implemented_v1":
+            errors.append("species_data must be marked implemented_v1")
+        if species_family.get("format_manifest") != "catalog/expanded_species_record_v1.json":
+            errors.append("species_data format manifest path is not canonical")
+        if species_family.get("builder") != "tools/sapphire_species_table.py":
+            errors.append("species_data builder path is not canonical")
+        if species_family.get("capacity") != 4096:
+            errors.append("species_data capacity must be 4096")
+        if species_family.get("stride") != 40:
+            errors.append("species_data stride must be 40 bytes")
+        if species_family.get("table_size_bytes") != 4096 * 40:
+            errors.append("species_data table size must be 163840 bytes")
+        if species_family.get("runtime_consumers") != "pending":
+            errors.append("species_data runtime consumers must remain pending until redirected")
+
     return {
         "schema_version": registry.get("schema_version"),
         "project": registry.get("project"),
