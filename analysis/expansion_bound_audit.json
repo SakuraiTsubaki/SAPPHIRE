@@ -1,11 +1,11 @@
 {
-  "schema_version": 1,
+  "schema_version": 2,
   "project": "SAPPHIRE",
   "source": {
     "repository": "pret/pokeruby",
     "ref": "63a8cbf0016b351a4e68f7036fa0b77e23d2f2c1"
   },
-  "status": "initial_core_bound_audit",
+  "status": "runtime_integration_after_container_allocator_and_species_table",
   "purpose": "Find original Gen III hard limits that must be removed before later-generation content import",
   "findings": [
     {
@@ -19,7 +19,9 @@
       ],
       "current_bound": "NUM_SPECIES / SPECIES_EGG",
       "problem": "New logical species above the original bound are sanitized or treated as unknown.",
-      "required_action": "Replace original fixed species-end checks with expanded-profile registry/count checks while preserving classic behavior."
+      "required_action": "Replace original fixed species-end checks with expanded-profile registry/count checks while preserving classic behavior.",
+      "implementation_status": "ExpandedSpeciesV1 table implemented at 4096 capacity; runtime sanitizers/name lookups still need count-driven accessors.",
+      "evidence": "catalog/expanded_species_record_v1.json"
     },
     {
       "id": "SPECIES-002",
@@ -70,7 +72,8 @@
       "current_bound": "Unown display species uses NUM_SPECIES + unownForm",
       "problem": "Appending species directly after NUM_SPECIES can collide with the original Unown form encoding.",
       "required_action": "Preserve an explicit compatibility mapping for existing Unown forms. Do not treat this as permission to implement modern form-change logic.",
-      "form_change_scope": "existing Gen III compatibility only"
+      "form_change_scope": "existing Gen III compatibility only",
+      "implementation_status": "IDs 412..439 are explicitly reserved from reuse until SPECIES_EGG and legacy Unown compatibility mapping is implemented."
     },
     {
       "id": "SPECIES-006",
@@ -129,7 +132,8 @@
       ],
       "current_bound": "ability1 and ability2 are u8",
       "problem": "Ability IDs above 255 cannot be represented in base species data; only two slots exist.",
-      "required_action": "Create an expanded ability table with u16 IDs and at least three logical slots; preserve classic BaseStats layout only for classic mode."
+      "required_action": "Create an expanded ability table with u16 IDs and at least three logical slots; preserve classic BaseStats layout only for classic mode.",
+      "implementation_status": "ExpandedSpeciesV1 provides three u16 ability slots; legacy battle/runtime consumers remain u8 and are not redirected yet."
     },
     {
       "id": "ABILITY-002",
@@ -202,7 +206,8 @@
       ],
       "current_bound": "type fields are u8; summary graphics use NUMBER_OF_MON_TYPES as an atlas offset",
       "problem": "Logical type growth also changes UI sprite/palette indexing, not just battle type values.",
-      "required_action": "Keep a registry-driven type count and audit every graphics/summary offset before enabling additional types."
+      "required_action": "Keep a registry-driven type count and audit every graphics/summary offset before enabling additional types.",
+      "implementation_status": "ExpandedSpeciesV1 stores type1/type2 as u16; battle/UI type consumers remain legacy u8 and are not redirected yet."
     },
     {
       "id": "MOVE_EFFECT-001",
@@ -219,14 +224,19 @@
     }
   ],
   "immediate_p0_order": [
-    "shared 32 MiB expanded ROM container",
-    "species registry/count boundary",
+    "species runtime accessor/count boundary and gBaseStats consumer redirection",
     "variable-length evolution storage",
-    "expanded Pokédex persistence",
+    "expanded Pokédex runtime persistence",
     "move random-selection and sanitizer bounds",
-    "u16 ability IDs plus three-slot ability model",
+    "u16 ability battle/runtime state plus three-slot semantics",
     "widened battle ability serialization",
     "widened move-effect IDs"
   ],
-  "note": "Debug-only bounds were observed but are not release blockers until production paths are clean."
+  "note": "Debug-only bounds were observed but are not release blockers until production paths are clean.",
+  "completed_foundation": [
+    "shared 32 MiB SAPPX10 ROM container",
+    "explicit relocation allocator and 120-entry directory",
+    "4096-entry ExpandedSpeciesV1 production table",
+    "lossless conversion/round-trip validation of all 412 legacy gBaseStats records across 12 supplied ROMs"
+  ]
 }
