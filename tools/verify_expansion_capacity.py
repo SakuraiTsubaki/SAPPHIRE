@@ -86,6 +86,12 @@ def verify(path: Path) -> dict:
         errors.append("expanded ROM layout manifest path is not canonical")
     if rom.get("builder") != "tools/sapphire_rom_expansion.py":
         errors.append("expanded ROM builder path is not canonical")
+    if rom.get("control_schema") != 2:
+        errors.append("SAPPX10 control schema must be 2 once runtime prefix patches are tracked")
+    if rom.get("control_header_used_bytes") != 136:
+        errors.append("SAPPX10 schema 2 header struct must use 136 bytes")
+    if "working-prefix" not in rom.get("source_identity_model", ""):
+        errors.append("expanded ROM must distinguish clean source identity from working prefix identity")
     if rom.get("relocation_allocator_implemented") is not True:
         errors.append("SAPPX10 relocation allocator must be implemented")
     if rom.get("relocation_allocator") != "tools/sapphire_rom_expansion.py install":
@@ -102,7 +108,27 @@ def verify(path: Path) -> dict:
     if first_table.get("table_size_bytes") != 4096 * 40:
         errors.append("ExpandedSpeciesV1 table size is inconsistent")
     if first_table.get("runtime_consumers_redirected") is not False:
-        errors.append("species runtime redirection must remain explicitly pending until implemented")
+        errors.append("full species runtime redirection must remain false until bounds and wide accessors are implemented")
+
+    compat = rom.get("species_compat_projection", {})
+    if compat.get("directory_name") != "species_compat":
+        errors.append("species compatibility projection must use the species_compat directory name")
+    if compat.get("capacity") != 4096 or compat.get("stride_bytes") != 28:
+        errors.append("species_compat must be 4096 records x 28 bytes")
+    if compat.get("table_size_bytes") != 4096 * 28:
+        errors.append("species_compat table size must be 114688 bytes")
+    if compat.get("canonical") is not False:
+        errors.append("species_compat must remain non-canonical")
+
+    redirection = rom.get("species_legacy_pointer_redirection", {})
+    if redirection.get("implemented") is not True:
+        errors.append("legacy gBaseStats pointer redirection must be marked implemented")
+    if redirection.get("direct_pointer_literals_per_rom") != 45:
+        errors.append("legacy gBaseStats redirection must retain the verified 45 literals per ROM")
+    if redirection.get("validated_roms") != 12:
+        errors.append("legacy gBaseStats redirection must retain 12-ROM validation")
+    if redirection.get("runtime_scope") != "all direct gBaseStats pointer literals only":
+        errors.append("species runtime scope must stay explicitly partial")
 
     save = data.get("save", {})
     if not save.get("preserve_gen3_box_pokemon_core_layout"):
@@ -139,6 +165,8 @@ def verify(path: Path) -> dict:
         "control_page_size_bytes": rom.get("control_page_size_bytes"),
         "payload_base_offset": rom.get("payload_base_offset"),
         "payload_capacity_bytes": rom.get("payload_capacity_bytes"),
+        "control_schema": rom.get("control_schema"),
+        "species_pointer_redirection_implemented": rom.get("species_legacy_pointer_redirection", {}).get("implemented"),
     }
 
 
