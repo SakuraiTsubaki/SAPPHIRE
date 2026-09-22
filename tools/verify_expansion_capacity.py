@@ -86,6 +86,23 @@ def verify(path: Path) -> dict:
         errors.append("expanded ROM layout manifest path is not canonical")
     if rom.get("builder") != "tools/sapphire_rom_expansion.py":
         errors.append("expanded ROM builder path is not canonical")
+    if rom.get("relocation_allocator_implemented") is not True:
+        errors.append("SAPPX10 relocation allocator must be implemented")
+    if rom.get("relocation_allocator") != "tools/sapphire_rom_expansion.py install":
+        errors.append("SAPPX10 relocation allocator command is not canonical")
+    if rom.get("expanded_table_registry") != "catalog/expanded_table_registry.json":
+        errors.append("expanded table registry path is not canonical")
+    first_table = rom.get("first_production_table", {})
+    if first_table.get("directory_name") != "species_data":
+        errors.append("first production table must be species_data")
+    if first_table.get("format") != "ExpandedSpeciesV1":
+        errors.append("first production table format must be ExpandedSpeciesV1")
+    if first_table.get("capacity") != 4096 or first_table.get("stride_bytes") != 40:
+        errors.append("ExpandedSpeciesV1 must be 4096 records x 40 bytes")
+    if first_table.get("table_size_bytes") != 4096 * 40:
+        errors.append("ExpandedSpeciesV1 table size is inconsistent")
+    if first_table.get("runtime_consumers_redirected") is not False:
+        errors.append("species runtime redirection must remain explicitly pending until implemented")
 
     save = data.get("save", {})
     if not save.get("preserve_gen3_box_pokemon_core_layout"):
