@@ -1,11 +1,11 @@
 {
-  "schema_version": 2,
+  "schema_version": 3,
   "project": "SAPPHIRE",
   "source": {
     "repository": "pret/pokeruby",
     "ref": "63a8cbf0016b351a4e68f7036fa0b77e23d2f2c1"
   },
-  "status": "runtime_integration_after_container_allocator_and_species_table",
+  "status": "species_direct_pointer_redirection_implemented_count_bounds_pending",
   "purpose": "Find original Gen III hard limits that must be removed before later-generation content import",
   "findings": [
     {
@@ -20,8 +20,12 @@
       "current_bound": "NUM_SPECIES / SPECIES_EGG",
       "problem": "New logical species above the original bound are sanitized or treated as unknown.",
       "required_action": "Replace original fixed species-end checks with expanded-profile registry/count checks while preserving classic behavior.",
-      "implementation_status": "ExpandedSpeciesV1 table implemented at 4096 capacity; runtime sanitizers/name lookups still need count-driven accessors.",
-      "evidence": "catalog/expanded_species_record_v1.json"
+      "implementation_status": "ExpandedSpeciesV1 and species_compat are implemented; all 45 direct gBaseStats pointer literals are redirected in each of 12 ROMs. NUM_SPECIES/SPECIES_EGG sanitizers and count-driven validity checks remain pending.",
+      "evidence": [
+        "catalog/expanded_species_record_v1.json",
+        "reports/expanded-species-table-validation.json",
+        "reports/species-runtime-redirection-validation.json"
+      ]
     },
     {
       "id": "SPECIES-002",
@@ -133,7 +137,7 @@
       "current_bound": "ability1 and ability2 are u8",
       "problem": "Ability IDs above 255 cannot be represented in base species data; only two slots exist.",
       "required_action": "Create an expanded ability table with u16 IDs and at least three logical slots; preserve classic BaseStats layout only for classic mode.",
-      "implementation_status": "ExpandedSpeciesV1 provides three u16 ability slots; legacy battle/runtime consumers remain u8 and are not redirected yet."
+      "implementation_status": "ExpandedSpeciesV1 has three u16 ability slots, while species_compat intentionally preserves legacy u8 fields until battle/runtime consumers are widened."
     },
     {
       "id": "ABILITY-002",
@@ -207,7 +211,7 @@
       "current_bound": "type fields are u8; summary graphics use NUMBER_OF_MON_TYPES as an atlas offset",
       "problem": "Logical type growth also changes UI sprite/palette indexing, not just battle type values.",
       "required_action": "Keep a registry-driven type count and audit every graphics/summary offset before enabling additional types.",
-      "implementation_status": "ExpandedSpeciesV1 stores type1/type2 as u16; battle/UI type consumers remain legacy u8 and are not redirected yet."
+      "implementation_status": "ExpandedSpeciesV1 stores u16 type IDs, while species_compat intentionally preserves legacy u8 fields until battle/UI consumers are widened."
     },
     {
       "id": "MOVE_EFFECT-001",
@@ -224,7 +228,7 @@
     }
   ],
   "immediate_p0_order": [
-    "species runtime accessor/count boundary and gBaseStats consumer redirection",
+    "NUM_SPECIES/SPECIES_EGG sanitizer and count boundary replacement with Egg/Unown compatibility",
     "variable-length evolution storage",
     "expanded Pokédex runtime persistence",
     "move random-selection and sanitizer bounds",
@@ -235,8 +239,11 @@
   "note": "Debug-only bounds were observed but are not release blockers until production paths are clean.",
   "completed_foundation": [
     "shared 32 MiB SAPPX10 ROM container",
+    "SAPPX10 schema 2 clean-source and working-prefix identity tracking",
     "explicit relocation allocator and 120-entry directory",
-    "4096-entry ExpandedSpeciesV1 production table",
-    "lossless conversion/round-trip validation of all 412 legacy gBaseStats records across 12 supplied ROMs"
+    "4096-entry ExpandedSpeciesV1 canonical table",
+    "4096-entry 28-byte species_compat legacy projection",
+    "lossless conversion/round-trip validation of all 412 legacy gBaseStats records across 12 supplied ROMs",
+    "all 45 direct gBaseStats pointer literals redirected to species_compat across all 12 supplied ROMs"
   ]
 }
