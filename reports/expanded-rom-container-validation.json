@@ -1,16 +1,16 @@
 {
-  "schema_version": 3,
+  "schema_version": 4,
   "date": "2026-09-23",
   "project": "SAPPHIRE",
   "result": "pass",
   "rom_count": 12,
   "tests": [
     "native->32MiB expansion",
-    "source SHA-1/SHA-256 round-trip",
+    "source SHA-1/SHA-256 identity",
+    "working-prefix SHA-256 identity",
     "header CRC32",
     "directory geometry",
-    "explicit first-fit high-water allocation",
-    "installed payload round-trip"
+    "explicit allocator install round-trip"
   ],
   "control_magic": "SAPPX10\\0",
   "control_page_size": 4096,
@@ -18,17 +18,150 @@
   "payload_capacity": 16773120,
   "directory_capacity": 120,
   "outputs": [
-    {"file":"Pocket Monsters - Sapphire (Japan).gba","known_rom":"JP AXPJ rev0","input_size":8388608,"source_sha1":"3233342c2f3087e6ffe6c1791cd5867db07df842","source_sha256":"6a5ff7656531ab41d1ea9cd8f2d045ab6228405b43f3ee09ea3ff5077c0f60c9","expanded_sha1":"a3ac2787c2c599984324a1c0966d950c7d68e50b","expanded_sha256":"dec81ec40731fa86773a2d9052e3d2600cdc75527569be9dc8fc5af12b8b0eaa","directory_count_after_test":1,"test_blob_offset":16781312,"test_blob_pointer":"0x09001000"},
-    {"file":"Pokemon - Edicion Zafiro (Spain) (Rev 1).gba","known_rom":"ES AXPS rev1","input_size":16777216,"source_sha1":"0fe9ad1e602e2fafa090aee25e43d6980625173c","source_sha256":"6b91637f07b902cfe7401eeb237ea44e13354ab5f5b487c9cf24ce3708385f6a","expanded_sha1":"79dd7adb7b00962f67c57b40be573e119b35535c","expanded_sha256":"0ba97945a1c50f0f180d51ed398496df2f8b2d02213866c80d7ea400bf39ac97","directory_count_after_test":1,"test_blob_offset":16781312,"test_blob_pointer":"0x09001000"},
-    {"file":"Pokemon - Edicion Zafiro (Spain).gba","known_rom":"ES AXPS rev0","input_size":16777216,"source_sha1":"3a6489189e581c4b29914071b79207883b8c16d8","source_sha256":"23f26d9858944b86bab00019f3aee3b50ba8c5d100dba650177025078208aea9","expanded_sha1":"4193e194db2e438a311332adb2b4c9df4e241a30","expanded_sha256":"36fb1b669a78010946d2f286c5f014c961e34fc869afc935878b6c2401c1d8d7","directory_count_after_test":1,"test_blob_offset":16781312,"test_blob_pointer":"0x09001000"},
-    {"file":"Pokemon - Saphir-Edition (Germany) (Rev 1).gba","known_rom":"DE AXPD rev1","input_size":16777216,"source_sha1":"7e6e034f9cdca6d2c4a270fdb50a94def5883d17","source_sha256":"c27271a60fdeadc6eed957e0392e7d878998ae1765487bf7567fa9331e432ead","expanded_sha1":"b59146664b1e3ca7be8a54755bac85be1fcc3175","expanded_sha256":"aff338ffc361454474f99d4595f768345735480a620aac85136e2b3b3f2f9763","directory_count_after_test":1,"test_blob_offset":16781312,"test_blob_pointer":"0x09001000"},
-    {"file":"Pokemon - Saphir-Edition (Germany).gba","known_rom":"DE AXPD rev0","input_size":16777216,"source_sha1":"5a087835009d552d4c5c1f96be3be3206e378153","source_sha256":"93273046f4a89990bfb162ce1c3661982e3d9e6b8e677b6b31c44353207ea13d","expanded_sha1":"3b9d1fe18301ddc522901c8be2d38f288e9f2c55","expanded_sha256":"0b42f1b55684befa830f3a35befd3d18279e8fc1baa1c9269ad9bc84b1d8feb1","directory_count_after_test":1,"test_blob_offset":16781312,"test_blob_pointer":"0x09001000"},
-    {"file":"Pokemon - Sapphire Version (Europe) (Rev 1).gba","known_rom":"EN AXPE rev1","input_size":16777216,"source_sha1":"4722efb8cd45772ca32555b98fd3b9719f8e60a9","source_sha256":"2f680a43e5c57aede4cb3b2cb04f7e15079efc122c88edaacfd6026db6e920ac","expanded_sha1":"ae67f82a120a5203018e6eca22c96e58e6ce5d1b","expanded_sha256":"4c135f7c49db44b02242a7f4066acb57c8f4908079a0597f85d8fd88bc929064","directory_count_after_test":1,"test_blob_offset":16781312,"test_blob_pointer":"0x09001000"},
-    {"file":"Pokemon - Sapphire Version (USA).gba","known_rom":"EN AXPE rev0","input_size":16777216,"source_sha1":"3ccbbd45f8553c36463f13b938e833f652b793e4","source_sha256":"c36c1b899503e8823ee7eb607eea583adcef7ea92ff804838b193c227f2c6657","expanded_sha1":"a5d93ab3ec79f944407f42dfff1f4a16a7b5901a","expanded_sha256":"0213c63f8463a1e7b86ab8e4da94715839a417780c3dd1fa2f1c218e7555be64","directory_count_after_test":1,"test_blob_offset":16781312,"test_blob_pointer":"0x09001000"},
-    {"file":"Pokemon - Sapphire Version (USA, Europe) (Rev 2).gba","known_rom":"EN AXPE rev2","input_size":16777216,"source_sha1":"89b45fb172e6b55d51fc0e61989775187f6fe63c","source_sha256":"02ca41513580a8b780989dee428df747b52a0b1a55bec617886b4059eb1152fb","expanded_sha1":"cefba5754705c931c749726724b06de1c28cc9d5","expanded_sha256":"2d052025fdd0f0b76aa0e3ad7ad51a3f23e26f83592ca19d0b0565d7720815f2","directory_count_after_test":1,"test_blob_offset":16781312,"test_blob_pointer":"0x09001000"},
-    {"file":"Pokemon - Version Saphir (France) (Rev 1).gba","known_rom":"FR AXPF rev1","input_size":16777216,"source_sha1":"860e93f5ea44f4278132f6c1ee5650d07b852fd8","source_sha256":"476ef6e6534894d0646265a4db77fff84b10f04fde81f0730dd07b28f086fb04","expanded_sha1":"12af46a5a6858688b862e8e3631756d2cb0ff9f2","expanded_sha256":"e2f78cedfaeb1df5d977cb2f491a53d961158e6609a1d19e920ed0924d0192a9","directory_count_after_test":1,"test_blob_offset":16781312,"test_blob_pointer":"0x09001000"},
-    {"file":"Pokemon - Version Saphir (France).gba","known_rom":"FR AXPF rev0","input_size":16777216,"source_sha1":"c269b5692b2d0e5800ba1ddf117fda95ac648634","source_sha256":"687dcb560ad4ecec719c9ee94b5a58bde3185d5afbceaf8560b6b907a493f92e","expanded_sha1":"e7d9ee2b71767baf8388b09e72e2302a7a317ca7","expanded_sha256":"cad05997c749cbe8e2c66874f3bc284a4f309ba8d37c49d73f2dd92554fd599b","directory_count_after_test":1,"test_blob_offset":16781312,"test_blob_pointer":"0x09001000"},
-    {"file":"Pokemon - Versione Zaffiro (Italy) (Rev 1).gba","known_rom":"IT AXPI rev1","input_size":16777216,"source_sha1":"73edf67b9b82ff12795622dca412733755d2c0fe","source_sha256":"e2f75b0ce7c55d5cbe6ec23eee5f2806101a02a00a13b3c4fdfe7f7d3e8b6898","expanded_sha1":"67157f5015a006e6bf6e6076ed0aacf8744083cb","expanded_sha256":"b3a3f1604f141e4121b8883849f8871517ed81a013ec9e05cb63b5350bfc3405","directory_count_after_test":1,"test_blob_offset":16781312,"test_blob_pointer":"0x09001000"},
-    {"file":"Pokemon - Versione Zaffiro (Italy).gba","known_rom":"IT AXPI rev0","input_size":16777216,"source_sha1":"f729dd571fb2c09e72c5c1d68fe0a21e72713d34","source_sha256":"74795c4301e02121d2687e0d1b89335534dae1a18af72e022725589f28c97fe0","expanded_sha1":"fdd7580c4a567a766604e7a6967c83c9cb038d7a","expanded_sha256":"97d52588a286fe7ac789f7ba913c2715021a2205d986eedab1c523daa877426a","directory_count_after_test":1,"test_blob_offset":16781312,"test_blob_pointer":"0x09001000"}
+    {
+      "file": "Pocket Monsters - Sapphire (Japan).gba",
+      "known_rom": "JP AXPJ rev0",
+      "input_size": 8388608,
+      "source_sha1": "3233342c2f3087e6ffe6c1791cd5867db07df842",
+      "source_sha256": "6a5ff7656531ab41d1ea9cd8f2d045ab6228405b43f3ee09ea3ff5077c0f60c9",
+      "expanded_sha1": "3518598d24f04df1089caffe8e29b9efa7e0b613",
+      "expanded_sha256": "e6eab687a620d34dcf73ceddaad8199105787fdf2f6e0bb6b6ccdd22838c0d33",
+      "working_prefix_sha256": "6a5ff7656531ab41d1ea9cd8f2d045ab6228405b43f3ee09ea3ff5077c0f60c9",
+      "prefix_patched": false
+    },
+    {
+      "file": "Pokemon - Edicion Zafiro (Spain) (Rev 1).gba",
+      "known_rom": "ES AXPS rev1",
+      "input_size": 16777216,
+      "source_sha1": "0fe9ad1e602e2fafa090aee25e43d6980625173c",
+      "source_sha256": "6b91637f07b902cfe7401eeb237ea44e13354ab5f5b487c9cf24ce3708385f6a",
+      "expanded_sha1": "24084081dea7bf047be6a0e43226dc0d53d075d1",
+      "expanded_sha256": "cf69b731b8ead3ae04fe279096c76a8add3e681c1a562d4826e009a84c1e18c3",
+      "working_prefix_sha256": "6b91637f07b902cfe7401eeb237ea44e13354ab5f5b487c9cf24ce3708385f6a",
+      "prefix_patched": false
+    },
+    {
+      "file": "Pokemon - Edicion Zafiro (Spain).gba",
+      "known_rom": "ES AXPS rev0",
+      "input_size": 16777216,
+      "source_sha1": "3a6489189e581c4b29914071b79207883b8c16d8",
+      "source_sha256": "23f26d9858944b86bab00019f3aee3b50ba8c5d100dba650177025078208aea9",
+      "expanded_sha1": "9c6f8148d336125ae8258026bf4d7577f3a70c40",
+      "expanded_sha256": "4a1323a61f47a5d8554aec60ee465ca6e60ef16a3155ae918fb63165259a0343",
+      "working_prefix_sha256": "23f26d9858944b86bab00019f3aee3b50ba8c5d100dba650177025078208aea9",
+      "prefix_patched": false
+    },
+    {
+      "file": "Pokemon - Saphir-Edition (Germany) (Rev 1).gba",
+      "known_rom": "DE AXPD rev1",
+      "input_size": 16777216,
+      "source_sha1": "7e6e034f9cdca6d2c4a270fdb50a94def5883d17",
+      "source_sha256": "c27271a60fdeadc6eed957e0392e7d878998ae1765487bf7567fa9331e432ead",
+      "expanded_sha1": "054b884de3c46b1e76dfa512a266e42bdce80674",
+      "expanded_sha256": "30c3b797142b1e62ae1b7655fc6a47aa8154d0218fee9d3d2195ec8213f061ed",
+      "working_prefix_sha256": "c27271a60fdeadc6eed957e0392e7d878998ae1765487bf7567fa9331e432ead",
+      "prefix_patched": false
+    },
+    {
+      "file": "Pokemon - Saphir-Edition (Germany).gba",
+      "known_rom": "DE AXPD rev0",
+      "input_size": 16777216,
+      "source_sha1": "5a087835009d552d4c5c1f96be3be3206e378153",
+      "source_sha256": "93273046f4a89990bfb162ce1c3661982e3d9e6b8e677b6b31c44353207ea13d",
+      "expanded_sha1": "0432627b391ed1c7ccac76aa2a40572027ea3e44",
+      "expanded_sha256": "828afc80f0f834b3ce29ebe8d4beda920cd460a45c9365f36188c5c8b5b77f11",
+      "working_prefix_sha256": "93273046f4a89990bfb162ce1c3661982e3d9e6b8e677b6b31c44353207ea13d",
+      "prefix_patched": false
+    },
+    {
+      "file": "Pokemon - Sapphire Version (Europe) (Rev 1).gba",
+      "known_rom": "EN AXPE rev1",
+      "input_size": 16777216,
+      "source_sha1": "4722efb8cd45772ca32555b98fd3b9719f8e60a9",
+      "source_sha256": "2f680a43e5c57aede4cb3b2cb04f7e15079efc122c88edaacfd6026db6e920ac",
+      "expanded_sha1": "b2d69ad581d4d5547c97e4ea81c2a750415a78f0",
+      "expanded_sha256": "99d28195177273140d272f101fadc0080648fbf186bb4054f6f0d3e38d86d1d1",
+      "working_prefix_sha256": "2f680a43e5c57aede4cb3b2cb04f7e15079efc122c88edaacfd6026db6e920ac",
+      "prefix_patched": false
+    },
+    {
+      "file": "Pokemon - Sapphire Version (USA).gba",
+      "known_rom": "EN AXPE rev0",
+      "input_size": 16777216,
+      "source_sha1": "3ccbbd45f8553c36463f13b938e833f652b793e4",
+      "source_sha256": "c36c1b899503e8823ee7eb607eea583adcef7ea92ff804838b193c227f2c6657",
+      "expanded_sha1": "58265c21f1f6351b5edb8bbfe9b031fd066c9481",
+      "expanded_sha256": "9bdfb911e7ffd77f37738adf5d5799b02284fc57e7f5279c1747902092c8d4b4",
+      "working_prefix_sha256": "c36c1b899503e8823ee7eb607eea583adcef7ea92ff804838b193c227f2c6657",
+      "prefix_patched": false
+    },
+    {
+      "file": "Pokemon - Sapphire Version (USA, Europe) (Rev 2).gba",
+      "known_rom": "EN AXPE rev2",
+      "input_size": 16777216,
+      "source_sha1": "89b45fb172e6b55d51fc0e61989775187f6fe63c",
+      "source_sha256": "02ca41513580a8b780989dee428df747b52a0b1a55bec617886b4059eb1152fb",
+      "expanded_sha1": "ce1af1d211031b0550552fe5c8dd3e1a7525bc08",
+      "expanded_sha256": "a4df16a567319f8ec8c181075cd2821c3493a5e54a2ba2f3633547e2d123b85b",
+      "working_prefix_sha256": "02ca41513580a8b780989dee428df747b52a0b1a55bec617886b4059eb1152fb",
+      "prefix_patched": false
+    },
+    {
+      "file": "Pokemon - Version Saphir (France) (Rev 1).gba",
+      "known_rom": "FR AXPF rev1",
+      "input_size": 16777216,
+      "source_sha1": "860e93f5ea44f4278132f6c1ee5650d07b852fd8",
+      "source_sha256": "476ef6e6534894d0646265a4db77fff84b10f04fde81f0730dd07b28f086fb04",
+      "expanded_sha1": "e512f3f8805187cc98e1cdd0f89ff85fcb52b7ee",
+      "expanded_sha256": "0575af935533a39661cb9dece4a75f42a314143ef00ac370c899504a7213de7d",
+      "working_prefix_sha256": "476ef6e6534894d0646265a4db77fff84b10f04fde81f0730dd07b28f086fb04",
+      "prefix_patched": false
+    },
+    {
+      "file": "Pokemon - Version Saphir (France).gba",
+      "known_rom": "FR AXPF rev0",
+      "input_size": 16777216,
+      "source_sha1": "c269b5692b2d0e5800ba1ddf117fda95ac648634",
+      "source_sha256": "687dcb560ad4ecec719c9ee94b5a58bde3185d5afbceaf8560b6b907a493f92e",
+      "expanded_sha1": "86eb40ce0b2ceba4e5e7a64145779c7768d09280",
+      "expanded_sha256": "af2de26521c0e1de12e1883c0a98e4ec487365cb76ca6e0c9fb60a2c295b5bed",
+      "working_prefix_sha256": "687dcb560ad4ecec719c9ee94b5a58bde3185d5afbceaf8560b6b907a493f92e",
+      "prefix_patched": false
+    },
+    {
+      "file": "Pokemon - Versione Zaffiro (Italy) (Rev 1).gba",
+      "known_rom": "IT AXPI rev1",
+      "input_size": 16777216,
+      "source_sha1": "73edf67b9b82ff12795622dca412733755d2c0fe",
+      "source_sha256": "e2f75b0ce7c55d5cbe6ec23eee5f2806101a02a00a13b3c4fdfe7f7d3e8b6898",
+      "expanded_sha1": "c82bb808261206aea57edf10607c7fc5ea2f036e",
+      "expanded_sha256": "212793bb403f0f1442239c565bc6c27df6f429f3ffcfbe8887935bf19088f81a",
+      "working_prefix_sha256": "e2f75b0ce7c55d5cbe6ec23eee5f2806101a02a00a13b3c4fdfe7f7d3e8b6898",
+      "prefix_patched": false
+    },
+    {
+      "file": "Pokemon - Versione Zaffiro (Italy).gba",
+      "known_rom": "IT AXPI rev0",
+      "input_size": 16777216,
+      "source_sha1": "f729dd571fb2c09e72c5c1d68fe0a21e72713d34",
+      "source_sha256": "74795c4301e02121d2687e0d1b89335534dae1a18af72e022725589f28c97fe0",
+      "expanded_sha1": "bd5353466d5ad654a41e3a67aac4b57bacc83322",
+      "expanded_sha256": "619be22ab376aac8269356a22b4b0f1eaac641ef9c01d97371585ec59732571f",
+      "working_prefix_sha256": "74795c4301e02121d2687e0d1b89335534dae1a18af72e022725589f28c97fe0",
+      "prefix_patched": false
+    }
+  ],
+  "sappx10_schema": 2,
+  "header_size_struct": 136,
+  "fixed_header_size": 256,
+  "invariants": [
+    "all 12 known Sapphire clean-source SHA-1 identities accepted",
+    "clean expanded container preserves the native prefix byte-for-byte",
+    "source SHA-1/SHA-256 and working-prefix SHA-256 agree before runtime patching",
+    "Japanese 8-16 MiB compatibility gap remains 0xFF",
+    "shared expansion control page begins at 16 MiB for every region",
+    "expanded ROM size is exactly 32 MiB",
+    "SAPPX10 schema 2 header CRC32 verifies",
+    "explicit relocation allocator install round-trips without free-space scanning"
   ]
 }
