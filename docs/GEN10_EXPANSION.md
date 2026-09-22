@@ -53,7 +53,7 @@ The new `expanded` profile targets a 32 MiB ROM and uses **16 MiB (`0x01000000`)
 
 The container stage is now implemented and validated across all 12 supplied ROM/SAV pairs. `tools/sapphire_rom_expansion.py` preserves the complete native ROM prefix, writes a 4 KiB SAPPX10 control page at `0x01000000` (CPU pointer `0x09000000`), and exposes the common payload from `0x01001000` (CPU pointer `0x09001000`) through the end of the 32 MiB ROM window. The usable common payload is 16,773,120 bytes.
 
-The fixed 256-byte SAPPX10 header records source SHA-1/SHA-256 identity, game code, revision, geometry and CRC32. The remainder of the control page reserves 120 fixed-size relocation-directory entries. Table patchers will populate those entries instead of relying on incidental free space.
+The fixed 256-byte SAPPX10 header is now schema 2. It records immutable clean-source SHA-1/SHA-256 identity plus a working-prefix SHA-256, game code, revision, geometry and CRC32. Clean container creation keeps both identities equal; runtime patch stages set the `prefix_patched` flag and refresh only the working-prefix hash. The remainder of the control page reserves 120 fixed-size relocation-directory entries. Table patchers will populate those entries instead of relying on incidental free space.
 
 Expanded tables and assets must be placed into this explicit memory map. They must not rely on whichever long `0xFF` block happens to exist in a particular regional ROM.
 
@@ -69,7 +69,10 @@ The first production relocation is now `species_data`, using `ExpandedSpeciesV1`
 - two u8 ability slots become three u16 slots;
 - six packed 2-bit EV yields become six explicit u8 values;
 - IDs 412..439 stay compatibility-reserved until the Egg/Unown mapping is explicit;
-- runtime consumers still use legacy `gBaseStats` and are the next integration target.
+- a 4096×28-byte `species_compat` projection preserves the original binary layout during staged runtime migration;
+- all 45 direct `gBaseStats` pointer literals found in each of the 12 supplied ROMs are redirected to the common `species_compat` pointer `0x09029000`;
+- `species_compat` is explicitly non-canonical: widened type/ability data remains in `ExpandedSpeciesV1`;
+- `NUM_SPECIES`/`SPECIES_EGG` sanitizers, defined-species iteration and wide-field runtime accessors are the next integration targets.
 
 The expanded profile therefore requires relocation metadata for:
 
@@ -117,14 +120,15 @@ The offline extension format is defined in `catalog/expanded_save_layout.json`, 
 1. Audit every hard-coded species, move, item, ability and type bound in Sapphire.
 2. Establish the shared 16 MiB expansion base and 32 MiB expanded ROM container. **Implemented and validated for all 12 supplied revisions.**
 3. Implement explicit SAPPX10 relocation allocation. **Implemented and validated for all 12 supplied revisions.**
-4. Build the first widened production table (`species_data` / `ExpandedSpeciesV1`). **Implemented and cross-region validated; runtime consumers still pending.**
-5. Use the audited retail-unused sectors 30-31 for the versioned A/B extension; add expanded-ROM runtime hooks without changing classic saves. **Offline format validated; runtime hooks still pending.**
-6. Replace historical fixed-end comparisons and direct `gBaseStats` assumptions with count-driven expanded-profile accessors.
-7. Add the remaining relocation manifests and table-family patchers.
-8. Add tests for IDs above every original Gen III maximum.
-9. Verify the same architecture across Japanese first, then the supported regional revisions.
-10. Import later-generation data only after the capacity foundation passes.
-11. Keep form-change logic out of this phase.
+4. Build the first widened production table (`species_data` / `ExpandedSpeciesV1`). **Implemented and cross-region validated.**
+5. Install a legacy-layout `species_compat` projection and redirect direct `gBaseStats` pointer consumers. **Implemented: 45/45 direct literals patched on all 12 supplied ROMs.**
+6. Use the audited retail-unused sectors 30-31 for the versioned A/B extension; add expanded-ROM runtime hooks without changing classic saves. **Offline format validated; runtime hooks still pending.**
+7. Replace historical fixed-end comparisons and remaining `NUM_SPECIES`/`SPECIES_EGG` assumptions with count-driven expanded-profile accessors.
+8. Add the remaining relocation manifests and table-family patchers.
+9. Add tests for IDs above every original Gen III maximum.
+10. Verify the same architecture across Japanese first, then the supported regional revisions.
+11. Import later-generation data only after the capacity foundation passes.
+12. Keep form-change logic out of this phase.
 
 ## Generation 10 rule
 
