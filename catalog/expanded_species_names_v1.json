@@ -1,0 +1,91 @@
+{
+  "schema_version": 1,
+  "project": "SAPPHIRE",
+  "format": "ExpandedSpeciesNamesV1",
+  "status": "canonical_names_get_species_name_runtime_implemented_direct_legacy_consumers_pending",
+  "capacity": 4096,
+  "canonical": {
+    "directory_name": "species_names",
+    "record_size_bytes": 16,
+    "table_size_bytes": 65536,
+    "clean_install_offset": 17059884,
+    "clean_install_pointer": "0x0904502C",
+    "encoding": "preserve each retail region's original Gen III encoded bytes through EOS; trailing bytes are zero",
+    "undefined_slot_policy": "copy the regional SPECIES_NONE placeholder until that logical species and its official name are imported"
+  },
+  "compatibility": {
+    "directory_name": "species_names_cp",
+    "capacity": 4096,
+    "fixed_allocation_size_bytes": 45056,
+    "clean_install_offset": 17125420,
+    "clean_install_pointer": "0x0905502C",
+    "japanese_active_stride_bytes": 6,
+    "western_active_stride_bytes": 11,
+    "allocation_stride_bytes": 11,
+    "policy": "original direct gSpeciesNames consumers keep their retail stride; unused Japanese allocation tail remains 0xFF so all regions keep identical following addresses"
+  },
+  "runtime": {
+    "directory_name": "species_name_rt",
+    "size_bytes": 72,
+    "clean_install_offset": 17170476,
+    "clean_install_pointer": "0x0906002C",
+    "sha256": "1bafaad81c676579409245259455ce2864a999f6300e92d1b508109a94555a58",
+    "source_symbol": "src/pokemon_2.c::GetSpeciesName",
+    "semantics": "validate ExpandedSpeciesV1.flags.defined; undefined IDs fall back to SPECIES_NONE; copy the canonical 16-byte name through EOS",
+    "patch": "8-byte Thumb absolute tail-call trampoline",
+    "japanese_signature_size_bytes": 36,
+    "western_signature_size_bytes": 28,
+    "signature_unique_in_each_supplied_rom": true
+  },
+  "regional_profiles": {
+    "jp": {
+      "legacy_stride": 6,
+      "legacy_sha256": "ad86ecaa8dc648ca84ba43ba5f760c4529741242dc5f5745f655c307d1660c3c",
+      "canonical_sha256": "ec484a7e4bbf436bc3147fbb728b64ffbf548110886ff64fe372c283f03ed99e",
+      "compat_sha256": "ae11a4e4ac7b053c3c113d940cf4e4e5e8a5dd3950c84db85b90270e397fbfed",
+      "direct_pointer_refs": 67
+    },
+    "en": {
+      "legacy_stride": 11,
+      "legacy_sha256": "a1d6a18af896762205e870cbc17f5e046982d17820f305ad5e8dd9f8c24f4c3e",
+      "canonical_sha256": "99078fd1a073b24921489cacdfeacd4ebd1c7086c51e8965ddc841125a5162dc",
+      "compat_sha256": "d82c53a72a68fd62c800cadac55a09d5671d193258762a4a1b78d1ce2395d47e",
+      "direct_pointer_refs": 66
+    },
+    "de": {
+      "legacy_stride": 11,
+      "legacy_sha256": "571910b14b247a37082b3f6da976c8cf3ea1740999adb79bd969216d965b4e22",
+      "canonical_sha256": "bb56a467c4ba3d72fb91e21d36b9d4f68741893f52b43f47dd4addef8aefc525",
+      "compat_sha256": "33ab6869cdd1f889d45d16c192e3d8f73cfb22c68bdd348b909ffaeab1737ce2",
+      "direct_pointer_refs": 67
+    },
+    "fr": {
+      "legacy_stride": 11,
+      "legacy_sha256": "85fe703a81ed6a63209879044bdbb69fb6dc9de0a6e30f71fdcf5a70672ea67c",
+      "canonical_sha256": "93220f0bd2fb5ab9dd62e9742ae6f85cbffe577509c2ea6991ae59ac00f79302",
+      "compat_sha256": "888430383fff8f06bcb13e9a60d9a38e041d4050de3fe7664f2c5c1ec590faaf",
+      "direct_pointer_refs": 67
+    },
+    "it": {
+      "legacy_stride": 11,
+      "legacy_sha256": "a1d6a18af896762205e870cbc17f5e046982d17820f305ad5e8dd9f8c24f4c3e",
+      "canonical_sha256": "99078fd1a073b24921489cacdfeacd4ebd1c7086c51e8965ddc841125a5162dc",
+      "compat_sha256": "d82c53a72a68fd62c800cadac55a09d5671d193258762a4a1b78d1ce2395d47e",
+      "direct_pointer_refs": 67
+    },
+    "es": {
+      "legacy_stride": 11,
+      "legacy_sha256": "f7cea4bfb94292c813fff77840a2701f51661888a5687f973b18baf13958d061",
+      "canonical_sha256": "922948c9c45d380a833e83a1885e35d7aa4e6b4e55da2a636b8fe49c40a47b23",
+      "compat_sha256": "24915647c8f3219c43291be7f53e57c210be01cff9954e76e7519bef498fba9b",
+      "direct_pointer_refs": 67
+    }
+  },
+  "remaining": [
+    "migrate direct gSpeciesNames consumers from species_names_cp to canonical accessors",
+    "import a canonical name together with each future defined species",
+    "audit UI buffers before displaying names longer than the original regional limits"
+  ],
+  "tool": "tools/sapphire_species_names.py",
+  "validation_report": "reports/expanded-species-names-validation.json"
+}
