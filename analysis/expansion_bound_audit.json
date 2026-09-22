@@ -1,11 +1,11 @@
 {
-  "schema_version": 3,
+  "schema_version": 4,
   "project": "SAPPHIRE",
   "source": {
     "repository": "pret/pokeruby",
     "ref": "63a8cbf0016b351a4e68f7036fa0b77e23d2f2c1"
   },
-  "status": "species_direct_pointer_redirection_implemented_count_bounds_pending",
+  "status": "species_sanitizer_and_name_accessor_implemented_dense_iteration_pending",
   "purpose": "Find original Gen III hard limits that must be removed before later-generation content import",
   "findings": [
     {
@@ -20,11 +20,14 @@
       "current_bound": "NUM_SPECIES / SPECIES_EGG",
       "problem": "New logical species above the original bound are sanitized or treated as unknown.",
       "required_action": "Replace original fixed species-end checks with expanded-profile registry/count checks while preserving classic behavior.",
-      "implementation_status": "ExpandedSpeciesV1 and species_compat are implemented; all 45 direct gBaseStats pointer literals are redirected in each of 12 ROMs. NUM_SPECIES/SPECIES_EGG sanitizers and count-driven validity checks remain pending.",
+      "implementation_status": "ExpandedSpeciesV1, species_compat, and all 45 direct gBaseStats pointer redirects are implemented. SanitizeSpecies now validates the 4096-slot defined flag, and GetSpeciesName now reads canonical 16-byte expanded names. Remaining work is other NUM_SPECIES/SPECIES_EGG UI/graphics bounds and direct legacy name consumers.",
       "evidence": [
         "catalog/expanded_species_record_v1.json",
+        "catalog/species_runtime_v1.json",
+        "catalog/expanded_species_names_v1.json",
         "reports/expanded-species-table-validation.json",
-        "reports/species-runtime-redirection-validation.json"
+        "reports/species-runtime-redirection-validation.json",
+        "reports/expanded-species-names-validation.json"
       ]
     },
     {
@@ -89,7 +92,8 @@
       ],
       "current_bound": "Random/scan logic assumes a dense 1..NUM_SPECIES-1 namespace",
       "problem": "Sparse/reserved logical IDs would be selected or scanned incorrectly.",
-      "required_action": "Use an enabled-species registry or valid-species iterator in the expanded profile."
+      "required_action": "Use an enabled-species registry or valid-species iterator in the expanded profile.",
+      "implementation_status": "Still pending. TV/daycare dense selection and iteration must use the 4096-slot defined-species registry rather than 1..NUM_SPECIES-1."
     },
     {
       "id": "MOVE-001",
@@ -228,7 +232,8 @@
     }
   ],
   "immediate_p0_order": [
-    "NUM_SPECIES/SPECIES_EGG sanitizer and count boundary replacement with Egg/Unown compatibility",
+    "defined-species iterator for TV/daycare and other dense NUM_SPECIES loops",
+    "remaining NUM_SPECIES/SPECIES_EGG UI/graphics bounds and direct species-name consumers",
     "variable-length evolution storage",
     "expanded Pokédex runtime persistence",
     "move random-selection and sanitizer bounds",
@@ -244,6 +249,10 @@
     "4096-entry ExpandedSpeciesV1 canonical table",
     "4096-entry 28-byte species_compat legacy projection",
     "lossless conversion/round-trip validation of all 412 legacy gBaseStats records across 12 supplied ROMs",
-    "all 45 direct gBaseStats pointer literals redirected to species_compat across all 12 supplied ROMs"
+    "all 45 direct gBaseStats pointer literals redirected to species_compat across all 12 supplied ROMs",
+    "SanitizeSpecies redirected to a 4096-slot ExpandedSpeciesV1.flags.defined runtime helper across all 12 supplied ROMs",
+    "4096-entry 16-byte canonical regional species-name table plus fixed-size regional compatibility projection",
+    "all direct gSpeciesNames pointer literals redirected to species_names_cp across all 12 supplied ROMs",
+    "GetSpeciesName redirected to canonical 16-byte names with defined-species validation across all 12 supplied ROMs"
   ]
 }
