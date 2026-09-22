@@ -1,5 +1,5 @@
 {
-  "schema_version": 7,
+  "schema_version": 8,
   "project": "SAPPHIRE",
   "purpose": "Generation 10 readiness without pre-assigning unknown future content IDs",
   "policy": {
@@ -123,11 +123,52 @@
       "validated_roms": 12,
       "runtime_scope": "all direct gBaseStats pointer literals only",
       "remaining": [
-        "NUM_SPECIES/SPECIES_EGG-based bounds and sanitizers",
-        "count-driven species validity/iteration",
+        "dense 1..NUM_SPECIES selection/iteration paths",
+        "remaining direct regional-stride gSpeciesNames consumers",
+        "other graphical/UI NUM_SPECIES/SPECIES_EGG bounds",
         "wide u16 type and ability consumers",
         "third ability slot runtime selection"
       ]
+    },
+    "species_sanitizer": {
+      "implemented": true,
+      "source_symbol": "src/contest_2.c::SanitizeSpecies",
+      "tool": "tools/sapphire_species_runtime_patch.py",
+      "format_manifest": "catalog/species_runtime_v1.json",
+      "validation_report": "reports/species-runtime-redirection-validation.json",
+      "helper_pointer": "0x09045000",
+      "capacity": 4096,
+      "semantics": "species is valid only when ID < 4096 and ExpandedSpeciesV1.flags.defined bit 0 is set",
+      "validated_roms": 12,
+      "egg_unown_policy": "412..439 remain undefined/reserved and sanitize to SPECIES_NONE until explicit compatibility mapping"
+    },
+    "species_names": {
+      "implemented": true,
+      "tool": "tools/sapphire_species_names.py",
+      "format_manifest": "catalog/expanded_species_names_v1.json",
+      "validation_report": "reports/expanded-species-names-validation.json",
+      "canonical": {
+        "directory_name": "species_names",
+        "capacity": 4096,
+        "stride_bytes": 16,
+        "table_size_bytes": 65536,
+        "clean_pointer": "0x0904502C"
+      },
+      "compatibility": {
+        "directory_name": "species_names_cp",
+        "fixed_allocation_size_bytes": 45056,
+        "japanese_stride_bytes": 6,
+        "western_stride_bytes": 11,
+        "clean_pointer": "0x0905502C",
+        "direct_pointer_refs": "66 EN; 67 JP/DE/FR/IT/ES"
+      },
+      "runtime": {
+        "directory_name": "species_name_rt",
+        "size_bytes": 72,
+        "clean_pointer": "0x0906002C",
+        "get_species_name_redirected": true,
+        "validated_roms": 12
+      }
     }
   },
   "save": {
@@ -186,7 +227,8 @@
     "pokedex_data": "relocatable"
   },
   "next_gates": [
-    "replace NUM_SPECIES/SPECIES_EGG sanitizers and dense species assumptions with expanded count/defined-flag accessors while preserving Egg/Unown compatibility",
+    "replace dense 1..NUM_SPECIES species selection/iteration in TV/daycare and remaining UI/graphics bounds with defined-species iteration while preserving Egg/Unown compatibility",
+    "migrate remaining direct gSpeciesNames consumers from regional species_names_cp to canonical species_names accessors",
     "replace fixed species/move/ability/evolution bounds identified in analysis/expansion_bound_audit.json",
     "implement sectors 30/31 A/B extension read/write hooks in the expanded ROM",
     "rewrite/recover extension data after original save paths that erase sectors 28-31",
