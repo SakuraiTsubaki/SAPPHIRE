@@ -1,0 +1,48 @@
+{
+  "schema_version": 1,
+  "date": "2026-09-23",
+  "project": "SAPPHIRE",
+  "result": "pass",
+  "rom_count": 12,
+  "test": "Relocate regional gSpeciesNames, install canonical 4096x16 names, redirect all direct name pointers, and patch GetSpeciesName",
+  "common_layout": {
+    "species_names_offset": 17059884,
+    "species_names_pointer": "0x0904502C",
+    "species_names_size": 65536,
+    "species_names_stride": 16,
+    "species_names_cp_offset": 17125420,
+    "species_names_cp_pointer": "0x0905502C",
+    "species_names_cp_size": 45056,
+    "species_name_rt_offset": 17170476,
+    "species_name_rt_pointer": "0x0906002C",
+    "species_name_rt_size": 72,
+    "species_name_rt_sha256": "1bafaad81c676579409245259455ce2864a999f6300e92d1b508109a94555a58"
+  },
+  "invariants": [
+    "all 412 retail names contain EOS inside the verified regional stride",
+    "Japanese retail names preserve 6-byte stride; western retail names preserve 11-byte stride",
+    "canonical names use 16-byte records for all regions",
+    "undefined 412..4095 canonical and compatibility slots use the regional SPECIES_NONE placeholder",
+    "the compatibility allocation is fixed at 45056 bytes across every region so following SAPPX10 addresses remain identical",
+    "all direct gSpeciesNames pointer literals are redirected to species_names_cp",
+    "GetSpeciesName is replaced by an 8-byte Thumb tail-call to species_name_rt",
+    "species_name_rt checks ExpandedSpeciesV1.flags.defined before copying from canonical species_names",
+    "the Japanese and western GetSpeciesName signatures are each unique in every supplied ROM",
+    "clean-source SHA identity remains immutable and working-prefix SHA-256 is refreshed"
+  ],
+  "roms": [
+    {"file":"Pocket Monsters - Sapphire (Japan).gba","profile":"jp","legacy_offset":"0x1CA2E4","legacy_pointer":"0x081CA2E4","legacy_stride":6,"legacy_sha256":"ad86ecaa8dc648ca84ba43ba5f760c4529741242dc5f5745f655c307d1660c3c","canonical_sha256":"ec484a7e4bbf436bc3147fbb728b64ffbf548110886ff64fe372c283f03ed99e","compat_sha256":"ae11a4e4ac7b053c3c113d940cf4e4e5e8a5dd3950c84db85b90270e397fbfed","pointer_literals_patched":67,"get_species_name_offset":"0x3B11C","working_prefix_sha256":"21c6432699ed26eb3e6ed67895b3d20fae15c540751edce2e46a9e6f8d2f9676","expanded_sha256":"353ced8fc2384762034633d8a5248fdbdf962761607c3e33af30ccaf3a9e3278"},
+    {"file":"Pokemon - Edicion Zafiro (Spain) (Rev 1).gba","profile":"es","legacy_offset":"0x1FBE1C","legacy_pointer":"0x081FBE1C","legacy_stride":11,"legacy_sha256":"f7cea4bfb94292c813fff77840a2701f51661888a5687f973b18baf13958d061","canonical_sha256":"922948c9c45d380a833e83a1885e35d7aa4e6b4e55da2a636b8fe49c40a47b23","compat_sha256":"24915647c8f3219c43291be7f53e57c210be01cff9954e76e7519bef498fba9b","pointer_literals_patched":67,"get_species_name_offset":"0x3DF6C","working_prefix_sha256":"ad48c3a841043661f5b14f79cbb5301b53b533c9437470e7610d5be1536d3050","expanded_sha256":"7a09afbb002c1078e0b5b5292e4014f95cd7c0b9d3b1b389df7fbbb6f2f90754"},
+    {"file":"Pokemon - Edicion Zafiro (Spain).gba","profile":"es","legacy_offset":"0x1FBE1C","legacy_pointer":"0x081FBE1C","legacy_stride":11,"legacy_sha256":"f7cea4bfb94292c813fff77840a2701f51661888a5687f973b18baf13958d061","canonical_sha256":"922948c9c45d380a833e83a1885e35d7aa4e6b4e55da2a636b8fe49c40a47b23","compat_sha256":"24915647c8f3219c43291be7f53e57c210be01cff9954e76e7519bef498fba9b","pointer_literals_patched":67,"get_species_name_offset":"0x3DF6C","working_prefix_sha256":"b1ed9f107c023028c30a8a1dcaf8af398db8be5aa9fd5fce7df45d7f6f7829f8","expanded_sha256":"3f20adb5bf029d12e1c08b00f58a311ac46595bc56ea8d8ec9f63e0bf639f90a"},
+    {"file":"Pokemon - Saphir-Edition (Germany) (Rev 1).gba","profile":"de","legacy_offset":"0x20407C","legacy_pointer":"0x0820407C","legacy_stride":11,"legacy_sha256":"571910b14b247a37082b3f6da976c8cf3ea1740999adb79bd969216d965b4e22","canonical_sha256":"bb56a467c4ba3d72fb91e21d36b9d4f68741893f52b43f47dd4addef8aefc525","compat_sha256":"33ab6869cdd1f889d45d16c192e3d8f73cfb22c68bdd348b909ffaeab1737ce2","pointer_literals_patched":67,"get_species_name_offset":"0x3DF74","working_prefix_sha256":"b64a6401dc59ce75ec4258c4b590e5eee6a9054efb779f03a9619a5b6e2c4ca2","expanded_sha256":"113dcd2b8b1d8cc946e8fc50cebcbaa5a07813cbb5fd96199221a9dd21eed170"},
+    {"file":"Pokemon - Saphir-Edition (Germany).gba","profile":"de","legacy_offset":"0x20407C","legacy_pointer":"0x0820407C","legacy_stride":11,"legacy_sha256":"571910b14b247a37082b3f6da976c8cf3ea1740999adb79bd969216d965b4e22","canonical_sha256":"bb56a467c4ba3d72fb91e21d36b9d4f68741893f52b43f47dd4addef8aefc525","compat_sha256":"33ab6869cdd1f889d45d16c192e3d8f73cfb22c68bdd348b909ffaeab1737ce2","pointer_literals_patched":67,"get_species_name_offset":"0x3DF74","working_prefix_sha256":"3088e85a526167d191f609743e19117133151ce3171af2ba99c25fc970356be9","expanded_sha256":"4e6dc84e8fda7afa287c54123ac5de531d6d0f05a69385a414430543450baaa2"},
+    {"file":"Pokemon - Sapphire Version (Europe) (Rev 1).gba","profile":"en","legacy_offset":"0x1F7114","legacy_pointer":"0x081F7114","legacy_stride":11,"legacy_sha256":"a1d6a18af896762205e870cbc17f5e046982d17820f305ad5e8dd9f8c24f4c3e","canonical_sha256":"99078fd1a073b24921489cacdfeacd4ebd1c7086c51e8965ddc841125a5162dc","compat_sha256":"d82c53a72a68fd62c800cadac55a09d5671d193258762a4a1b78d1ce2395d47e","pointer_literals_patched":66,"get_species_name_offset":"0x3DDA0","working_prefix_sha256":"f44ff9fad79b0c04f3acbd1e66a87181a56a52910bd6704e545bf7b30d553e51","expanded_sha256":"f56a026fb77f60e62e9a134cfd705a477a038c838ae7a6639bb56bf04e0a6a66"},
+    {"file":"Pokemon - Sapphire Version (USA).gba","profile":"en","legacy_offset":"0x1F70FC","legacy_pointer":"0x081F70FC","legacy_stride":11,"legacy_sha256":"a1d6a18af896762205e870cbc17f5e046982d17820f305ad5e8dd9f8c24f4c3e","canonical_sha256":"99078fd1a073b24921489cacdfeacd4ebd1c7086c51e8965ddc841125a5162dc","compat_sha256":"d82c53a72a68fd62c800cadac55a09d5671d193258762a4a1b78d1ce2395d47e","pointer_literals_patched":66,"get_species_name_offset":"0x3DDA0","working_prefix_sha256":"90c6d222a14ca39b41ef8f40e3e6c9c6f12d637686edd0c20ae515bebecb1254","expanded_sha256":"cedfdb1579eab49ff2bc433b249f343433a9ed57c110c5dd18e7760e5244af2d"},
+    {"file":"Pokemon - Sapphire Version (USA, Europe) (Rev 2).gba","profile":"en","legacy_offset":"0x1F7114","legacy_pointer":"0x081F7114","legacy_stride":11,"legacy_sha256":"a1d6a18af896762205e870cbc17f5e046982d17820f305ad5e8dd9f8c24f4c3e","canonical_sha256":"99078fd1a073b24921489cacdfeacd4ebd1c7086c51e8965ddc841125a5162dc","compat_sha256":"d82c53a72a68fd62c800cadac55a09d5671d193258762a4a1b78d1ce2395d47e","pointer_literals_patched":66,"get_species_name_offset":"0x3DDA0","working_prefix_sha256":"572737af363d92031a1e2d513c2ab3e2b3584923f35ff7c3c322c8f3cec35f77","expanded_sha256":"07879c5ed457a71765186a7939c93540b935dd95665d77044f01bdcb2a49d478"},
+    {"file":"Pokemon - Version Saphir (France) (Rev 1).gba","profile":"fr","legacy_offset":"0x1FF504","legacy_pointer":"0x081FF504","legacy_stride":11,"legacy_sha256":"85fe703a81ed6a63209879044bdbb69fb6dc9de0a6e30f71fdcf5a70672ea67c","canonical_sha256":"93220f0bd2fb5ab9dd62e9742ae6f85cbffe577509c2ea6991ae59ac00f79302","compat_sha256":"888430383fff8f06bcb13e9a60d9a38e041d4050de3fe7664f2c5c1ec590faaf","pointer_literals_patched":67,"get_species_name_offset":"0x3DF74","working_prefix_sha256":"f275ca5704c5ef2a31f58f36abd9446d0c44d4d9e23969f1a4ad181a6d897176","expanded_sha256":"187341f900168ac188943c9c59f379c0de37e53fdd4d55287ccd71610b01d35d"},
+    {"file":"Pokemon - Version Saphir (France).gba","profile":"fr","legacy_offset":"0x1FF504","legacy_pointer":"0x081FF504","legacy_stride":11,"legacy_sha256":"85fe703a81ed6a63209879044bdbb69fb6dc9de0a6e30f71fdcf5a70672ea67c","canonical_sha256":"93220f0bd2fb5ab9dd62e9742ae6f85cbffe577509c2ea6991ae59ac00f79302","compat_sha256":"888430383fff8f06bcb13e9a60d9a38e041d4050de3fe7664f2c5c1ec590faaf","pointer_literals_patched":67,"get_species_name_offset":"0x3DF74","working_prefix_sha256":"b606c3099cdafff490f3cf86379d0c437fbd71dd884d08eefcdb9b3cd11078f1","expanded_sha256":"0393469551456c7be739021e6b476cab53ca45fed2a7884cfed0a34ba85ab8ba"},
+    {"file":"Pokemon - Versione Zaffiro (Italy) (Rev 1).gba","profile":"it","legacy_offset":"0x1F8D98","legacy_pointer":"0x081F8D98","legacy_stride":11,"legacy_sha256":"a1d6a18af896762205e870cbc17f5e046982d17820f305ad5e8dd9f8c24f4c3e","canonical_sha256":"99078fd1a073b24921489cacdfeacd4ebd1c7086c51e8965ddc841125a5162dc","compat_sha256":"d82c53a72a68fd62c800cadac55a09d5671d193258762a4a1b78d1ce2395d47e","pointer_literals_patched":67,"get_species_name_offset":"0x3DF6C","working_prefix_sha256":"dae5c745479caf37fe5f20a23c46a9c59b376769cbffa780403851692df74715","expanded_sha256":"2992e1ae1ba098fa32b8f83f1848c4e9a7bb32975c42be9ba82e4a5993a4ca88"},
+    {"file":"Pokemon - Versione Zaffiro (Italy).gba","profile":"it","legacy_offset":"0x1F8D98","legacy_pointer":"0x081F8D98","legacy_stride":11,"legacy_sha256":"a1d6a18af896762205e870cbc17f5e046982d17820f305ad5e8dd9f8c24f4c3e","canonical_sha256":"99078fd1a073b24921489cacdfeacd4ebd1c7086c51e8965ddc841125a5162dc","compat_sha256":"d82c53a72a68fd62c800cadac55a09d5671d193258762a4a1b78d1ce2395d47e","pointer_literals_patched":67,"get_species_name_offset":"0x3DF6C","working_prefix_sha256":"8c2d8356388f9b893b1a8420090b939cfc4397a5a1a44381f39bd6b8212aaf2f","expanded_sha256":"eba58824ddf3620404f1d5cda6533cd181beab477954ca7cad2412a42a46cca8"}
+  ],
+  "runtime_status": "SanitizeSpecies and GetSpeciesName are defined-flag/canonical-table driven; direct name users, dense species iteration, wide type/ability fields, and save runtime hooks remain pending"
+}
