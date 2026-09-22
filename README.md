@@ -37,11 +37,12 @@ Form-change work is currently **deferred**. The active expansion priority is to 
 - Native ROM size is 8 MiB for Japanese AXPJ rev0 and 16 MiB for the validated western revisions.
 - Expanded ROM profile uses a shared 16 MiB (`0x01000000`) expansion base and a 32 MiB final ROM size, which fills the GBA's directly addressable ROM window.
 - The 32 MiB container is implemented: a 4 KiB SAPPX10 control page begins at `0x01000000` / `0x09000000`, and common payload allocation begins at `0x01001000` / `0x09001000`.
-- The control page reserves 120 relocation-directory entries and records the source ROM SHA-1/SHA-256, game code, revision and a CRC32-protected header.
+- SAPPX10 control schema 2 reserves 120 relocation-directory entries and records immutable source ROM SHA-1/SHA-256 plus a working-prefix SHA-256, game code, revision and a CRC32-protected header. This lets later runtime patches modify the executable prefix without losing the exact retail-ROM identity.
 - The relocation allocator is implemented. It appends explicitly registered blobs from the payload high-water mark, supports explicit power-of-two alignment, updates the directory/header CRC, and rejects duplicate names, overlaps and out-of-range entries.
 - Variable tables and assets must use explicit relocation metadata instead of incidental free-space assumptions.
 - `catalog/expanded_table_registry.json` defines the Generation 10 capacity domains and table families; `species_data` is now the first implemented production table.
-- `ExpandedSpeciesV1` is 40 bytes per record with 4096 slots. The original 412 `gBaseStats` records are losslessly converted and round-trip verified, while ability IDs become u16 with a third slot, type IDs become u16, EXP yield becomes u16, and EV yields become explicit bytes. Runtime consumers are the next step.
+- `ExpandedSpeciesV1` is 40 bytes per record with 4096 slots. The original 412 `gBaseStats` records are losslessly converted and round-trip verified, while ability IDs become u16 with a third slot, type IDs become u16, EXP yield becomes u16, and EV yields become explicit bytes.
+- A 4096×28-byte `species_compat` projection is also installed for staged migration. Every supplied ROM has exactly 45 direct `gBaseStats` pointer literals; all 45 are redirected to the common `0x09029000` compatibility table. `NUM_SPECIES`/sanitizer bounds and wide-field runtime accessors remain pending.
 - Form-change remains reserved/inactive.
 - Existing Gen III BoxPokemon layout remains the compatibility core.
 - Modern-only persistent state uses a versioned A/B save extension in retail-unused flash sectors 30-31; the offline format is defined, while expanded-ROM runtime hooks are still pending.
@@ -69,6 +70,7 @@ python tools/sapphire_rom_expansion.py verify sapphire.expanded.gba
 python tools/sapphire_rom_expansion.py install sapphire.expanded.gba table.bin sapphire.with-table.gba --name custom_table --count 1 --alignment 4
 python tools/sapphire_species_table.py build sapphire.gba species_data.bin
 python tools/sapphire_species_table.py install sapphire.expanded.gba sapphire.species.gba
+python tools/sapphire_species_runtime_patch.py sapphire.species.gba sapphire.species-runtime.gba
 
 python tools/sapphire_save_extension.py inspect sapphire.sav
 python tools/sapphire_save_extension.py init sapphire.gba sapphire.sav sapphire.expanded.sav
@@ -80,7 +82,7 @@ python tools/verify_expanded_table_registry.py
 
 The paired expander validates both inputs first, builds both outputs in memory, refuses to overwrite the source pair, and refuses to reset an already initialized SAPPXSV1 save unless a separate migration path is implemented.
 
-The ROM expander accepts the 12 validated Sapphire revisions, preserves the complete native ROM prefix, pads Japanese AXPJ rev0 from 8 MiB to the common 16 MiB base, writes the SAPPX10 control page, and produces an exact 32 MiB image. `install` adds an explicit payload allocation and relocation-directory entry without scanning for arbitrary free space. `sapphire_species_table.py` finds the verified regional `gBaseStats`, converts it to `ExpandedSpeciesV1`, verifies all 412 source records by reverse conversion, pads the table to 4096 records, and installs it as `species_data`. Validation reports are `reports/expanded-rom-container-validation.json` and `reports/expanded-species-table-validation.json`.
+The ROM expander accepts the 12 validated Sapphire revisions, preserves the complete native ROM prefix, pads Japanese AXPJ rev0 from 8 MiB to the common 16 MiB base, writes the SAPPX10 control page, and produces an exact 32 MiB image. `install` adds an explicit payload allocation and relocation-directory entry without scanning for arbitrary free space. `sapphire_species_table.py` finds the verified regional `gBaseStats`, converts it to `ExpandedSpeciesV1`, verifies all 412 source records by reverse conversion, pads the table to 4096 records, and installs it as `species_data`. Validation reports are `reports/expanded-rom-container-validation.json`, `reports/expanded-species-table-validation.json`, and `reports/species-runtime-redirection-validation.json`.
 
 `init` verifies the known Sapphire ROM identity, two complete retail save slots, and every retail main-sector checksum before writing the mirrored SAPPXSV1 extension to sectors 30-31. It preserves sectors 0-29 byte-for-byte.
 
