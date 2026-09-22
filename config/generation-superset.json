@@ -1,0 +1,24 @@
+{
+  "schema": 1,
+  "generation": 3,
+  "generationKey": "gen3",
+  "sourceProfile": "SAPPHIRE",
+  "sourceFamily": "RSE",
+  "primaryWorld": "Hoenn",
+  "generationSuperset": {
+    "repository": "SakuraiTsubaki/EMERALD",
+    "manifest": "manifests/generation-supersets.json",
+    "documentation": "docs/GENERATION_SUPERSET_MERGE.md",
+    "mergePolicy": "union-preserve-variants",
+    "canonicalWorlds": [
+      "Hoenn",
+      "Kanto",
+      "Sevii Islands"
+    ],
+    "runtimeModes": [
+      "generation-superset",
+      "source-version-reproduction"
+    ]
+  },
+  "romBinariesCommitted": false
+}
