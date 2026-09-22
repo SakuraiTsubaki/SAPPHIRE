@@ -1,0 +1,49 @@
+{
+  "schema_version": 1,
+  "date": "2026-09-23",
+  "project": "SAPPHIRE",
+  "result": "pass",
+  "test": "Build and install ExpandedSpeciesV1 from all 12 supplied Sapphire ROMs",
+  "legacy": {
+    "record_count": 412,
+    "data_size_bytes": 26,
+    "record_stride_bytes": 28,
+    "table_size_bytes": 11536,
+    "table_sha256": "e3a2e4c0b165602701bd3beab5ea0885643d0b5e4cf69898edb43d9f600a7b5c",
+    "all_record_tail_padding_zero": true,
+    "all_12_roms_identical": true
+  },
+  "expanded": {
+    "capacity": 4096,
+    "record_size_bytes": 40,
+    "table_size_bytes": 163840,
+    "table_sha256": "d358763dca2420f1465f97acd7fe869ebb4a034a38c7214d54be8b6621f5c04f",
+    "legacy_round_trip_records": 412,
+    "future_slots_zero_and_undefined": true,
+    "clean_sappx10_install_offset": 16781312,
+    "clean_sappx10_install_pointer": "0x09001000",
+    "directory_name": "species_data",
+    "directory_count": 4096,
+    "directory_stride": 40
+  },
+  "legacy_compatibility": {
+    "species_egg": 412,
+    "extra_unown_constants": [413, 439],
+    "status": "reserved_for_explicit_compatibility_mapping_before_reuse"
+  },
+  "roms": [
+    {"rom":"Pocket Monsters - Sapphire (Japan).gba","legacy_offset":1902940,"legacy_pointer":"0x081D095C"},
+    {"rom":"Pokemon - Edicion Zafiro (Spain) (Rev 1).gba","legacy_offset":2111780,"legacy_pointer":"0x08203924"},
+    {"rom":"Pokemon - Edicion Zafiro (Spain).gba","legacy_offset":2111780,"legacy_pointer":"0x08203924"},
+    {"rom":"Pokemon - Saphir-Edition (Germany) (Rev 1).gba","legacy_offset":2145148,"legacy_pointer":"0x0820BB7C"},
+    {"rom":"Pokemon - Saphir-Edition (Germany).gba","legacy_offset":2145148,"legacy_pointer":"0x0820BB7C"},
+    {"rom":"Pokemon - Sapphire Version (Europe) (Rev 1).gba","legacy_offset":2091968,"legacy_pointer":"0x081FEBC0"},
+    {"rom":"Pokemon - Sapphire Version (USA).gba","legacy_offset":2091944,"legacy_pointer":"0x081FEBA8"},
+    {"rom":"Pokemon - Sapphire Version (USA, Europe) (Rev 2).gba","legacy_offset":2091968,"legacy_pointer":"0x081FEBC0"},
+    {"rom":"Pokemon - Version Saphir (France) (Rev 1).gba","legacy_offset":2125812,"legacy_pointer":"0x08206FF4"},
+    {"rom":"Pokemon - Version Saphir (France).gba","legacy_offset":2125812,"legacy_pointer":"0x08206FF4"},
+    {"rom":"Pokemon - Versione Zaffiro (Italy) (Rev 1).gba","legacy_offset":2099328,"legacy_pointer":"0x08200880"},
+    {"rom":"Pokemon - Versione Zaffiro (Italy).gba","legacy_offset":2099328,"legacy_pointer":"0x08200880"}
+  ],
+  "runtime_status": "species_data exists in SAPPX10 payload; original game consumers still point at legacy gBaseStats and must be redirected next"
+}
