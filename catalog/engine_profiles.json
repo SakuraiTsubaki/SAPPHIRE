@@ -1,5 +1,5 @@
 {
-  "schema_version": 5,
+  "schema_version": 6,
   "project": "SAPPHIRE",
   "profiles": {
     "classic": {
@@ -14,7 +14,7 @@
       "form_change": false
     },
     "expanded": {
-      "status": "rom_allocator_implemented_table_formats_and_save_runtime_pending",
+      "status": "species_table_implemented_runtime_redirection_and_save_runtime_pending",
       "purpose": "Generation 10-ready Sapphire-native expansion profile",
       "accepted_input_rom_sizes_bytes": [
         8388608,
@@ -48,7 +48,15 @@
       "relocation_allocator_implemented": true,
       "relocation_allocator": "tools/sapphire_rom_expansion.py install",
       "expanded_table_registry": "catalog/expanded_table_registry.json",
-      "table_formats_status": "pending"
+      "table_formats_status": "pending",
+      "first_production_table": {
+        "directory_name": "species_data",
+        "format": "ExpandedSpeciesV1",
+        "capacity": 4096,
+        "stride_bytes": 40,
+        "builder": "tools/sapphire_species_table.py",
+        "runtime_consumers_redirected": false
+      }
     }
   }
 }
