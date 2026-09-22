@@ -1,5 +1,5 @@
 {
-  "schema_version": 3,
+  "schema_version": 4,
   "project": "SAPPHIRE",
   "profile": "expanded",
   "purpose": "Generation 10 capacity registry without inventing unreleased content",
@@ -93,6 +93,32 @@
       "format_status": "pending"
     },
     {
+      "directory_name": "species_names_cp",
+      "domain": "species",
+      "role": "regional-stride compatibility projection for direct legacy gSpeciesNames consumers",
+      "format_status": "implemented_v1",
+      "format_manifest": "catalog/expanded_species_names_v1.json",
+      "builder": "tools/sapphire_species_names.py",
+      "capacity": 4096,
+      "stride": "6 JP / 11 western",
+      "table_size_bytes": 45056,
+      "runtime_consumers": "all direct gSpeciesNames pointer literals redirected",
+      "canonical": false
+    },
+    {
+      "directory_name": "species_name_rt",
+      "domain": "species",
+      "role": "Thumb runtime accessor for canonical 16-byte species names",
+      "format_status": "implemented_v1",
+      "format_manifest": "catalog/expanded_species_names_v1.json",
+      "builder": "tools/sapphire_species_names.py",
+      "capacity": 1,
+      "stride": 72,
+      "table_size_bytes": 72,
+      "runtime_consumers": "GetSpeciesName trampoline",
+      "canonical": false
+    },
+    {
       "directory_name": "learnsets",
       "domain": "species",
       "role": "level-up and other learnset payloads",
@@ -183,6 +209,7 @@
     "Expanded-profile code must use directory metadata and logical counts instead of historical fixed-end constants.",
     "Existing Gen III Unown compatibility encoding must be mapped explicitly before species IDs are appended.",
     "Form-change runtime remains inactive until explicitly resumed.",
-    "species_compat is a temporary binary-compatibility projection, not the canonical widened species format; ExpandedSpeciesV1 remains canonical."
+    "species_compat is a temporary binary-compatibility projection, not the canonical widened species format; ExpandedSpeciesV1 remains canonical.",
+    "Canonical species names use 16-byte records; regional 6/11-byte name tables remain compatibility-only."
   ]
 }
