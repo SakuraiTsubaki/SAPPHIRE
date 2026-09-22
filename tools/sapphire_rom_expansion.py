@@ -20,17 +20,21 @@ DIRECTORY_OFFSET = HEADER_SIZE
 DIRECTORY_ENTRY_SIZE = 32
 DIRECTORY_CAPACITY = (CONTROL_SIZE - DIRECTORY_OFFSET) // DIRECTORY_ENTRY_SIZE
 MAGIC = b"SAPPX10\0"
-SCHEMA = 1
+SCHEMA = 2
 FILL = 0xFF
+FLAG_PREFIX_PATCHED = 1 << 0
 MAX_ALIGNMENT = 0x1000
 
 # 8s magic, H schema, H header size, I control size, I input size,
 # I expanded size, I common base, I payload base, H dir entry size,
 # H dir capacity, H dir count, H flags, 4s game code, B revision,
-# 3x pad, 20s source sha1, 32s source sha256, I header crc32.
-HEADER = struct.Struct("<8sHHIIIIIHHHH4sB3x20s32sI")
+# 3x pad, 20s source sha1, 32s source sha256,
+# 32s working-prefix sha256, I header crc32.
+HEADER = struct.Struct("<8sHHIIIIIHHHH4sB3x20s32s32sI")
 DIRECTORY_ENTRY = struct.Struct("<16sIIIHH")
 HEADER_DIR_COUNT_OFFSET = struct.calcsize("<8sHHIIIIIHH")
+HEADER_FLAGS_OFFSET = struct.calcsize("<8sHHIIIIIHHH")
+HEADER_WORKING_SHA256_OFFSET = struct.calcsize("<8sHHIIIIIHHHH4sB3x20s32s")
 HEADER_CRC_OFFSET = HEADER.size - 4
 
 KNOWN_ROMS = {
@@ -127,6 +131,7 @@ def build_control(native: dict) -> bytes:
         native["revision"],
         bytes.fromhex(native["sha1"]),
         bytes.fromhex(native["sha256"]),
+        bytes.fromhex(native["sha256"]),
         0,
     )
     refresh_header_crc(control)
@@ -157,7 +162,8 @@ def parse_control(data: bytes) -> dict:
     (
         magic, schema, header_size, control_size, input_size, expanded_size,
         common_base, payload_base, dir_entry_size, dir_capacity, dir_count,
-        flags, game_code, revision, source_sha1, source_sha256, header_crc,
+        flags, game_code, revision, source_sha1, source_sha256,
+        working_sha256, header_crc,
     ) = values
     if magic != MAGIC:
         raise ValueError(f"missing SAPPX10 expanded-ROM header: {magic!r}")
@@ -250,6 +256,8 @@ def parse_control(data: bytes) -> dict:
         "revision": revision,
         "source_sha1": source_sha1.hex(),
         "source_sha256": source_sha256.hex(),
+        "working_prefix_sha256": working_sha256.hex(),
+        "prefix_patched": bool(flags & FLAG_PREFIX_PATCHED),
         "header_crc32": f"{header_crc:08x}",
         "directory": entries,
     }
@@ -261,14 +269,21 @@ def verify_expanded(data: bytes) -> dict:
     source_prefix = data[:input_size]
     prefix_sha1 = sha1(source_prefix)
     prefix_sha256 = sha256(source_prefix)
-    if prefix_sha1 != info["source_sha1"]:
-        raise ValueError("native input prefix SHA-1 does not match expanded header")
-    if prefix_sha256 != info["source_sha256"]:
-        raise ValueError("native input prefix SHA-256 does not match expanded header")
-    known = KNOWN_ROMS.get(prefix_sha1)
+
+    if prefix_sha256 != info["working_prefix_sha256"]:
+        raise ValueError("working ROM prefix SHA-256 does not match expanded header")
+
+    known = KNOWN_ROMS.get(info["source_sha1"])
     if known is None:
-        raise ValueError("expanded ROM source prefix is not a known Sapphire revision")
+        raise ValueError("expanded ROM recorded source is not a known Sapphire revision")
     label, expected_size = known
+
+    if not info["prefix_patched"]:
+        if prefix_sha1 != info["source_sha1"]:
+            raise ValueError("native input prefix SHA-1 does not match expanded header")
+        if prefix_sha256 != info["source_sha256"]:
+            raise ValueError("native input prefix SHA-256 does not match expanded header")
+
     if expected_size != input_size:
         raise ValueError("expanded header input size disagrees with known source")
     if (
@@ -286,10 +301,12 @@ def verify_expanded(data: bytes) -> dict:
         "known_source_rom": label,
         "expanded_sha1": sha1(data),
         "expanded_sha256": sha256(data),
-        "source_prefix_preserved": True,
+        "source_prefix_preserved": (
+            prefix_sha1 == info["source_sha1"]
+            and prefix_sha256 == info["source_sha256"]
+        ),
         **info,
     }
-
 
 def install_blob(
     data: bytes,
@@ -370,6 +387,31 @@ def install_blob(
         "expanded_sha256": verified["expanded_sha256"],
     }
 
+
+
+def mark_prefix_patched(data: bytes) -> bytes:
+    info = parse_control(data)
+    output = bytearray(data)
+    prefix_sha256 = bytes.fromhex(sha256(output[:info["input_size"]]))
+
+    control = bytearray(output[COMMON_BASE:COMMON_BASE + CONTROL_SIZE])
+    current_flags = struct.unpack_from("<H", control, HEADER_FLAGS_OFFSET)[0]
+    struct.pack_into(
+        "<H",
+        control,
+        HEADER_FLAGS_OFFSET,
+        current_flags | FLAG_PREFIX_PATCHED,
+    )
+    control[
+        HEADER_WORKING_SHA256_OFFSET:HEADER_WORKING_SHA256_OFFSET + 32
+    ] = prefix_sha256
+    refresh_header_crc(control)
+    output[COMMON_BASE:COMMON_BASE + CONTROL_SIZE] = control
+
+    verified = verify_expanded(bytes(output))
+    if not verified["prefix_patched"]:
+        raise AssertionError("prefix patch flag did not round-trip")
+    return bytes(output)
 
 def inspect(data: bytes) -> dict:
     if len(data) in (JP_SIZE, WESTERN_SIZE):
