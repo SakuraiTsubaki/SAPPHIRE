@@ -1,5 +1,5 @@
 {
-  "schema_version": 2,
+  "schema_version": 3,
   "project": "SAPPHIRE",
   "profile": "expanded",
   "purpose": "Generation 10 capacity registry without inventing unreleased content",
@@ -72,6 +72,19 @@
       "stride": 40,
       "table_size_bytes": 163840,
       "runtime_consumers": "pending"
+    },
+    {
+      "directory_name": "species_compat",
+      "domain": "species",
+      "role": "legacy 28-byte BaseStats compatibility projection used while original runtime consumers are migrated",
+      "format_status": "implemented_v1",
+      "builder": "tools/sapphire_species_runtime_patch.py",
+      "capacity": 4096,
+      "stride": 28,
+      "table_size_bytes": 114688,
+      "sha256": "63f0b7a2a4575d4f21b8dbb7c76041751225d7a869d7e88114060e629fa60dff",
+      "runtime_consumers": "direct_gBaseStats_pointer_literals_redirected",
+      "canonical": false
     },
     {
       "directory_name": "species_names",
@@ -169,6 +182,7 @@
     "A table family gets a concrete stride/encoding only after its Gen III consumers and modern requirements are audited.",
     "Expanded-profile code must use directory metadata and logical counts instead of historical fixed-end constants.",
     "Existing Gen III Unown compatibility encoding must be mapped explicitly before species IDs are appended.",
-    "Form-change runtime remains inactive until explicitly resumed."
+    "Form-change runtime remains inactive until explicitly resumed.",
+    "species_compat is a temporary binary-compatibility projection, not the canonical widened species format; ExpandedSpeciesV1 remains canonical."
   ]
 }
