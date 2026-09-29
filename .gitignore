@@ -1,0 +1,8 @@
+# Session-local emulator/tool cache
+.tools/
+
+# Retail and generated ROM/save binaries must stay out of Git
+*.gba
+*.sav
+*.sgm
+*.ss0
