@@ -1,11 +1,11 @@
 {
-  "schema_version": 4,
+  "schema_version": 5,
   "project": "SAPPHIRE",
   "source": {
     "repository": "pret/pokeruby",
     "ref": "63a8cbf0016b351a4e68f7036fa0b77e23d2f2c1"
   },
-  "status": "species_sanitizer_and_name_accessor_implemented_dense_iteration_pending",
+  "status": "species_registry_materialized_dense_runtime_redirection_pending",
   "purpose": "Find original Gen III hard limits that must be removed before later-generation content import",
   "findings": [
     {
@@ -93,7 +93,11 @@
       "current_bound": "Random/scan logic assumes a dense 1..NUM_SPECIES-1 namespace",
       "problem": "Sparse/reserved logical IDs would be selected or scanned incorrectly.",
       "required_action": "Use an enabled-species registry or valid-species iterator in the expanded profile.",
-      "implementation_status": "Still pending. TV/daycare dense selection and iteration must use the 4096-slot defined-species registry rather than 1..NUM_SPECIES-1."
+      "implementation_status": "The 4096-slot defined-species registry is now materialized as a 512-byte membership bitset plus a sorted dense u16 ID vector generated from ExpandedSpeciesV1.flags.defined. TV/daycare and other dense selection/iteration call sites still need runtime redirection to this registry.",
+      "evidence": [
+        "catalog/species_registry_v1.json",
+        "tools/sapphire_species_registry.py"
+      ]
     },
     {
       "id": "MOVE-001",
@@ -232,7 +236,7 @@
     }
   ],
   "immediate_p0_order": [
-    "defined-species iterator for TV/daycare and other dense NUM_SPECIES loops",
+    "redirect TV/daycare and other dense species selection/iteration call sites to species_registry",
     "remaining NUM_SPECIES/SPECIES_EGG UI/graphics bounds and direct species-name consumers",
     "variable-length evolution storage",
     "expanded Pokédex runtime persistence",
@@ -254,5 +258,8 @@
     "4096-entry 16-byte canonical regional species-name table plus fixed-size regional compatibility projection",
     "all direct gSpeciesNames pointer literals redirected to species_names_cp across all 12 supplied ROMs",
     "GetSpeciesName redirected to canonical 16-byte names with defined-species validation across all 12 supplied ROMs"
+  ],
+  "completed_foundations": [
+    "4096-bit defined-species membership registry plus dense sorted u16 species-ID vector"
   ]
 }
