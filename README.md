@@ -95,6 +95,20 @@ python tools/sapphire_external_events.py patch sapphire.gba sapphire.external-ev
 
 The tool rejects unknown ROM hashes by default.
 
+## mGBA session runner
+
+mGBA is treated as session-local tooling, not as a repository binary. The helper pins the official mGBA 0.10.5 AppImage under `.tools/mgba/`, validates the Sapphire ROM before launch, and keeps a supplied save isolated by default.
+
+```sh
+python tools/sapphire_mgba.py probe
+python tools/sapphire_mgba.py bootstrap
+python tools/sapphire_mgba.py verify-rom sapphire.gba
+python tools/sapphire_mgba.py run sapphire.gba --save sapphire.sav
+python tools/sapphire_mgba.py smoke sapphire.gba --save sapphire.sav --seconds 8
+```
+
+Use `--write-save` only when an emulator run is intentionally allowed to replace the supplied save. ROM, save, save-state, and local emulator-cache files are ignored by Git.
+
 ## Reference order
 
 Japanese/original material is the primary reference. Korean is next where official material exists, then English, followed by other official languages.
