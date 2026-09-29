@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "project": "SAPPHIRE",
+  "component": "species_registry",
+  "format": "SAPPREG1",
+  "status": "materialized_runtime_input",
+  "directory_name": "species_registry",
+  "capacity": 4096,
+  "species_id_width_bits": 16,
+  "defined_flag_source": {
+    "table": "species_data",
+    "record_size": 40,
+    "flag_offset": 37,
+    "mask": 1
+  },
+  "layout": {
+    "header_size": 24,
+    "bitset_size": 512,
+    "id_vector": "sorted unique u16 logical species IDs",
+    "current_legacy_defined_count": 411
+  },
+  "purpose": [
+    "O(1) defined-species membership test through a 4096-bit bitset",
+    "dense selection and iteration through a count-backed u16 ID vector",
+    "remove the requirement that valid species occupy a contiguous 1..NUM_SPECIES-1 range"
+  ],
+  "runtime_status": "storage implemented; TV/daycare and other dense iteration call sites still need redirection",
+  "tool": "tools/sapphire_species_registry.py"
+}
